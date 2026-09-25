@@ -56,6 +56,45 @@ private struct WikiEntry: Decodable, Identifiable, Sendable {
     }
 }
 
+private struct WikiDetailPayload: Decodable, Sendable {
+    struct Profile: Decodable, Sendable {
+        let nameEn: String?
+        let country: String?
+        let city: String?
+        let province: String?
+        let iata: String?
+        let icao: String?
+        let callsign: String?
+        let manufacturer: String?
+        let type: String?
+        let `operator`: String?
+        let msn: String?
+        let firstFlight: String?
+        let delivery: String?
+        let status: String?
+        let description: String?
+    }
+
+    struct Stats: Decodable, Sendable {
+        let photos: Int?
+        let shooters: Int?
+        let airframes: Int?
+        let airlines: Int?
+        let types: Int?
+        let firstSeen: String?
+        let lastSeen: String?
+    }
+
+    let name: String?
+    let model: String?
+    let registration: String?
+    let profile: Profile?
+    let stats: Stats?
+    let photos: [Photo]?
+    let recentPhotos: [Photo]?
+    let currentOperator: String?
+}
+
 struct WikiHomeView: View {
     @State private var category: WikiCategory = .airlines
     @State private var entries: [WikiEntry] = []
@@ -75,7 +114,14 @@ struct WikiHomeView: View {
                         Text("按社区作品自动更新").font(.caption).foregroundStyle(.secondary)
                     }
                     LazyVStack(spacing: 12) {
-                        ForEach(entries) { entry in entryRow(entry) }
+                        ForEach(entries) { entry in
+                            NavigationLink {
+                                WikiEntryDetailView(category: category, entry: entry)
+                            } label: {
+                                entryRow(entry)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
                     LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
                 }
@@ -152,5 +198,140 @@ struct WikiHomeView: View {
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
         isLoading = false
+    }
+}
+
+private struct WikiEntryDetailView: View {
+    let category: WikiCategory
+    let entry: WikiEntry
+    @State private var payload: WikiDetailPayload?
+    @State private var isLoading = true
+    @State private var errorMessage: String?
+
+    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                header
+                if let payload {
+                    if let stats = payload.stats { statistics(stats) }
+                    profile(payload.profile)
+                    let photos = payload.photos ?? payload.recentPhotos ?? []
+                    if !photos.isEmpty {
+                        Text(L10n.string("相关作品")).font(.title2.bold())
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            ForEach(photos) { photo in
+                                NavigationLink { PhotoDetailView(photoID: photo.id) } label: {
+                                    PhotoGridCard(photo: photo)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
+                LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
+            }
+            .padding(18)
+        }
+        .navigationTitle(entry.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .task { await load() }
+        .appScreenBackground()
+    }
+
+    private var header: some View {
+        ZStack(alignment: .bottomLeading) {
+            Color.clear
+                .aspectRatio(16 / 9, contentMode: .fit)
+                .overlay { RemoteImage(url: URL(string: entry.cover ?? "")) }
+                .clipped()
+            LinearGradient(colors: [.clear, .black.opacity(0.78)], startPoint: .top, endPoint: .bottom)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(entry.title).font(.title.bold()).foregroundStyle(.white)
+                if !entry.subtitle.isEmpty {
+                    Text(entry.subtitle).font(.subheadline).foregroundStyle(.white.opacity(0.78))
+                }
+            }
+            .padding(18)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+    }
+
+    private func statistics(_ stats: WikiDetailPayload.Stats) -> some View {
+        GlassPanel(cornerRadius: 20) {
+            HStack(spacing: 0) {
+                stat(stats.photos, L10n.string("作品"))
+                stat(stats.airframes ?? stats.shooters, stats.airframes == nil ? L10n.string("摄影师") : L10n.string("飞机"))
+                stat(stats.airlines ?? stats.types, stats.airlines == nil ? L10n.string("机型") : L10n.string("航空公司"))
+            }
+            .padding(.vertical, 16)
+        }
+    }
+
+    private func stat(_ value: Int?, _ label: String) -> some View {
+        VStack(spacing: 4) {
+            Text((value ?? 0).formatted()).font(.headline).monospacedDigit()
+            Text(label).font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    private func profile(_ value: WikiDetailPayload.Profile?) -> some View {
+        if let value {
+            let rows: [(String, String?)] = [
+                (L10n.string("英文名"), value.nameEn), ("IATA / ICAO", [value.iata, value.icao].compactMap { $0 }.joined(separator: " / ")),
+                (L10n.string("制造商"), value.manufacturer), (L10n.string("国家或地区"), value.country),
+                (L10n.string("城市"), value.city), (L10n.string("运营方"), value.operator),
+                ("MSN", value.msn), (L10n.string("首飞"), value.firstFlight),
+                (L10n.string("交付"), value.delivery), (L10n.string("状态"), value.status),
+            ].filter { !($0.1 ?? "").isEmpty }
+            if !rows.isEmpty || value.description != nil {
+                GlassPanel(cornerRadius: 20) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                            HStack(alignment: .firstTextBaseline) {
+                                Text(row.0).foregroundStyle(.secondary)
+                                Spacer()
+                                Text(row.1 ?? "").multilineTextAlignment(.trailing)
+                            }
+                            .font(.subheadline).padding(.vertical, 9)
+                            Divider()
+                        }
+                        if let description = value.description, !description.isEmpty {
+                            Text(description).font(.subheadline).foregroundStyle(.secondary).padding(.top, 12)
+                        }
+                    }
+                    .padding(18)
+                }
+            }
+        }
+    }
+
+    private func reload() { Task { await load() } }
+
+    @MainActor
+    private func load() async {
+        isLoading = true
+        defer { isLoading = false }
+        let endpoint: String
+        let parameter: URLQueryItem
+        switch category {
+        case .airlines:
+            endpoint = "airline"; parameter = URLQueryItem(name: "name", value: entry.title)
+        case .airports:
+            endpoint = "airport"; parameter = URLQueryItem(name: "key", value: entry.title)
+        case .types:
+            endpoint = "aircraft-type"; parameter = URLQueryItem(name: "model", value: entry.title)
+        case .registrations:
+            endpoint = "aircraft"; parameter = URLQueryItem(name: "registration", value: entry.title)
+        }
+        do {
+            payload = try await APIClient.shared.get("api/wiki/\(endpoint)", query: [parameter])
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

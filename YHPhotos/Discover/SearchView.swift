@@ -46,10 +46,22 @@ struct SearchResponse: Decodable, Sendable {
 }
 
 struct SearchView: View {
-    @State private var query = ""
+    let domain: PhotoDomain?
+    let kind: String
+    let title: String
+    let prompt: String
+    @State private var query: String
     @State private var response: SearchResponse?
     @State private var isLoading = false
     @State private var errorMessage: String?
+
+    init(domain: PhotoDomain? = nil, kind: String = "all", title: String = L10n.string("搜索"), prompt: String = L10n.string("机型、注册号、机场、车站"), query: String = "") {
+        self.domain = domain
+        self.kind = kind
+        self.title = title
+        self.prompt = prompt
+        _query = State(initialValue: query)
+    }
 
     var body: some View {
         List {
@@ -73,9 +85,14 @@ struct SearchView: View {
             }
         }
         .listStyle(.plain)
-        .navigationTitle("搜索")
-        .searchable(text: $query, prompt: "机型、注册号、机场、车站")
+        .navigationTitle(title)
+        .searchable(text: $query, prompt: prompt)
         .onSubmit(of: .search) { Task { await search() } }
+        .task {
+            if !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                await search()
+            }
+        }
         .appScreenBackground()
     }
 
@@ -111,7 +128,12 @@ struct SearchView: View {
         isLoading = true
         errorMessage = nil
         do {
-            response = try await APIClient.shared.get("api/search", query: [URLQueryItem(name: "q", value: query)])
+            var items = [
+                URLQueryItem(name: "q", value: query),
+                URLQueryItem(name: "type", value: kind),
+            ]
+            if let domain { items.append(URLQueryItem(name: "domain", value: domain.rawValue)) }
+            response = try await APIClient.shared.get("api/search", query: items)
         } catch { errorMessage = error.localizedDescription }
         isLoading = false
     }

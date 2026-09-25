@@ -34,7 +34,7 @@ struct DiscoverView: View {
     @State private var errorMessage: String?
     @State private var showingSearch = false
 
-    private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
+    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
     var body: some View {
         NavigationStack {
@@ -56,8 +56,11 @@ struct DiscoverView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if let user = appModel.sessionUser {
-                        AvatarView(urlString: nil, name: user.displayName, size: 34)
-                            .onTapGesture { appModel.select(.profile) }
+                        Button { appModel.select(.profile) } label: {
+                            AvatarView(urlString: nil, name: user.displayName, size: 34)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(L10n.string("个人中心"))
                     }
                     Button { showingSearch = true } label: { Image(systemName: "magnifyingglass") }
                         .buttonBorderShape(.circle)
@@ -82,7 +85,7 @@ struct DiscoverView: View {
     private var featuredContent: some View {
         if let hero = featured.first ?? photos.first {
             NavigationLink { PhotoDetailView(photoID: hero.id) } label: {
-                HeroPhotoView(photo: hero, height: 360)
+                HeroPhotoView(photo: hero)
             }
             .buttonStyle(.plain)
         }
@@ -97,7 +100,7 @@ struct DiscoverView: View {
             }
         }
 
-        LazyVGrid(columns: columns, spacing: 18) {
+        LazyVGrid(columns: columns, alignment: .leading, spacing: 20) {
             ForEach(photos) { photo in
                 NavigationLink { PhotoDetailView(photoID: photo.id) } label: { PhotoGridCard(photo: photo) }
                     .buttonStyle(.plain)
@@ -139,7 +142,6 @@ private struct CommunityStatsCard: View {
                     Circle().fill(.green).frame(width: 7, height: 7)
                     Text("实时").font(.caption).foregroundStyle(.green)
                     Spacer()
-                    Image(systemName: "chevron.right").foregroundStyle(.secondary)
                 }
                 HStack {
                     metric(stats.pendingPhotos, L10n.string("待审核"))

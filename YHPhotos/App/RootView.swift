@@ -17,15 +17,23 @@ struct RootView: View {
     }
 
     private var phoneRoot: some View {
-        ZStack(alignment: .bottom) {
-            selectedScreen
-                .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 100) }
-
-            FloatingDock()
-                .padding(.horizontal, 20)
-                .padding(.bottom, 4)
+        TabView(selection: Binding(
+            get: { appModel.selectedSection },
+            set: { appModel.select($0) }
+        )) {
+            tab(.discover) { DiscoverView() }
+            tab(.wiki) { WikiHomeView() }
+            tab(.upload) { Color.clear }
+            tab(.messages) { MessagesView() }
+            tab(.profile) { UserCenterView() }
         }
-        .appScreenBackground()
+        .tint(.primary)
+    }
+
+    private func tab<Content: View>(_ section: AppSection, @ViewBuilder content: () -> Content) -> some View {
+        content()
+            .tag(section)
+            .tabItem { Label(section.title, systemImage: section.icon) }
     }
 
     private var tabletRoot: some View {

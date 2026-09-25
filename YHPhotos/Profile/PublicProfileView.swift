@@ -11,6 +11,9 @@ struct PublicProfileView: View {
     @State private var errorMessage: String?
     @State private var isFollowing = false
     @State private var followerCount = 0
+    @State private var startedConversation: Conversation?
+    @State private var isStartingConversation = false
+    @State private var showingReport = false
 
     private let columns = [GridItem(.flexible(), spacing: 4), GridItem(.flexible(), spacing: 4), GridItem(.flexible(), spacing: 4)]
 
@@ -33,12 +36,23 @@ struct PublicProfileView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    Button("分享主页", systemImage: "square.and.arrow.up") { }
-                    Button("举报", systemImage: "exclamationmark.bubble", role: .destructive) { }
+                    ShareLink(item: URL(string: "https://www.yhphotos.top/user/\(userID)")!) {
+                        Label(L10n.string("分享主页"), systemImage: "square.and.arrow.up")
+                    }
+                    Button(L10n.string("举报"), systemImage: "exclamationmark.bubble", role: .destructive) {
+                        if appModel.sessionUser == nil { appModel.showingLogin = true } else { showingReport = true }
+                    }
                 } label: { Image(systemName: "ellipsis") }
             }
         }
         .task { await load() }
+        .sheet(isPresented: $showingReport) { NavigationStack { ReportView(target: .user(userID)) } }
+        .navigationDestination(isPresented: Binding(
+            get: { startedConversation != nil },
+            set: { if !$0 { startedConversation = nil } }
+        )) {
+            if let startedConversation { ConversationView(conversation: startedConversation) }
+        }
         .appScreenBackground()
     }
 
@@ -78,10 +92,15 @@ struct PublicProfileView: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                    Button { } label: {
-                        Label("私信", systemImage: "bubble.left.fill").frame(maxWidth: .infinity)
+                    Button { Task { await startConversation(with: value) } } label: {
+                        if isStartingConversation {
+                            ProgressView().frame(maxWidth: .infinity)
+                        } else {
+                            Label("私信", systemImage: "bubble.left.fill").frame(maxWidth: .infinity)
+                        }
                     }
                     .buttonStyle(.bordered)
+                    .disabled(isStartingConversation)
                 }
                 .padding(.horizontal, 24)
             }
@@ -110,17 +129,21 @@ struct PublicProfileView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
                     ForEach(badges) { badge in
-                        GlassPanel(cornerRadius: 18) {
-                            VStack(spacing: 8) {
-                                Image(systemName: badge.icon ?? "medal.fill")
-                                    .font(.title2).foregroundStyle(.yellow)
-                                Text(badge.name).font(.caption.weight(.semibold)).lineLimit(1)
-                                if let count = badge.count, count > 1 {
-                                    Text("×\(count)").font(.caption2).foregroundStyle(.secondary)
+                        NavigationLink {
+                            BadgeDetailView(badge: badge)
+                        } label: {
+                            GlassPanel(cornerRadius: 18) {
+                                VStack(spacing: 8) {
+                                    BadgeIconView(icon: badge.icon, size: 26)
+                                    Text(badge.name).font(.caption.weight(.semibold)).lineLimit(1)
+                                    if let count = badge.count, count > 1 {
+                                        Text("×\(count)").font(.caption2).foregroundStyle(.secondary)
+                                    }
                                 }
+                                .frame(width: 92, height: 90)
                             }
-                            .frame(width: 92, height: 90)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 18)
@@ -225,5 +248,60 @@ struct PublicProfileView: View {
             isFollowing = response.following
             followerCount = response.followers
         } catch { errorMessage = error.localizedDescription }
+    }
+
+    @MainActor
+    private func startConversation(with profile: PublicProfile) async {
+        guard appModel.sessionUser != nil else { appModel.showingLogin = true; return }
+        struct Body: Encodable, Sendable { let user_id: Int }
+        struct Started: Decodable, Sendable { let id: Int }
+        isStartingConversation = true
+        defer { isStartingConversation = false }
+        do {
+            let result: Started = try await APIClient.shared.send("api/conversations/start", body: Body(user_id: profile.id))
+            startedConversation = Conversation(
+                id: result.id,
+                other: .init(id: profile.id, displayName: profile.displayName, avatar: profile.avatar),
+                lastMessage: nil,
+                lastMessageMine: false,
+                lastMessageAt: nil,
+                unread: 0
+            )
+        } catch { errorMessage = error.localizedDescription }
+    }
+}
+
+struct BadgeDetailView: View {
+    let badge: UserBadge
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 22) {
+                BadgeIconView(icon: badge.icon, size: 64)
+                    .frame(width: 128, height: 128)
+                    .background(Color.yellow.opacity(0.13), in: Circle())
+                Text(badge.name).font(.title.bold()).multilineTextAlignment(.center)
+                if let description = badge.description, !description.isEmpty {
+                    Text(description).font(.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                }
+                GlassPanel(cornerRadius: 20) {
+                    VStack(spacing: 12) {
+                        if let category = badge.category { detailRow(L10n.string("类别"), category) }
+                        if let count = badge.count { detailRow(L10n.string("获得次数"), count.formatted()) }
+                        if let awardedAt = badge.awardedAt { detailRow(L10n.string("最近获得"), awardedAt.prefix(10).description) }
+                    }
+                    .padding(18)
+                }
+            }
+            .padding(24)
+        }
+        .navigationTitle(L10n.string("徽章详情"))
+        .navigationBarTitleDisplayMode(.inline)
+        .appScreenBackground()
+    }
+
+    private func detailRow(_ title: String, _ value: String) -> some View {
+        HStack { Text(title).foregroundStyle(.secondary); Spacer(); Text(value) }
+            .font(.subheadline)
     }
 }

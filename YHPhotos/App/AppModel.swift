@@ -96,9 +96,9 @@ final class AppModel: ObservableObject {
     func refreshUnreadCount() async {
         struct Unread: Decodable, Sendable { let unread: Int }
         guard sessionUser != nil else { unreadMessages = 0; return }
-        if let value: Unread = try? await api.get("api/messages/unread-count") {
-            unreadMessages = value.unread
-        }
+        let direct: Unread? = try? await api.get("api/messages/unread-count")
+        let site: Unread? = try? await api.get("api/me/notifications/unread-count")
+        unreadMessages = (direct?.unread ?? 0) + (site?.unread ?? 0)
     }
 
     private func setSession(_ user: SessionUser) {

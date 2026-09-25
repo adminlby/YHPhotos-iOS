@@ -1,11 +1,10 @@
 import SwiftUI
 
 enum AppTheme {
-    static let canvas = Color(red: 8 / 255, green: 10 / 255, blue: 13 / 255)
-    static let elevated = Color(red: 16 / 255, green: 21 / 255, blue: 28 / 255)
+    static let canvas = Color(uiColor: .systemBackground)
+    static let elevated = Color(uiColor: .secondarySystemBackground)
     static let accent = Color("AccentColor")
-    static let divider = Color.white.opacity(0.12)
-    static let dockHeight: CGFloat = 82
+    static let divider = Color(uiColor: .separator)
 }
 
 extension View {
@@ -15,8 +14,8 @@ extension View {
             glassEffect(interactive ? .regular.interactive() : .regular, in: shape)
         } else {
             background(.ultraThinMaterial, in: shape)
-                .overlay(shape.stroke(Color.white.opacity(0.16), lineWidth: 0.75))
-                .shadow(color: .black.opacity(0.35), radius: 18, y: 8)
+                .overlay(shape.stroke(Color.primary.opacity(0.1), lineWidth: 0.75))
+                .shadow(color: .black.opacity(0.12), radius: 18, y: 8)
         }
     }
 

@@ -7,8 +7,6 @@ struct UserCenterView: View {
     @State private var status = "all"
     @State private var isLoading = false
     @State private var errorMessage: String?
-    @State private var showingAccountSecurity = false
-    @AppStorage(AppLanguage.storageKey) private var appLanguage = AppLanguage.system.rawValue
 
     var body: some View {
         NavigationStack {
@@ -19,26 +17,8 @@ struct UserCenterView: View {
             .navigationTitle("我的")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Picker("语言", selection: $appLanguage) {
-                            ForEach(AppLanguage.allCases) { language in
-                                Text(language.title).tag(language.rawValue)
-                            }
-                        }
-                        if appModel.sessionUser != nil {
-                            Divider()
-                            Button("账号与安全", systemImage: "person.badge.key.fill") {
-                                showingAccountSecurity = true
-                            }
-                            Button("退出登录", systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
-                                Task { await appModel.logout() }
-                            }
-                        }
-                    } label: { Image(systemName: "gearshape.fill") }
+                    NavigationLink { AppSettingsView() } label: { Image(systemName: "gearshape.fill") }
                 }
-            }
-            .navigationDestination(isPresented: $showingAccountSecurity) {
-                AccountSecurityView()
             }
             .task(id: appModel.sessionUser?.id) { if appModel.sessionUser != nil { await load() } }
             .task(id: status) { if overview != nil { await loadPhotos() } }
@@ -110,10 +90,10 @@ struct UserCenterView: View {
     private var quickActions: some View {
         GlassPanel(cornerRadius: 22) {
             HStack(spacing: 0) {
-                quick(L10n.string("收藏"), "bookmark.fill", .purple)
-                quick(L10n.string("图集"), "square.stack.3d.up.fill", AppTheme.accent)
-                quick(L10n.string("徽章"), "medal.fill", .yellow)
-                quick(L10n.string("收集册"), "scope", .orange)
+                quick(.favorites, "bookmark.fill", .purple)
+                quick(.collections, "square.stack.3d.up.fill", AppTheme.accent)
+                quick(.badges, "medal.fill", .yellow)
+                quick(.spotting, "scope", .orange)
             }
             .padding(.vertical, 16)
         }
@@ -132,7 +112,7 @@ struct UserCenterView: View {
                         .background(AppTheme.accent.opacity(0.13), in: Circle())
                     VStack(alignment: .leading, spacing: 4) {
                         Text("账号与安全").font(.headline)
-                        Text("绑定 Apple 登录、管理统一身份")
+                        Text("通过 SSO 修改密码、管理登录方式")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -163,24 +143,28 @@ struct UserCenterView: View {
             .pickerStyle(.segmented)
             LazyVStack(spacing: 12) {
                 ForEach(photos) { photo in
-                    HStack(spacing: 12) {
-                        RemoteImage(url: URL(string: photo.thumb ?? photo.image ?? ""))
-                            .frame(width: 104, height: 76).clipShape(RoundedRectangle(cornerRadius: 13))
-                        VStack(alignment: .leading, spacing: 7) {
-                            Text(photo.title).font(.headline).lineLimit(1)
-                            Label(statusTitle(photo.status), systemImage: statusIcon(photo.status))
-                                .font(.caption).foregroundStyle(statusColor(photo.status))
-                            HStack(spacing: 12) {
-                                Label(photo.views.compactCount, systemImage: "eye")
-                                Label(photo.likes.compactCount, systemImage: "heart")
+                    NavigationLink { MyPhotoDetailView(photoID: photo.id) } label: {
+                        HStack(spacing: 12) {
+                            RemoteImage(url: URL(string: photo.thumb ?? photo.image ?? ""))
+                                .frame(width: 104, height: 76).clipShape(RoundedRectangle(cornerRadius: 13))
+                            VStack(alignment: .leading, spacing: 7) {
+                                Text(photo.title).font(.headline).lineLimit(1)
+                                Label(statusTitle(photo.status), systemImage: statusIcon(photo.status))
+                                    .font(.caption).foregroundStyle(statusColor(photo.status))
+                                HStack(spacing: 12) {
+                                    Label(photo.views.compactCount, systemImage: "eye")
+                                    Label(photo.likes.compactCount, systemImage: "heart")
+                                    if photo.hasReviewAnnotations == true { Label(L10n.string("有标注"), systemImage: "pencil.and.outline") }
+                                }
+                                .font(.caption).foregroundStyle(.secondary)
                             }
-                            .font(.caption).foregroundStyle(.secondary)
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundStyle(.tertiary)
                         }
-                        Spacer()
-                        Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                        .padding(10)
+                        .background(AppTheme.elevated, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
-                    .padding(10)
-                    .background(AppTheme.elevated, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -193,9 +177,9 @@ struct UserCenterView: View {
         }.frame(maxWidth: .infinity)
     }
 
-    private func quick(_ title: String, _ icon: String, _ color: Color) -> some View {
-        Button { } label: {
-            VStack(spacing: 8) { Image(systemName: icon).font(.title2).foregroundStyle(color); Text(title).font(.caption).foregroundStyle(.primary) }
+    private func quick(_ kind: ProfileLibraryKind, _ icon: String, _ color: Color) -> some View {
+        NavigationLink { ProfileLibraryView(kind: kind) } label: {
+            VStack(spacing: 8) { Image(systemName: icon).font(.title2).foregroundStyle(color); Text(kind.title).font(.caption).foregroundStyle(.primary) }
                 .frame(maxWidth: .infinity)
         }.buttonStyle(.plain)
     }

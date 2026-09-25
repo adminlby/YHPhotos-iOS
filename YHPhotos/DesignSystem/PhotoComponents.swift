@@ -5,10 +5,13 @@ struct PhotoGridCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            RemoteImage(url: photo.thumbnailURL)
-                .frame(maxWidth: .infinity)
+            Color.clear
                 .aspectRatio(4 / 3, contentMode: .fit)
-                .clipped()
+                .overlay {
+                    RemoteImage(url: photo.thumbnailURL)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipped()
+                }
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
             if !photo.primaryMetadata.isEmpty {
@@ -40,13 +43,11 @@ struct PhotoGridCard: View {
 
 struct HeroPhotoView: View {
     let photo: Photo
-    var height: CGFloat = 390
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             RemoteImage(url: photo.imageURL)
-                .frame(maxWidth: .infinity)
-                .frame(height: height)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .clipped()
             LinearGradient(
                 colors: [.clear, AppTheme.canvas.opacity(0.2), AppTheme.canvas.opacity(0.96)],
@@ -67,7 +68,26 @@ struct HeroPhotoView: View {
             }
             .padding(20)
         }
+        .aspectRatio(16 / 9, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+    }
+}
+
+struct BadgeIconView: View {
+    let icon: String?
+    var size: CGFloat = 28
+
+    var body: some View {
+        Group {
+            if let icon, icon.unicodeScalars.contains(where: { $0.value > 127 }) {
+                Text(icon).font(.system(size: size))
+            } else {
+                Image(systemName: icon ?? "medal.fill")
+                    .font(.system(size: size, weight: .semibold))
+                    .foregroundStyle(.yellow)
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 
@@ -85,7 +105,15 @@ struct LoadingOrErrorView: View {
             } description: {
                 Text(error)
             } actions: {
-                Button("重试", action: retry).buttonStyle(.borderedProminent)
+                Button(action: retry) {
+                    Text("重试")
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(AppTheme.canvas)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 9)
+                        .background(Color.primary, in: Capsule())
+                }
+                .buttonStyle(.plain)
             }
             .frame(minHeight: 260)
         }

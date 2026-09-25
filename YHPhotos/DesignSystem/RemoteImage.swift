@@ -22,7 +22,7 @@ struct RemoteImage: View {
 
     private var placeholder: some View {
         LinearGradient(
-            colors: [Color.white.opacity(0.09), Color.white.opacity(0.025)],
+            colors: [Color.primary.opacity(0.09), Color.primary.opacity(0.025)],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
@@ -46,7 +46,7 @@ struct AvatarView: View {
             }
         }
         .frame(width: size, height: size)
-        .overlay(Circle().stroke(Color.white.opacity(0.18), lineWidth: 0.75))
+        .overlay(Circle().stroke(Color.primary.opacity(0.14), lineWidth: 0.75))
         .accessibilityLabel(name)
     }
 }

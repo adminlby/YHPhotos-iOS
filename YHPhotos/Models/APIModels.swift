@@ -188,6 +188,13 @@ struct MeOverview: Codable, Sendable {
 }
 
 struct MyPhoto: Codable, Identifiable, Sendable {
+    struct GroupInfo: Codable, Sendable { let id: Int; let name: String }
+    struct AppealInfo: Codable, Sendable {
+        let id: Int
+        let status: String
+        let reason: String?
+        let reply: String?
+    }
     let id: Int
     let title: String
     let status: String
@@ -200,6 +207,11 @@ struct MyPhoto: Codable, Identifiable, Sendable {
     let rejectionReason: String?
     let secondRejection: String?
     let moderatorMessage: String?
+    let hasRevisions: Bool?
+    let hasReviewAnnotations: Bool?
+    let group: GroupInfo?
+    let canAppeal: Bool?
+    let appeal: AppealInfo?
     let createdAt: String?
     let approvedAt: String?
 }
@@ -261,6 +273,16 @@ struct PhotoDetail: Codable, Identifiable, Sendable {
         let addon: String?
         let livery: String?
     }
+    struct Entities: Codable, Sendable {
+        let aircraftType: Int?
+        let airline: Int?
+        let airport: Int?
+        let registration: Int?
+        let trainModel: Int?
+        let bureau: Int?
+        let line: Int?
+        let station: Int?
+    }
 
     let id: Int
     let title: String
@@ -277,6 +299,22 @@ struct PhotoDetail: Codable, Identifiable, Sendable {
     let comments: Int
     let liked: Bool
     let favorited: Bool
+    let entities: Entities?
+}
+
+struct EntityGallery: Codable, Sendable {
+    struct Metadata: Codable, Identifiable, Sendable {
+        let label: String
+        let value: String
+        var id: String { "\(label)-\(value)" }
+    }
+
+    let kind: String
+    let id: Int
+    let title: String
+    let subtitle: String?
+    let meta: [Metadata]
+    let photos: [Photo]
 }
 
 struct Conversation: Codable, Identifiable, Sendable {
@@ -291,6 +329,22 @@ struct Conversation: Codable, Identifiable, Sendable {
     let lastMessageMine: Bool
     let lastMessageAt: String?
     let unread: Int
+}
+
+struct SiteNotification: Codable, Identifiable, Sendable {
+    let id: Int
+    let type: String
+    let title: String?
+    let content: String?
+    let link: String?
+    var isRead: Bool
+    let createdAt: String?
+}
+
+struct SiteNotificationResponse: Codable, Sendable {
+    let unread: Int
+    let total: Int?
+    let items: [SiteNotification]
 }
 
 struct LikeResponse: Codable, Sendable {

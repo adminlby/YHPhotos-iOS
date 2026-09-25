@@ -1,29 +1,16 @@
 import SwiftUI
 
 struct AccountSecurityView: View {
-    @Environment(\.openURL) private var openURL
-    @State private var settings: PublicSettings?
-    @State private var isLoading = true
+    @State private var webAuthentication = SSOWebAuthentication()
+    @State private var isOpening = false
     @State private var errorMessage: String?
-
-    private let fallbackAccountURL = URL(string: "https://auth.yhphotos.top/account")!
-
-    private var accountURL: URL {
-        guard let value = settings?.ssoAccountURL,
-              let url = URL(string: value),
-              let scheme = url.scheme?.lowercased(),
-              scheme == "https" else {
-            return fallbackAccountURL
-        }
-        return url
-    }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 18) {
                 identityCard
-                automaticBindingCard
-                privacyCard
+                commonOperationsCard
+                sourceOfTruthCard
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 14)
@@ -32,20 +19,19 @@ struct AccountSecurityView: View {
         .navigationTitle("账号与安全")
         .navigationBarTitleDisplayMode(.inline)
         .appScreenBackground()
-        .task { await loadSettings() }
     }
 
     private var identityCard: some View {
         GlassPanel(cornerRadius: 26) {
             VStack(alignment: .leading, spacing: 18) {
                 HStack(spacing: 14) {
-                    Image(systemName: "apple.logo")
+                    Image(systemName: "person.badge.key.fill")
                         .font(.system(size: 28, weight: .semibold))
                         .frame(width: 52, height: 52)
                         .background(Color.primary.opacity(0.08), in: Circle())
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Apple 登录").font(.title3.bold())
-                        Text("由 Casdoor 统一身份中心安全管理")
+                        Text("SSO 账号与安全").font(.title3.bold())
+                        Text("账号资料与凭据由统一身份中心管理")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -55,25 +41,25 @@ struct AccountSecurityView: View {
                 Divider().overlay(AppTheme.divider)
 
                 Button {
-                    openURL(accountURL)
+                    Task { await openAccountCenter() }
                 } label: {
                     HStack {
-                        if isLoading {
-                            ProgressView().tint(.black)
+                        if isOpening {
+                            ProgressView()
                         } else {
                             Image(systemName: "person.crop.circle.badge.checkmark")
                         }
-                        Text("绑定或管理 Apple 登录")
+                        Text("打开 SSO 账号中心")
                         Spacer()
                         Image(systemName: "arrow.up.right")
                     }
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.black)
                     .padding(.horizontal, 18)
                     .frame(minHeight: 50)
-                    .background(AppTheme.accent, in: Capsule())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .disabled(isOpening)
 
                 if let errorMessage {
                     Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
@@ -85,36 +71,30 @@ struct AccountSecurityView: View {
         }
     }
 
-    private var automaticBindingCard: some View {
+    private var commonOperationsCard: some View {
         GlassPanel(cornerRadius: 22) {
             VStack(alignment: .leading, spacing: 14) {
-                Label("自动绑定规则", systemImage: "link.badge.plus")
+                Label("常用账号操作", systemImage: "key.horizontal.fill")
                     .font(.headline)
-                ruleRow(
-                    icon: "envelope.badge.fill",
-                    title: L10n.string("已验证邮箱匹配"),
-                    detail: L10n.string("首次使用 Apple 登录时，仅当邮箱已验证且本站账号尚未绑定统一身份，才会自动合并。")
-                )
-                ruleRow(
-                    icon: "lock.shield.fill",
-                    title: L10n.string("已有绑定不会被覆盖"),
-                    detail: L10n.string("同邮箱的新身份不能替换已有绑定，需在账号中心明确操作。")
-                )
+                operation("修改密码", "key.fill", "修改 SSO 密码或恢复凭据")
+                operation("第三方账号", "link", "查看和管理 Apple 等登录方式")
+                operation("双重验证", "lock.shield.fill", "管理验证器与恢复方式")
+                operation("个人资料", "person.text.rectangle", "修改统一身份资料")
             }
             .padding(18)
         }
     }
 
-    private var privacyCard: some View {
+    private var sourceOfTruthCard: some View {
         GlassPanel(cornerRadius: 22) {
             HStack(alignment: .top, spacing: 13) {
-                Image(systemName: "eye.slash.fill")
-                    .foregroundStyle(.purple)
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(AppTheme.accent)
                     .frame(width: 34, height: 34)
-                    .background(Color.purple.opacity(0.13), in: Circle())
+                    .background(AppTheme.accent.opacity(0.13), in: Circle())
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("使用“隐藏我的邮箱”？").font(.subheadline.bold())
-                    Text("Apple 的中继邮箱可能与原账号邮箱不同，届时不会自动合并。请先登录原账号，再从上方账号中心手动绑定。")
+                    Text("SSO 是账号操作的唯一入口").font(.subheadline.bold())
+                    Text("App 不再调用本站本地密码或绑定接口。只有服务端提供绑定当前用户的 SSO 账号中心链接时才会跳转，避免误入管理员 builtin 组织。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -124,30 +104,45 @@ struct AccountSecurityView: View {
         }
     }
 
-    private func ruleRow(icon: String, title: String, detail: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: icon)
-                .foregroundStyle(AppTheme.accent)
-                .frame(width: 28, height: 28)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.subheadline.weight(.semibold))
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+    private func operation(_ title: String, _ icon: String, _ detail: String) -> some View {
+        Button { Task { await openAccountCenter() } } label: {
+            HStack(spacing: 12) {
+                Image(systemName: icon).foregroundStyle(AppTheme.accent).frame(width: 28)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(L10n.string(title)).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                    Text(L10n.string(detail)).font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "arrow.up.right").font(.caption).foregroundStyle(.tertiary)
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .disabled(isOpening)
     }
 
     @MainActor
-    private func loadSettings() async {
-        isLoading = true
-        defer { isLoading = false }
+    private func openAccountCenter() async {
+        guard !isOpening else { return }
+        isOpening = true
+        errorMessage = nil
+        defer { isOpening = false }
         do {
-            settings = try await APIClient.shared.get("api/settings/public")
-            errorMessage = nil
+            let preparation = try await APIClient.shared.prepareAccountManagement()
+            let callbackURL = try await webAuthentication.authenticate(
+                startURL: preparation.url,
+                callbackScheme: preparation.callbackScheme
+            )
+            guard callbackURL.host == "account-callback" else {
+                throw APIClientError.invalidResponse
+            }
         } catch {
-            errorMessage = L10n.string("暂时无法读取服务端配置，将打开默认账号中心。")
+            let nsError = error as NSError
+            if nsError.domain == "com.apple.AuthenticationServices.WebAuthenticationSession",
+               nsError.code == 1 {
+                return
+            }
+            errorMessage = error.localizedDescription
         }
     }
 }

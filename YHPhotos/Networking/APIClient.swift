@@ -70,6 +70,64 @@ actor APIClient {
         try await request(path, method: method, query: [], body: Optional<Data>.none, as: type)
     }
 
+    /// Loads authenticated binary content while preserving the same App Attest
+    /// token-rotation ordering as JSON requests. Used for owner-only media such
+    /// as the historical image attached to a moderation annotation.
+    func data(_ path: String, query: [URLQueryItem] = []) async throws -> Data {
+        let previous = tail
+        let operation = Task<Data, Error> { [baseURL, session] in
+            if let previous { await previous.value }
+
+            let normalizedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+            guard var components = URLComponents(
+                url: baseURL.appendingPathComponent(normalizedPath),
+                resolvingAgainstBaseURL: false
+            ) else { throw APIClientError.invalidBaseURL }
+            if !query.isEmpty { components.queryItems = query }
+            guard let url = components.url else { throw APIClientError.invalidBaseURL }
+
+            func makeRequest(token: String) -> URLRequest {
+                var request = APIRequestFactory.make(
+                    url: url,
+                    method: "GET",
+                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+                )
+                request.setValue("image/*, application/octet-stream", forHTTPHeaderField: "Accept")
+                request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
+                if let sessionToken = SessionCredentialStore.token {
+                    request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
+                }
+                return request
+            }
+
+            var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+            var (data, response) = try await session.data(for: makeRequest(token: token))
+            guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+            await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            if http.statusCode == 403,
+               let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
+               envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
+                await AppAttestManager.shared.invalidateToken()
+                token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+                (data, response) = try await session.data(for: makeRequest(token: token))
+                guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+                http = retriedHTTP
+                await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            }
+            guard (200..<300).contains(http.statusCode) else {
+                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
+                throw APIClientError.server(
+                    code: envelope?.error.code ?? "http_\(http.statusCode)",
+                    message: envelope?.error.message ?? L10n.format("请求失败（%d）", http.statusCode),
+                    status: http.statusCode
+                )
+            }
+            return data
+        }
+        tail = Task { _ = try? await operation.value }
+        return try await operation.value
+    }
+
     func upload<Response: Decodable & Sendable>(
         _ path: String,
         imageData: Data,
@@ -233,6 +291,14 @@ extension APIClient {
 
     func prepareSSO() async throws -> (url: URL, callbackScheme: String) {
         let value: SSOPreparation = try await send("api/auth/app/sso/prepare", body: EmptyBody())
+        guard let url = URL(string: value.startPath, relativeTo: baseURL)?.absoluteURL else {
+            throw APIClientError.invalidBaseURL
+        }
+        return (url, value.callbackScheme)
+    }
+
+    func prepareAccountManagement() async throws -> (url: URL, callbackScheme: String) {
+        let value: SSOPreparation = try await send("api/auth/app/account/prepare", body: EmptyBody())
         guard let url = URL(string: value.startPath, relativeTo: baseURL)?.absoluteURL else {
             throw APIClientError.invalidBaseURL
         }

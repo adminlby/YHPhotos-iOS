@@ -18,14 +18,11 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     }
 
     static var selected: AppLanguage {
-        let value = UserDefaults.standard.string(forKey: storageKey) ?? system.rawValue
-        return AppLanguage(rawValue: value) ?? .system
+        // App 内不再维护第二套语言开关；语言由 iOS 的单独 App 设置统一管理。
+        .system
     }
 
     static var resolved: AppLanguage {
-        let selected = selected
-        guard selected == .system else { return selected }
-
         let identifier = Locale.preferredLanguages.first ?? Locale.autoupdatingCurrent.identifier
         let normalized = Locale.canonicalLanguageIdentifier(from: identifier).lowercased()
         if normalized.hasPrefix("zh-hant") || normalized.hasPrefix("zh-hk") ||
