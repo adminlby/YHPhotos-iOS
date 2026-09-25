@@ -123,14 +123,14 @@ struct UploadView: View {
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button(L10n.string("取消")) { dismiss() } } }
             .task(id: selection) { await loadSelectedImage() }
             .task { await loadUploadContext() }
-            .onChange(of: domain) { _, _ in
+            .onChange(of: domain) { _ in
                 selectedPhotoTypes = []
                 entityIDs = [:]
                 isHot = false
                 hotReason = ""
                 if watermarkType == "image" { watermarkScale = 0.18 }
             }
-            .onChange(of: watermarkType) { _, value in
+            .onChange(of: watermarkType) { value in
                 watermarkScale = value == "image" ? 0.18 : 0.024
             }
             .sheet(isPresented: $showingImageInspector) {
@@ -234,11 +234,11 @@ struct UploadView: View {
                                 }
                         )
                         .simultaneousGesture(
-                            MagnifyGesture()
-                                .updating($watermarkMagnification) { value, state, _ in state = value.magnification }
+                            MagnificationGesture()
+                                .updating($watermarkMagnification) { value, state, _ in state = value }
                                 .onEnded { value in
                                     let range = watermarkType == "image" ? 0.06...0.60 : 0.008...0.08
-                                    let newScale = min(max(watermarkScale * value.magnification, range.lowerBound), range.upperBound)
+                                    let newScale = min(max(watermarkScale * value, range.lowerBound), range.upperBound)
                                     watermarkScale = newScale
                                     let bounds = watermarkBounds(in: proxy.size, scale: newScale)
                                     watermarkX = min(watermarkX, bounds.x)
@@ -423,7 +423,7 @@ struct UploadView: View {
                 Text(L10n.string("普通队列")).tag("normal")
                 Text(L10n.string("优先队列")).tag("priority")
             }
-            .onChange(of: queue) { _, value in
+            .onChange(of: queue) { value in
                 if value == "priority", quota?.priority.canUse ?? 0 <= 0 {
                     queue = "normal"
                     errorMessage = L10n.string("当前没有可用的优先审核额度。")

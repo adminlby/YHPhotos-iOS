@@ -63,7 +63,6 @@ struct DiscoverView: View {
                         .accessibilityLabel(L10n.string("个人中心"))
                     }
                     Button { showingSearch = true } label: { Image(systemName: "magnifyingglass") }
-                        .buttonBorderShape(.circle)
                 }
             }
             .navigationDestination(isPresented: $showingSearch) { SearchView() }
@@ -152,9 +151,9 @@ private struct CommunityStatsCard: View {
                 }
                 Divider()
                 HStack {
-                    Text("今日 ").foregroundStyle(.secondary) +
+                    (Text("今日 ").foregroundColor(.secondary) +
                     Text(L10n.format("+%d 作品 · +%d 用户", stats.todayPhotos, stats.todayUsers))
-                        .foregroundStyle(AppTheme.accent)
+                        .foregroundColor(AppTheme.accent))
                     Spacer()
                     Text(L10n.format("%d 位审核员在线", stats.onlineModerators.count))
                         .foregroundStyle(.secondary)

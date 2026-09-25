@@ -130,7 +130,7 @@ struct WikiHomeView: View {
             .navigationTitle("百科")
             .searchable(text: $query, prompt: L10n.format("搜索%@", category.title))
             .onSubmit(of: .search) { reload() }
-            .onChange(of: category) { _, _ in query = ""; reload() }
+            .onChange(of: category) { _ in query = ""; reload() }
             .task { await load() }
             .appScreenBackground()
         }

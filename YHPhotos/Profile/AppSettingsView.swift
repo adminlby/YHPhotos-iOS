@@ -176,7 +176,7 @@ private struct BlockedUsersView: View {
                 }
             }
             if users.isEmpty && !isLoading && errorMessage == nil {
-                ContentUnavailableView(L10n.string("没有已拉黑的用户"), systemImage: "person.crop.circle.badge.checkmark")
+                EmptyStateView(L10n.string("没有已拉黑的用户"), systemImage: "person.crop.circle.badge.checkmark")
             }
             LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
         }
@@ -254,7 +254,7 @@ private struct SavedSearchesView: View {
                 .padding(.vertical, 4)
             }
             if searches.isEmpty && !isLoading && errorMessage == nil {
-                ContentUnavailableView(L10n.string("暂无搜索订阅"), systemImage: "magnifyingglass.circle")
+                EmptyStateView(L10n.string("暂无搜索订阅"), systemImage: "magnifyingglass.circle")
             }
             LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
         }

@@ -624,6 +624,7 @@
       }
     },
     "加载失败" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1224,6 +1225,7 @@
       }
     },
     "查看审核进度、获赞数据、收藏与私信。" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1437,6 +1439,7 @@
       }
     },
     "登录后管理作品" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

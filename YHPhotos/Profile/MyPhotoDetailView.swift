@@ -77,7 +77,7 @@ struct MyPhotoDetailView: View {
         .navigationTitle(L10n.string("作品详情"))
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
-        .onChange(of: revisionItem) { _, item in
+        .onChange(of: revisionItem) { item in
             guard let item else { return }
             Task { await submitRevision(item) }
         }
@@ -361,7 +361,7 @@ private struct AuthenticatedReviewImage: View {
             if let image {
                 Image(uiImage: image).resizable().scaledToFit()
             } else if failed {
-                ContentUnavailableView(L10n.string("历史底图无法读取"), systemImage: "photo.badge.exclamationmark")
+                EmptyStateView(L10n.string("历史底图无法读取"), systemImage: "photo.badge.exclamationmark")
                     .foregroundStyle(.white)
             } else {
                 ProgressView().tint(.white)

@@ -64,7 +64,7 @@ struct MapBrowserView: View {
     @State private var airports: [MapAirport] = []
     @State private var selectedAirportID: Int?
     @State private var fitRevision = 0
-    @State private var position: MapCameraPosition = .region(Self.defaultRegion)
+    @State private var region = Self.defaultRegion
     @State private var isLoading = true
     @State private var errorMessage: String?
 
@@ -102,19 +102,21 @@ struct MapBrowserView: View {
         if regionResolver.provider == .amap {
             AutoNaviMapView(airports: airports, selectedAirportID: $selectedAirportID, fitRevision: fitRevision)
         } else {
-            Map(position: $position, selection: $selectedAirportID) {
-                ForEach(airports) { airport in
-                    Annotation(airport.iata ?? airport.name, coordinate: coordinate(airport)) {
+            Map(coordinateRegion: $region, annotationItems: airports) { airport in
+                MapAnnotation(coordinate: coordinate(airport)) {
+                    Button {
+                        selectedAirportID = airport.id
+                    } label: {
                         VStack(spacing: 3) {
                             Image(systemName: "airplane.circle.fill").font(.title).foregroundStyle(AppTheme.accent)
                                 .background(.black.opacity(0.8), in: Circle())
                             Text(airport.count.compactCount).font(.caption2.bold()).padding(.horizontal, 5).padding(.vertical, 2)
                                 .background(.ultraThinMaterial, in: Capsule())
                         }
-                    }.tag(airport.id)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
-            .mapStyle(.standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll))
         }
     }
 
@@ -150,7 +152,7 @@ struct MapBrowserView: View {
     }
 
     private func coordinate(_ airport: MapAirport) -> CLLocationCoordinate2D { .init(latitude: airport.lat, longitude: airport.lng) }
-    private func fitAll() { selectedAirportID = nil; position = .region(Self.defaultRegion); fitRevision += 1 }
+    private func fitAll() { selectedAirportID = nil; region = Self.defaultRegion; fitRevision += 1 }
 
     @MainActor private func load() async {
         isLoading = true; defer { isLoading = false }

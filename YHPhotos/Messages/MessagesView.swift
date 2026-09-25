@@ -51,11 +51,11 @@ struct MessagesView: View {
     }
 
     private var signedOut: some View {
-        ContentUnavailableView {
-            Label(L10n.string("登录后查看消息"), systemImage: "bubble.left.and.bubble.right")
-        } description: {
-            Text(L10n.string("私信与站内消息会集中显示在这里。"))
-        } actions: {
+        EmptyStateView(
+            L10n.string("登录后查看消息"),
+            systemImage: "bubble.left.and.bubble.right",
+            description: L10n.string("私信与站内消息会集中显示在这里。")
+        ) {
             Button(L10n.string("登录")) { appModel.showingLogin = true }.buttonStyle(.borderedProminent)
         }
     }
@@ -80,7 +80,7 @@ struct MessagesView: View {
     @ViewBuilder
     private var conversationList: some View {
         if conversations.isEmpty && !isLoading {
-            ContentUnavailableView(L10n.string("还没有私信"), systemImage: "text.bubble", description: Text(L10n.string("从摄影师主页或右上角发起对话。")))
+            EmptyStateView(L10n.string("还没有私信"), systemImage: "text.bubble", description: L10n.string("从摄影师主页或右上角发起对话。"))
         } else {
             List(conversations) { conversation in
                 NavigationLink { ConversationView(conversation: conversation) } label: {
@@ -114,7 +114,7 @@ struct MessagesView: View {
     @ViewBuilder
     private var notificationList: some View {
         if notifications.isEmpty && !isLoading {
-            ContentUnavailableView(L10n.string("还没有站内消息"), systemImage: "bell", description: Text(L10n.string("审核结果、评论、关注和系统通知会显示在这里。")))
+            EmptyStateView(L10n.string("还没有站内消息"), systemImage: "bell", description: L10n.string("审核结果、评论、关注和系统通知会显示在这里。"))
         } else {
             List(notifications) { item in
                 if let destination = destination(for: item.link) {
@@ -266,7 +266,7 @@ struct ConversationView: View {
                 .padding(.horizontal, 18).padding(.vertical, 16)
             }
             .scrollDismissesKeyboard(.interactively)
-            .onChange(of: thread?.messages.count) { _, _ in
+            .onChange(of: thread?.messages.count) { _ in
                 if let id = thread?.messages.last?.id { withAnimation { proxy.scrollTo(id, anchor: .bottom) } }
             }
         }
@@ -331,7 +331,7 @@ private struct NewConversationView: View {
     var body: some View {
         List {
             if query.count < 2 {
-                ContentUnavailableView(L10n.string("查找摄影师"), systemImage: "person.crop.circle.badge.plus", description: Text(L10n.string("输入昵称、用户名或邮箱的至少两个字符。")))
+                EmptyStateView(L10n.string("查找摄影师"), systemImage: "person.crop.circle.badge.plus", description: L10n.string("输入昵称、用户名或邮箱的至少两个字符。"))
             }
             if isLoading { ProgressView().frame(maxWidth: .infinity) }
             ForEach(people) { person in

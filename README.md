@@ -1,6 +1,6 @@
 # YHPhotos iOS
 
-YHPhotos 航摄图库的原生 SwiftUI 客户端，支持 iPhone 与 iPad，最低系统版本为 iOS / iPadOS 17。
+YHPhotos 航摄图库的原生 SwiftUI 客户端，支持 iPhone 与 iPad，最低系统版本为 iOS / iPadOS 16。
 
 ## 当前实现
 
@@ -9,7 +9,7 @@ YHPhotos 航摄图库的原生 SwiftUI 客户端，支持 iPhone 与 iPad，最�
 - 外部用户详情、个人中心、消息与原生上传流程
 - 与网站共用 Casdoor SSO，通过系统认证会话回调 App
 - DeviceCheck App Attest 校验原生客户端来源；会话和来源令牌保存在 Keychain
-- iOS 26 使用系统 Liquid Glass，iOS 17–18 使用原生 Material 回退
+- iOS 26 使用系统 Liquid Glass，iOS 16–18 使用原生 Material 回退
 - 自定义悬浮玻璃底栏，四周均与设备边缘保持间距
 
 ## 开发配置

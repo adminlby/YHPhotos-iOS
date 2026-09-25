@@ -260,12 +260,12 @@ private struct PhotoCommentsView: View {
                     .id(comment.id)
                 }
                 if !isLoading && comments.isEmpty {
-                    ContentUnavailableView(L10n.string("还没有评论"), systemImage: "bubble.left", description: Text(L10n.string("来发表第一条评论吧。")))
+                    EmptyStateView(L10n.string("还没有评论"), systemImage: "bubble.left", description: L10n.string("来发表第一条评论吧。"))
                 }
                 if let errorMessage { Text(errorMessage).font(.footnote).foregroundStyle(.red) }
             }
             .listStyle(.plain)
-            .onChange(of: comments.count) { _, _ in
+            .onChange(of: comments.count) { _ in
                 if let id = comments.last?.id { proxy.scrollTo(id, anchor: .bottom) }
             }
         }

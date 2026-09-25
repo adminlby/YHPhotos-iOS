@@ -100,11 +100,7 @@ struct LoadingOrErrorView: View {
         if isLoading {
             ProgressView().frame(maxWidth: .infinity, minHeight: 180)
         } else if let error {
-            ContentUnavailableView {
-                Label("加载失败", systemImage: "wifi.exclamationmark")
-            } description: {
-                Text(error)
-            } actions: {
+            EmptyStateView("加载失败", systemImage: "wifi.exclamationmark", description: error) {
                 Button(action: retry) {
                     Text("重试")
                         .font(.callout.weight(.semibold))

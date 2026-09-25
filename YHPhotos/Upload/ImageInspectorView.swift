@@ -63,9 +63,9 @@ struct ImageInspectorView: View {
                             .brightness(mode == .equalize ? analysis.previewBrightness : 0)
                             .scaleEffect(zoom * liveZoom)
                             .gesture(
-                                MagnifyGesture()
-                                    .updating($liveZoom) { value, state, _ in state = value.magnification }
-                                    .onEnded { value in zoom = min(max(zoom * value.magnification, 1), 8) }
+                                MagnificationGesture()
+                                    .updating($liveZoom) { value, state, _ in state = value }
+                                    .onEnded { value in zoom = min(max(zoom * value, 1), 8) }
                             )
                             .onTapGesture(count: 2) { withAnimation { zoom = zoom > 1 ? 1 : 2 } }
                         if mode == .centering || mode == .horizon {

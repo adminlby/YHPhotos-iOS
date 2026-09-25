@@ -46,7 +46,7 @@ struct EntityGalleryView: View {
                         }
                     }
                     if gallery.photos.isEmpty {
-                        ContentUnavailableView(L10n.string("暂无相关作品"), systemImage: "photo.on.rectangle.angled")
+                        EmptyStateView(L10n.string("暂无相关作品"), systemImage: "photo.on.rectangle.angled")
                     }
                 }
                 LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)

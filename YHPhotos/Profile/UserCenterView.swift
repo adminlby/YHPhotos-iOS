@@ -29,11 +29,7 @@ struct UserCenterView: View {
     private var signedOut: some View {
         VStack(spacing: 24) {
             Spacer(minLength: 0)
-            ContentUnavailableView {
-                Label("登录后管理作品", systemImage: "person.crop.circle.badge.checkmark")
-            } description: {
-                Text("查看审核进度、获赞数据、收藏与私信。")
-            } actions: {
+            EmptyStateView("登录后管理作品", systemImage: "person.crop.circle.badge.checkmark", description: "查看审核进度、获赞数据、收藏与私信。") {
                 Button("登录 YHPhotos") { appModel.showingLogin = true }.buttonStyle(.borderedProminent)
             }
             Spacer(minLength: 0)
@@ -76,7 +72,7 @@ struct UserCenterView: View {
                 Image(systemName: "arrow.up.right").frame(width: 40, height: 40)
             }
             .buttonStyle(.bordered)
-            .buttonBorderShape(.circle)
+            .clipShape(Circle())
         }
         .padding(.top, 8)
     }

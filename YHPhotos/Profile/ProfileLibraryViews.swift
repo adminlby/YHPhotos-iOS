@@ -91,7 +91,7 @@ struct ProfileLibraryView: View {
                     }
                 }
                 if isEmpty && !isLoading && errorMessage == nil {
-                    ContentUnavailableView(L10n.string("暂无内容"), systemImage: emptyIcon)
+                    EmptyStateView(L10n.string("暂无内容"), systemImage: emptyIcon)
                 }
                 LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
             }
@@ -230,7 +230,7 @@ private struct SpottingDetailView: View {
             LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
                 .padding(.top, 12)
             if (result?.items.isEmpty == true) && !isLoading {
-                ContentUnavailableView(L10n.string("暂无收集记录"), systemImage: "scope")
+                EmptyStateView(L10n.string("暂无收集记录"), systemImage: "scope")
             }
         }
         .padding(18)
