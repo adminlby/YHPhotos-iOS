@@ -8,9 +8,9 @@ enum PhotoDomain: String, Codable, CaseIterable, Identifiable, Sendable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .aviation: "航空"
-        case .railway: "铁路"
-        case .flightSim: "模拟飞行"
+        case .aviation: L10n.string("航空")
+        case .railway: L10n.string("铁路")
+        case .flightSim: L10n.string("模拟飞行")
         }
     }
     var icon: String {

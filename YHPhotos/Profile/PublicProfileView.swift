@@ -28,7 +28,7 @@ struct PublicProfileView: View {
             }
             LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
         }
-        .navigationTitle(profile?.displayName ?? "用户")
+        .navigationTitle(profile?.displayName ?? L10n.string("用户"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -74,7 +74,7 @@ struct PublicProfileView: View {
             if !value.isSelf {
                 HStack(spacing: 12) {
                     Button { Task { await toggleFollow() } } label: {
-                        Label(isFollowing ? "已关注" : "关注", systemImage: isFollowing ? "checkmark" : "plus")
+                        Label(L10n.string(isFollowing ? "已关注" : "关注"), systemImage: isFollowing ? "checkmark" : "plus")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
@@ -91,13 +91,13 @@ struct PublicProfileView: View {
     private func statistics(_ value: PublicProfile) -> some View {
         GlassPanel(cornerRadius: 22) {
             HStack(spacing: 0) {
-                stat(value.stats.approvedPhotos, "作品")
+                stat(value.stats.approvedPhotos, L10n.string("作品"))
                 divider
-                stat(value.stats.totalViews, "浏览")
+                stat(value.stats.totalViews, L10n.string("浏览"))
                 divider
-                stat(value.stats.totalLikes, "获赞")
+                stat(value.stats.totalLikes, L10n.string("获赞"))
                 divider
-                stat(followerCount, "关注者")
+                stat(followerCount, L10n.string("关注者"))
             }
             .padding(.vertical, 18)
         }
@@ -106,7 +106,7 @@ struct PublicProfileView: View {
 
     private var badgeSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionTitle("徽章", detail: "\(badges.count) 枚")
+            sectionTitle(L10n.string("徽章"), detail: L10n.format("%d 枚", badges.count))
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
                     ForEach(badges) { badge in
@@ -131,7 +131,7 @@ struct PublicProfileView: View {
 
     private func spottingSection(_ value: PublicSpottingSummary) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionTitle("收集进度", detail: "公开")
+            sectionTitle(L10n.string("收集进度"), detail: L10n.string("公开"))
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
                     ForEach(value.aviation.prefix(3)) { item in spottingCard(item, color: AppTheme.accent) }
@@ -145,7 +145,7 @@ struct PublicProfileView: View {
 
     private var photoSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionTitle("作品", detail: "\(photos.count)")
+            sectionTitle(L10n.string("作品"), detail: photos.count.formatted())
             LazyVGrid(columns: columns, spacing: 4) {
                 ForEach(photos) { photo in
                     NavigationLink { PhotoDetailView(photoID: photo.id) } label: {
@@ -188,7 +188,8 @@ struct PublicProfileView: View {
     }
 
     private func roleTitle(_ role: String) -> String {
-        ["admin": "管理员", "super_admin": "超级管理员", "moderator": "审核员"][role] ?? "摄影师"
+        let key = ["admin": "管理员", "super_admin": "超级管理员", "moderator": "审核员"][role] ?? "摄影师"
+        return L10n.string(key)
     }
 
     private func reload() { Task { await load() } }

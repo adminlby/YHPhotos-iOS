@@ -31,7 +31,7 @@ struct DomainSectionContent: View {
         }
 
         HStack {
-            Text("最新\(domain.title)作品").font(.title2.bold())
+            Text(L10n.format("最新%@作品", domain.title)).font(.title2.bold())
             Spacer()
             Menu("最新", systemImage: "arrow.up.arrow.down") {
                 Button("最新") { }
@@ -52,11 +52,14 @@ struct DomainSectionContent: View {
     private var shortcuts: [(String, String)] {
         switch domain {
         case .aviation:
-            [("机型", "airplane"), ("注册号", "list.clipboard"), ("航空公司", "bird.fill"), ("机场", "airport.extreme.tower")]
+            [(L10n.string("机型"), "airplane"), (L10n.string("注册号"), "list.clipboard"),
+             (L10n.string("航空公司"), "bird.fill"), (L10n.string("机场"), "airport.extreme.tower")]
         case .railway:
-            [("车型", "tram.fill"), ("车次", "list.clipboard"), ("路局", "building.2.fill"), ("车站", "building.columns.fill")]
+            [(L10n.string("车型"), "tram.fill"), (L10n.string("车次"), "list.clipboard"),
+             (L10n.string("路局"), "building.2.fill"), (L10n.string("车站"), "building.columns.fill")]
         case .flightSim:
-            [("平台", "gamecontroller.fill"), ("机模", "airplane"), ("涂装", "paintbrush.fill"), ("场景", "mountain.2.fill")]
+            [(L10n.string("平台"), "gamecontroller.fill"), (L10n.string("机模"), "airplane"),
+             (L10n.string("涂装"), "paintbrush.fill"), (L10n.string("场景"), "mountain.2.fill")]
         }
     }
 }

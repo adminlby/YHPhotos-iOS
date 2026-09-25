@@ -11,11 +11,11 @@ enum AppSection: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .discover: "发现"
-        case .wiki: "百科"
-        case .upload: "上传"
-        case .messages: "消息"
-        case .profile: "我的"
+        case .discover: L10n.string("发现")
+        case .wiki: L10n.string("百科")
+        case .upload: L10n.string("上传")
+        case .messages: L10n.string("消息")
+        case .profile: L10n.string("我的")
         }
     }
     var icon: String {

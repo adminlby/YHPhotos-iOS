@@ -7,8 +7,8 @@ enum APIClientError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidBaseURL: "API 地址配置无效"
-        case .invalidResponse: "服务器返回了无法识别的响应"
+        case .invalidBaseURL: L10n.string("API 地址配置无效")
+        case .invalidResponse: L10n.string("服务器返回了无法识别的响应")
         case let .server(_, message, _): message
         }
     }
@@ -98,12 +98,13 @@ actor APIClient {
             let url = baseURL.appendingPathComponent(path)
             var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
             func makeRequest(_ token: String) -> URLRequest {
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.httpBody = body
-                request.setValue("application/json", forHTTPHeaderField: "Accept")
-                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-                request.setValue("YHPhotos-iOS/0.1 (native; iOS)", forHTTPHeaderField: "User-Agent")
+                var request = APIRequestFactory.make(
+                    url: url,
+                    method: "POST",
+                    body: body,
+                    contentType: "multipart/form-data; boundary=\(boundary)",
+                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+                )
                 request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
                 if let sessionToken = SessionCredentialStore.token {
                     request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
@@ -127,7 +128,7 @@ actor APIClient {
                 let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
                 throw APIClientError.server(
                     code: envelope?.error.code ?? "http_\(http.statusCode)",
-                    message: envelope?.error.message ?? "上传失败（\(http.statusCode)）",
+                    message: envelope?.error.message ?? L10n.format("上传失败（%d）", http.statusCode),
                     status: http.statusCode
                 )
             }
@@ -158,17 +159,17 @@ actor APIClient {
             guard let url = components.url else { throw APIClientError.invalidBaseURL }
 
             func makeRequest(token: String) -> URLRequest {
-                var request = URLRequest(url: url)
-                request.httpMethod = method
-                request.httpBody = body
-                request.setValue("application/json", forHTTPHeaderField: "Accept")
-                request.setValue("zh", forHTTPHeaderField: "X-YHPhotos-Language")
-                request.setValue("YHPhotos-iOS/0.1 (native; iOS)", forHTTPHeaderField: "User-Agent")
+                var request = APIRequestFactory.make(
+                    url: url,
+                    method: method,
+                    body: body,
+                    contentType: body == nil ? nil : "application/json",
+                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+                )
                 request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
                 if let sessionToken = SessionCredentialStore.token {
                     request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
                 }
-                if body != nil { request.setValue("application/json", forHTTPHeaderField: "Content-Type") }
                 return request
             }
 
@@ -191,7 +192,7 @@ actor APIClient {
                 let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
                 throw APIClientError.server(
                     code: envelope?.error.code ?? "http_\(http.statusCode)",
-                    message: envelope?.error.message ?? "请求失败（\(http.statusCode)）",
+                    message: envelope?.error.message ?? L10n.format("请求失败（%d）", http.statusCode),
                     status: http.statusCode
                 )
             }

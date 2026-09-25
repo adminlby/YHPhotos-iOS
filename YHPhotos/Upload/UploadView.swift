@@ -21,7 +21,7 @@ struct UploadView: View {
             Form {
                 Section("选择作品") {
                     PhotosPicker(selection: $selection, matching: .images) {
-                        Label(imageData == nil ? "从照片图库选择" : "重新选择", systemImage: "photo.on.rectangle")
+                        Label(L10n.string(imageData == nil ? "从照片图库选择" : "重新选择"), systemImage: "photo.on.rectangle")
                     }
                 }
                 Section("作品信息") {
@@ -64,13 +64,25 @@ struct UploadView: View {
     }
 
     private var primaryLabel: String {
-        switch domain { case .aviation: "注册号"; case .railway: "车号 / 编组号"; case .flightSim: "机型" }
+        switch domain {
+        case .aviation: L10n.string("注册号")
+        case .railway: L10n.string("车号 / 编组号")
+        case .flightSim: L10n.string("机型")
+        }
     }
     private var secondaryLabel: String {
-        switch domain { case .aviation: "机型"; case .railway: "车型"; case .flightSim: "平台" }
+        switch domain {
+        case .aviation: L10n.string("机型")
+        case .railway: L10n.string("车型")
+        case .flightSim: L10n.string("平台")
+        }
     }
     private var locationLabel: String {
-        switch domain { case .aviation: "机场"; case .railway: "车站"; case .flightSim: "涂装" }
+        switch domain {
+        case .aviation: L10n.string("机场")
+        case .railway: L10n.string("车站")
+        case .flightSim: L10n.string("涂装")
+        }
     }
 
     @MainActor

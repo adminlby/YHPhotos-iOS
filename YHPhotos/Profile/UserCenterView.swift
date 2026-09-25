@@ -8,6 +8,7 @@ struct UserCenterView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var showingAccountSecurity = false
+    @AppStorage(AppLanguage.storageKey) private var appLanguage = AppLanguage.system.rawValue
 
     var body: some View {
         NavigationStack {
@@ -17,17 +18,23 @@ struct UserCenterView: View {
             }
             .navigationTitle("我的")
             .toolbar {
-                if appModel.sessionUser != nil {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Menu {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Picker("语言", selection: $appLanguage) {
+                            ForEach(AppLanguage.allCases) { language in
+                                Text(language.title).tag(language.rawValue)
+                            }
+                        }
+                        if appModel.sessionUser != nil {
+                            Divider()
                             Button("账号与安全", systemImage: "person.badge.key.fill") {
                                 showingAccountSecurity = true
                             }
                             Button("退出登录", systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
                                 Task { await appModel.logout() }
                             }
-                        } label: { Image(systemName: "gearshape.fill") }
-                    }
+                        }
+                    } label: { Image(systemName: "gearshape.fill") }
                 }
             }
             .navigationDestination(isPresented: $showingAccountSecurity) {
@@ -90,10 +97,10 @@ struct UserCenterView: View {
             VStack(spacing: 16) {
                 HStack { Text("创作数据").font(.headline); Spacer(); Text("全部作品").font(.caption).foregroundStyle(.secondary) }
                 HStack(spacing: 0) {
-                    metric(value.counts.approved, "已通过", .green)
-                    metric(value.counts.pending, "审核中", .orange)
-                    metric(value.totals.views, "浏览", AppTheme.accent)
-                    metric(value.totals.likes, "获赞", .pink)
+                    metric(value.counts.approved, L10n.string("已通过"), .green)
+                    metric(value.counts.pending, L10n.string("审核中"), .orange)
+                    metric(value.totals.views, L10n.string("浏览"), AppTheme.accent)
+                    metric(value.totals.likes, L10n.string("获赞"), .pink)
                 }
             }
             .padding(18)
@@ -103,10 +110,10 @@ struct UserCenterView: View {
     private var quickActions: some View {
         GlassPanel(cornerRadius: 22) {
             HStack(spacing: 0) {
-                quick("收藏", "bookmark.fill", .purple)
-                quick("图集", "square.stack.3d.up.fill", AppTheme.accent)
-                quick("徽章", "medal.fill", .yellow)
-                quick("收集册", "scope", .orange)
+                quick(L10n.string("收藏"), "bookmark.fill", .purple)
+                quick(L10n.string("图集"), "square.stack.3d.up.fill", AppTheme.accent)
+                quick(L10n.string("徽章"), "medal.fill", .yellow)
+                quick(L10n.string("收集册"), "scope", .orange)
             }
             .padding(.vertical, 16)
         }
@@ -142,7 +149,11 @@ struct UserCenterView: View {
 
     private var workSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack { Text("我的作品").font(.title3.bold()); Spacer(); Text("\(photos.count) 项").font(.subheadline).foregroundStyle(.secondary) }
+            HStack {
+                Text("我的作品").font(.title3.bold())
+                Spacer()
+                Text(L10n.format("%d 项", photos.count)).font(.subheadline).foregroundStyle(.secondary)
+            }
             Picker("状态", selection: $status) {
                 Text("全部").tag("all")
                 Text("审核中").tag("pending")
@@ -189,7 +200,10 @@ struct UserCenterView: View {
         }.buttonStyle(.plain)
     }
 
-    private func statusTitle(_ value: String) -> String { ["pending": "审核中", "approved": "已通过", "rejected": "未通过", "appealing": "申诉中"][value] ?? value }
+    private func statusTitle(_ value: String) -> String {
+        let key = ["pending": "审核中", "approved": "已通过", "rejected": "未通过", "appealing": "申诉中"][value]
+        return key.map(L10n.string) ?? value
+    }
     private func statusIcon(_ value: String) -> String { ["approved": "checkmark.circle.fill", "rejected": "xmark.circle.fill", "appealing": "arrow.triangle.2.circlepath"][value] ?? "clock.fill" }
     private func statusColor(_ value: String) -> Color { ["approved": .green, "rejected": .red, "appealing": .purple][value] ?? .orange }
     private func reload() { Task { await load() } }

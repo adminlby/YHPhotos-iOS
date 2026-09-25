@@ -12,11 +12,11 @@ enum AppOriginError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unsupported:
-            "此设备不支持 App Attest。请使用已签名的真机版本。"
+            L10n.string("此设备不支持 App Attest。请使用已签名的真机版本。")
         case .invalidChallenge:
-            "服务器下发的 App Attest challenge 无效"
+            L10n.string("服务器下发的 App Attest challenge 无效")
         case .invalidServerResponse:
-            "App 鉴权服务返回了无法识别的数据"
+            L10n.string("App 鉴权服务返回了无法识别的数据")
         case let .server(_, message, _):
             message
         }
@@ -219,19 +219,20 @@ actor AppAttestManager {
         session: URLSession,
         baseURL: URL
     ) async throws -> Response {
-        var request = URLRequest(url: baseURL.appendingPathComponent(path))
-        request.httpMethod = "POST"
-        request.httpBody = try JSONEncoder().encode(body)
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("YHPhotos-iOS/0.1 (Apple App Attest)", forHTTPHeaderField: "User-Agent")
+        let request = APIRequestFactory.make(
+            url: baseURL.appendingPathComponent(path),
+            method: "POST",
+            body: try JSONEncoder().encode(body),
+            contentType: "application/json",
+            userAgent: "YHPhotos-iOS/0.1 (Apple App Attest)"
+        )
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw AppOriginError.invalidServerResponse }
         guard (200..<300).contains(http.statusCode) else {
             let envelope = try? JSONDecoder().decode(ServerErrorEnvelope.self, from: data)
             throw AppOriginError.server(
                 code: envelope?.error.code ?? "http_\(http.statusCode)",
-                message: envelope?.error.message ?? "App 鉴权失败（\(http.statusCode)）",
+                message: envelope?.error.message ?? L10n.format("App 鉴权失败（%d）", http.statusCode),
                 status: http.statusCode
             )
         }

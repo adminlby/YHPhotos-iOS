@@ -1,11 +1,19 @@
 import SwiftUI
 
 private enum DiscoverFilter: String, CaseIterable, Identifiable {
-    case featured = "精选"
-    case aviation = "航空"
-    case railway = "铁路"
-    case flightSim = "模拟飞行"
+    case featured
+    case aviation
+    case railway
+    case flightSim
     var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .featured: L10n.string("精选")
+        case .aviation: L10n.string("航空")
+        case .railway: L10n.string("铁路")
+        case .flightSim: L10n.string("模拟飞行")
+        }
+    }
     var domain: PhotoDomain? {
         switch self {
         case .featured: nil
@@ -44,7 +52,7 @@ struct DiscoverView: View {
                 .padding(.bottom, 16)
             }
             .scrollIndicators(.hidden)
-            .navigationTitle(filter == .featured ? "发现" : filter.rawValue)
+            .navigationTitle(filter == .featured ? L10n.string("发现") : filter.title)
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if let user = appModel.sessionUser {
@@ -64,7 +72,7 @@ struct DiscoverView: View {
 
     private var filterPicker: some View {
         Picker("内容分区", selection: $filter) {
-            ForEach(DiscoverFilter.allCases) { item in Text(item.rawValue).tag(item) }
+            ForEach(DiscoverFilter.allCases) { item in Text(item.title).tag(item) }
         }
         .pickerStyle(.segmented)
         .padding(.top, 4)
@@ -134,18 +142,20 @@ private struct CommunityStatsCard: View {
                     Image(systemName: "chevron.right").foregroundStyle(.secondary)
                 }
                 HStack {
-                    metric(stats.pendingPhotos, "待审核")
+                    metric(stats.pendingPhotos, L10n.string("待审核"))
                     Rectangle().fill(AppTheme.divider).frame(width: 1, height: 38)
-                    metric(stats.totalUsers, "用户")
+                    metric(stats.totalUsers, L10n.string("用户"))
                     Rectangle().fill(AppTheme.divider).frame(width: 1, height: 38)
-                    metric(stats.totalPhotos, "作品")
+                    metric(stats.totalPhotos, L10n.string("作品"))
                 }
                 Divider()
                 HStack {
                     Text("今日 ").foregroundStyle(.secondary) +
-                    Text("+\(stats.todayPhotos) 作品 · +\(stats.todayUsers) 用户").foregroundStyle(AppTheme.accent)
+                    Text(L10n.format("+%d 作品 · +%d 用户", stats.todayPhotos, stats.todayUsers))
+                        .foregroundStyle(AppTheme.accent)
                     Spacer()
-                    Text("\(stats.onlineModerators.count) 位审核员在线").foregroundStyle(.secondary)
+                    Text(L10n.format("%d 位审核员在线", stats.onlineModerators.count))
+                        .foregroundStyle(.secondary)
                 }
                 .font(.caption)
             }

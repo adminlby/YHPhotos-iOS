@@ -92,13 +92,13 @@ struct AccountSecurityView: View {
                     .font(.headline)
                 ruleRow(
                     icon: "envelope.badge.fill",
-                    title: "已验证邮箱匹配",
-                    detail: "首次使用 Apple 登录时，仅当邮箱已验证且本站账号尚未绑定统一身份，才会自动合并。"
+                    title: L10n.string("已验证邮箱匹配"),
+                    detail: L10n.string("首次使用 Apple 登录时，仅当邮箱已验证且本站账号尚未绑定统一身份，才会自动合并。")
                 )
                 ruleRow(
                     icon: "lock.shield.fill",
-                    title: "已有绑定不会被覆盖",
-                    detail: "同邮箱的新身份不能替换已有绑定，需在账号中心明确操作。"
+                    title: L10n.string("已有绑定不会被覆盖"),
+                    detail: L10n.string("同邮箱的新身份不能替换已有绑定，需在账号中心明确操作。")
                 )
             }
             .padding(18)
@@ -147,7 +147,7 @@ struct AccountSecurityView: View {
             settings = try await APIClient.shared.get("api/settings/public")
             errorMessage = nil
         } catch {
-            errorMessage = "暂时无法读取服务端配置，将打开默认账号中心。"
+            errorMessage = L10n.string("暂时无法读取服务端配置，将打开默认账号中心。")
         }
     }
 }

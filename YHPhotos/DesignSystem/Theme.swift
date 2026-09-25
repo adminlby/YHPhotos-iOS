@@ -42,9 +42,14 @@ struct GlassPanel<Content: View>: View {
 
 extension Int {
     var compactCount: String {
+        if AppLanguage.resolved == .english {
+            return formatted(.number.notation(.compactName))
+        }
         if self >= 10_000 {
             let value = Double(self) / 10_000
-            return value >= 100 ? "\(Int(value))万" : String(format: "%.1f万", value)
+            return value >= 100
+                ? L10n.format("%d万", Int(value))
+                : L10n.format("%.1f万", value)
         }
         if self >= 1_000 { return String(format: "%.1fk", Double(self) / 1_000) }
         return formatted()

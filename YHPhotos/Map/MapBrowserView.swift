@@ -39,7 +39,7 @@ struct MapBrowserView: View {
                 GlassPanel(cornerRadius: 18) {
                     HStack {
                         Image(systemName: "map.fill").foregroundStyle(AppTheme.accent)
-                        Text("\(airports.count) 个有作品的机场").font(.subheadline.weight(.semibold))
+                        Text(L10n.format("%d 个有作品的机场", airports.count)).font(.subheadline.weight(.semibold))
                         Spacer()
                         Text("轻点标记查看").font(.caption).foregroundStyle(.secondary)
                     }.padding(14)

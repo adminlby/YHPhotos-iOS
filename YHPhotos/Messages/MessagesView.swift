@@ -51,7 +51,8 @@ struct MessagesView: View {
                                 Text(shortDate(conversation.lastMessageAt)).font(.caption2).foregroundStyle(.secondary)
                             }
                             HStack {
-                                Text((conversation.lastMessageMine ? "我：" : "") + (conversation.lastMessage ?? "开始对话"))
+                                Text((conversation.lastMessageMine ? L10n.string("我：") : "") +
+                                     (conversation.lastMessage ?? L10n.string("开始对话")))
                                     .font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
                                 Spacer()
                                 if conversation.unread > 0 {

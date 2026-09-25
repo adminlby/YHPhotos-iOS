@@ -1,11 +1,19 @@
 import SwiftUI
 
 private enum WikiCategory: String, CaseIterable, Identifiable {
-    case airlines = "航空公司"
-    case airports = "机场"
-    case types = "机型"
-    case registrations = "飞机"
+    case airlines
+    case airports
+    case types
+    case registrations
     var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .airlines: L10n.string("航空公司")
+        case .airports: L10n.string("机场")
+        case .types: L10n.string("机型")
+        case .registrations: L10n.string("飞机")
+        }
+    }
     var endpoint: String {
         switch self {
         case .airlines: "airlines"
@@ -42,7 +50,7 @@ private struct WikiEntry: Decodable, Identifiable, Sendable {
     let `operator`: String?
 
     var id: String { title }
-    var title: String { name ?? model ?? registration ?? "未知" }
+    var title: String { name ?? model ?? registration ?? L10n.string("未知") }
     var subtitle: String {
         [manufacturer, `operator`, city, country, iata, icao, type].compactMap { $0 }.prefix(3).joined(separator: " · ")
     }
@@ -62,7 +70,7 @@ struct WikiHomeView: View {
                     intro
                     categoryStrip
                     HStack {
-                        Text(category.rawValue).font(.title2.bold())
+                        Text(category.title).font(.title2.bold())
                         Spacer()
                         Text("按社区作品自动更新").font(.caption).foregroundStyle(.secondary)
                     }
@@ -74,7 +82,7 @@ struct WikiHomeView: View {
                 .padding(.horizontal, 18).padding(.bottom, 18)
             }
             .navigationTitle("百科")
-            .searchable(text: $query, prompt: "搜索\(category.rawValue)")
+            .searchable(text: $query, prompt: L10n.format("搜索%@", category.title))
             .onSubmit(of: .search) { reload() }
             .onChange(of: category) { _, _ in query = ""; reload() }
             .task { await load() }
@@ -102,7 +110,7 @@ struct WikiHomeView: View {
                 Button { category = item } label: {
                     VStack(spacing: 7) {
                         Image(systemName: item.icon).font(.title3)
-                        Text(item.rawValue).font(.caption.weight(.semibold))
+                        Text(item.title).font(.caption.weight(.semibold))
                     }
                     .foregroundStyle(category == item ? .white : .secondary)
                     .frame(maxWidth: .infinity).padding(.vertical, 13)
@@ -120,9 +128,9 @@ struct WikiHomeView: View {
                 Text(entry.title).font(.headline).lineLimit(1)
                 if !entry.subtitle.isEmpty { Text(entry.subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
                 HStack(spacing: 12) {
-                    Label("\(entry.photoCount) 作品", systemImage: "photo")
-                    if let count = entry.airframeCount { Label("\(count) 架", systemImage: "airplane") }
-                    if let count = entry.airlineCount { Label("\(count) 航司", systemImage: "building.2") }
+                    Label(L10n.format("%d 作品", entry.photoCount), systemImage: "photo")
+                    if let count = entry.airframeCount { Label(L10n.format("%d 架", count), systemImage: "airplane") }
+                    if let count = entry.airlineCount { Label(L10n.format("%d 航司", count), systemImage: "building.2") }
                 }.font(.caption2).foregroundStyle(.secondary)
             }
             Spacer()

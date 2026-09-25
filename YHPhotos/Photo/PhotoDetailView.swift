@@ -63,7 +63,7 @@ struct PhotoDetailView: View {
         HStack {
             actionButton(isLiked ? "heart.fill" : "heart", "\(likeCount)", isLiked ? .red : .primary) { Task { await toggleLike() } }
             actionButton("bubble.left", detail.map { "\($0.comments)" } ?? "0", .primary) { }
-            actionButton(isFavorited ? "bookmark.fill" : "bookmark", "收藏", AppTheme.accent) { Task { await toggleFavorite() } }
+            actionButton(isFavorited ? "bookmark.fill" : "bookmark", L10n.string("收藏"), AppTheme.accent) { Task { await toggleFavorite() } }
             ShareLink(item: detail?.image ?? "") { Label("分享", systemImage: "square.and.arrow.up") }
                 .frame(maxWidth: .infinity)
         }
@@ -109,7 +109,7 @@ struct PhotoDetailView: View {
     private func infoRow(_ label: String, _ value: String?) -> some View {
         if let value, !value.isEmpty {
             HStack(alignment: .firstTextBaseline) {
-                Text(label).foregroundStyle(.secondary)
+                Text(L10n.string(label)).foregroundStyle(.secondary)
                 Spacer()
                 Text(value).multilineTextAlignment(.trailing)
             }
