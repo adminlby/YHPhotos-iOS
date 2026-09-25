@@ -7,6 +7,17 @@
     " · " : {
 
     },
+    " · 当前 %d × %d" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · Current %d × %d"
+          }
+        }
+      }
+    },
     "@%@" : {
 
     },
@@ -74,6 +85,17 @@
         }
       }
     },
+    "%d 宫格（%d×%d）" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d-cell grid (%d×%d)"
+          }
+        }
+      }
+    },
     "%d 枚" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -107,6 +129,17 @@
         }
       }
     },
+    "%d 行 × %d 列 · 共 %d 格（行列各 1–%d）" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d rows × %d cols · %d cells (1–%d each)"
+          }
+        }
+      }
+    },
     "%d 项" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -132,16 +165,6 @@
     "%lld" : {
 
     },
-    "%lld × %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld × %2$lld"
-          }
-        }
-      }
-    },
     "+%d 作品 · +%d 用户" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -155,6 +178,17 @@
     },
     "×%lld" : {
 
+    },
+    "0 · 黑" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 · Black"
+          }
+        }
+      }
     },
     "99+" : {
 
@@ -239,16 +273,6 @@
         }
       }
     },
-    "B %lld%% · W %lld%%" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "B %1$lld%% · W %2$lld%%"
-          }
-        }
-      }
-    },
     "Condensed" : {
 
     },
@@ -312,6 +336,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stay connected with photographers in the community."
+          }
+        }
+      }
+    },
+    "中心十字分割线" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Center crosshair"
           }
         }
       }
@@ -613,6 +648,17 @@
         }
       }
     },
+    "列数" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Columns"
+          }
+        }
+      }
+    },
     "创作数据" : {
       "localizations" : {
         "en" : {
@@ -641,6 +687,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Original"
+          }
+        }
+      }
+    },
+    "原图 %d × %d" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original %d × %d"
+          }
+        }
+      }
+    },
+    "原图分析失败" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original analysis failed"
+          }
+        }
+      }
+    },
+    "原始画面，不叠加分析结果。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original frame with no analysis overlays."
           }
         }
       }
@@ -764,6 +843,17 @@
         }
       }
     },
+    "垂直镜像线" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vertical mirror"
+          }
+        }
+      }
+    },
     "复位" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -813,6 +903,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Moderator"
+          }
+        }
+      }
+    },
+    "对 RGB 三通道分别执行全局直方图均衡化，用于放大灰尘、色带和背景不均；它不是自动灰尘识别。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global histogram equalization per RGB channel to exaggerate dust, banding, and uneven backgrounds — not automatic dust detection."
+          }
+        }
+      }
+    },
+    "居中检查" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centering"
           }
         }
       }
@@ -973,6 +1085,17 @@
         }
       }
     },
+    "按实际像素显示" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display at actual pixels"
+          }
+        }
+      }
+    },
     "按社区作品自动更新" : {
       "localizations" : {
         "en" : {
@@ -1082,6 +1205,17 @@
         }
       }
     },
+    "显示宫格" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show grid"
+          }
+        }
+      }
+    },
     "暂时无法读取服务端配置，将打开默认账号中心。" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1089,6 +1223,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Server settings are temporarily unavailable. The default account center will be opened."
+          }
+        }
+      }
+    },
+    "曝光直方图" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exposure histogram"
           }
         }
       }
@@ -1278,6 +1423,17 @@
         }
       }
     },
+    "正在统计全分辨率像素…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Computing full-resolution pixels…"
+          }
+        }
+      }
+    },
     "此设备不支持 App Attest。请使用已签名的真机版本。" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1285,6 +1441,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This device does not support App Attest. Use a signed build on a physical device."
+          }
+        }
+      }
+    },
+    "水平检查" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horizon"
+          }
+        }
+      }
+    },
+    "水平镜像线" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horizontal mirror"
           }
         }
       }
@@ -1329,6 +1507,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Messages"
+          }
+        }
+      }
+    },
+    "灰尘增强" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dust enhance"
           }
         }
       }
@@ -1459,6 +1648,39 @@
         }
       }
     },
+    "白 · 255" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "White · 255"
+          }
+        }
+      }
+    },
+    "白点 99.5%" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "White point 99.5%"
+          }
+        }
+      }
+    },
+    "白端危险区 253–255" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "White danger 253–255"
+          }
+        }
+      }
+    },
     "百科" : {
       "localizations" : {
         "en" : {
@@ -1476,6 +1698,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Histogram"
+          }
+        }
+      }
+    },
+    "直方图使用未压缩分析原图的加权亮度，不与灰尘增强同时开启。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Histogram uses weighted luminance from the uncompressed analysis original; not available together with dust enhance."
           }
         }
       }
@@ -1518,6 +1751,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Administrator"
+          }
+        }
+      }
+    },
+    "粉线：每个亮度级的平均像素数" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink line: average pixels per luminance bin"
           }
         }
       }
@@ -1566,6 +1810,17 @@
         }
       }
     },
+    "纵轴上限固定为平均 bin 像素数的 4.55 倍，超过上限的峰值会被顶平；色调跨度是 8-bit 百分位跨度，不是 EV 动态范围。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Y-axis ceiling is fixed at 4.55× average bin pixels; peaks above it are clipped. Tone span is an 8-bit percentile span, not EV dynamic range."
+          }
+        }
+      }
+    },
     "绑定 Apple 登录、管理统一身份" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1609,6 +1864,17 @@
         }
       }
     },
+    "自定义" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom"
+          }
+        }
+      }
+    },
     "航空" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1631,6 +1897,17 @@
         }
       }
     },
+    "色调跨度" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tone span"
+          }
+        }
+      }
+    },
     "获赞" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1638,6 +1915,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Likes"
+          }
+        }
+      }
+    },
+    "行数" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rows"
           }
         }
       }
@@ -1776,6 +2064,17 @@
         }
       }
     },
+    "辅助线" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guides"
+          }
+        }
+      }
+    },
     "还没有私信" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1844,6 +2143,17 @@
         }
       }
     },
+    "长边压缩至 1024px" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compress long edge to 1024px"
+          }
+        }
+      }
+    },
     "隐私政策" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1851,6 +2161,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
+    "需要可读取的未压缩原图；工具不会退回水印图生成统计结果。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An uncompressed original is required; the tool will not fall back to the watermarked image for stats."
           }
         }
       }
@@ -1895,6 +2216,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Amap"
+          }
+        }
+      }
+    },
+    "黄色宫格按图片比例等分，红色十字线贯穿图片中心，可独立开关或叠加；移动手指可使用 3× 圆形放大镜检查水平线。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yellow grid divides by image proportion; red crosshair through the center can be toggled independently. Move your finger for a 3× circular loupe to check the horizon."
+          }
+        }
+      }
+    },
+    "黄色线为固定 23/50/77% 与 28/50/72% 参考线；选择水平或垂直后拖动生成镜像辅助线。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yellow guides mark fixed 23/50/77% and 28/50/72% references. Choose horizontal or vertical, then drag to add a mirrored guide."
+          }
+        }
+      }
+    },
+    "黑点 0.5%" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Black point 0.5%"
+          }
+        }
+      }
+    },
+    "黑端危险区 0–2" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Black danger 0–2"
           }
         }
       }
