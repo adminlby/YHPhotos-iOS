@@ -4,6 +4,9 @@
     "" : {
 
     },
+    " · " : {
+
+    },
     "@%@" : {
 
     },
@@ -129,8 +132,15 @@
     "%lld" : {
 
     },
-    "© %@" : {
-
+    "%lld × %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld × %2$lld"
+          }
+        }
+      }
     },
     "+%d 作品 · +%d 用户" : {
       "extractionState" : "stale",
@@ -163,6 +173,17 @@
     "App 不再调用本站本地密码或绑定接口。只有服务端提供绑定当前用户的 SSO 账号中心链接时才会跳转，避免误入管理员 builtin 组织。" : {
 
     },
+    "App 推送" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Push Notifications"
+          }
+        }
+      }
+    },
     "App 鉴权失败（%d）" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -181,6 +202,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The app authentication service returned an unrecognized response"
+          }
+        }
+      }
+    },
+    "Apple 地图" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Maps"
           }
         }
       }
@@ -207,7 +239,20 @@
         }
       }
     },
+    "B %lld%% · W %lld%%" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "B %1$lld%% · W %2$lld%%"
+          }
+        }
+      }
+    },
     "Condensed" : {
+
+    },
+    "Image Copyright @%@" : {
 
     },
     "Mono" : {
@@ -282,6 +327,17 @@
         }
       }
     },
+    "京ICP备2025139513号" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beijing ICP No. 2025139513"
+          }
+        }
+      }
+    },
     "今日 " : {
       "localizations" : {
         "en" : {
@@ -325,6 +381,7 @@
       }
     },
     "件作品" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -397,6 +454,17 @@
         }
       }
     },
+    "允许系统推送通知" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Push Notifications"
+          }
+        }
+      }
+    },
     "全部" : {
       "localizations" : {
         "en" : {
@@ -413,6 +481,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All Photos"
+          }
+        }
+      }
+    },
+    "全部通知" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Notifications"
           }
         }
       }
@@ -554,6 +633,17 @@
         }
       }
     },
+    "原图" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original"
+          }
+        }
+      }
+    },
     "发现" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -586,6 +676,17 @@
         }
       }
     },
+    "图片检查工具" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Inspector"
+          }
+        }
+      }
+    },
     "图集" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -593,6 +694,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Albums"
+          }
+        }
+      }
+    },
+    "在图片上拖动水印，双指缩放大小" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drag the watermark on the image and pinch to resize"
           }
         }
       }
@@ -608,11 +720,23 @@
       }
     },
     "地图浏览" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Explore Map"
+          }
+        }
+      }
+    },
+    "地平线" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horizon"
           }
         }
       }
@@ -624,6 +748,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scenery"
+          }
+        }
+      }
+    },
+    "均衡预览" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equalized Preview"
+          }
+        }
+      }
+    },
+    "复位" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        }
+      }
+    },
+    "完成" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
           }
         }
       }
@@ -655,6 +812,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Moderator"
+          }
+        }
+      }
+    },
+    "居中线" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Center Guides"
           }
         }
       }
@@ -814,6 +982,17 @@
         }
       }
     },
+    "推送内容会遵循上述开关和系统锁屏预览设置。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Push content follows these preferences and the system lock-screen preview setting."
+          }
+        }
+      }
+    },
     "提交审核" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -913,6 +1092,28 @@
         }
       }
     },
+    "更换" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace"
+          }
+        }
+      }
+    },
+    "服务协议" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Service"
+          }
+        }
+      }
+    },
     "服务器下发的 App Attest challenge 无效" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -952,6 +1153,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rejected"
+          }
+        }
+      }
+    },
+    "本渠道全部通知" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All in This Channel"
           }
         }
       }
@@ -996,6 +1208,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aircraft Model"
+          }
+        }
+      }
+    },
+    "构建 %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build %@"
           }
         }
       }
@@ -1118,6 +1341,17 @@
         }
       }
     },
+    "版权所有 @lbynb_awa · 仿冒必究" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copyright @lbynb_awa · Counterfeiting prohibited"
+          }
+        }
+      }
+    },
     "状态" : {
       "localizations" : {
         "en" : {
@@ -1232,6 +1466,17 @@
         }
       }
     },
+    "直方图" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Histogram"
+          }
+        }
+      }
+    },
     "社区概况" : {
       "localizations" : {
         "en" : {
@@ -1281,6 +1526,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Featured"
+          }
+        }
+      }
+    },
+    "系统与安全" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System & Security"
+          }
+        }
+      }
+    },
+    "系统状态" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System Status"
+          }
+        }
+      }
+    },
+    "系统通知已关闭，前往设置开启" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System notifications are off — open Settings"
           }
         }
       }
@@ -1473,7 +1751,19 @@
         }
       }
     },
+    "软著登字第16725856号" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Software Copyright No. 16725856"
+          }
+        }
+      }
+    },
     "轻点标记查看" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1551,6 +1841,28 @@
         }
       }
     },
+    "隐私政策" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
+    "预览和最终图片均使用网站相同的水印坐标、缩放比例及底部版权栏。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The preview and final image use the same watermark position, scale, and copyright bar as the website."
+          }
+        }
+      }
+    },
     "飞机" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1569,6 +1881,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "On first Apple sign-in, accounts are merged only when the email is verified and the existing YHPhotos account has no linked identity."
+          }
+        }
+      }
+    },
+    "高德地图" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amap"
           }
         }
       }

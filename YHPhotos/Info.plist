@@ -35,6 +35,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>用于选择适合你所在地区的地图服务；不会保存或上传精确位置。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -61,5 +63,9 @@
 	</array>
 	<key>YHPhotosAPIBaseURL</key>
 	<string>$(YHPHOTOS_API_BASE_URL)</string>
+	<key>YHPhotosAPNSEnvironment</key>
+	<string>$(APNS_SERVER_ENVIRONMENT)</string>
+	<key>YHPhotosGitCommit</key>
+	<string>$(YHPHOTOS_GIT_COMMIT)</string>
 </dict>
 </plist>

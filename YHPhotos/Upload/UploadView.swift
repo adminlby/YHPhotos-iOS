@@ -91,6 +91,9 @@ struct UploadView: View {
     @State private var watermarkX = 0.03
     @State private var watermarkY = 0.80
     @State private var watermarkScale = 0.18
+    @GestureState private var watermarkDrag: CGSize = .zero
+    @GestureState private var watermarkMagnification: CGFloat = 1
+    @State private var showingImageInspector = false
     @State private var isSubmitting = false
     @State private var errorMessage: String?
 
@@ -130,6 +133,11 @@ struct UploadView: View {
             .onChange(of: watermarkType) { _, value in
                 watermarkScale = value == "image" ? 0.18 : 0.024
             }
+            .sheet(isPresented: $showingImageInspector) {
+                if let imageData, let image = UIImage(data: imageData) {
+                    ImageInspectorView(image: image, byteCount: imageData.count)
+                }
+            }
             .appScreenBackground()
         }
     }
@@ -164,11 +172,30 @@ struct UploadView: View {
 
     private var imagePicker: some View {
         GlassPanel(cornerRadius: 22) {
-            PhotosPicker(selection: $selection, matching: .images) {
-                Group {
-                    if let imageData, let image = UIImage(data: imageData) {
-                        watermarkPreview(image)
-                    } else {
+            Group {
+                if let imageData, let image = UIImage(data: imageData) {
+                    watermarkPreview(image)
+                        .overlay(alignment: .topTrailing) {
+                            PhotosPicker(selection: $selection, matching: .images) {
+                                Label(L10n.string("更换"), systemImage: "arrow.triangle.2.circlepath")
+                                    .font(.caption.weight(.semibold)).padding(.horizontal, 11).padding(.vertical, 7)
+                                    .background(.ultraThinMaterial, in: Capsule())
+                            }
+                            .buttonStyle(.plain)
+                            .padding(10)
+                        }
+                        .overlay(alignment: .bottomLeading) {
+                            Button { showingImageInspector = true } label: {
+                                Label(L10n.string("图片检查工具"), systemImage: "viewfinder")
+                                    .font(.caption.weight(.semibold)).padding(.horizontal, 11).padding(.vertical, 7)
+                                    .background(.ultraThinMaterial, in: Capsule())
+                            }
+                            .buttonStyle(.plain)
+                            .padding(10)
+                            .padding(.bottom, 18)
+                        }
+                } else {
+                    PhotosPicker(selection: $selection, matching: .images) {
                         VStack(spacing: 12) {
                             Image(systemName: "photo.badge.plus").font(.system(size: 36)).foregroundStyle(AppTheme.accent)
                             Text(L10n.string("选择 JPG、PNG、GIF 或 HEIC 作品")).font(.headline)
@@ -177,15 +204,7 @@ struct UploadView: View {
                         }
                         .frame(maxWidth: .infinity, minHeight: 210)
                     }
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .overlay(alignment: .bottomTrailing) {
-                if imageData != nil {
-                    Label(L10n.string("更换"), systemImage: "arrow.triangle.2.circlepath")
-                        .font(.caption.weight(.semibold)).padding(.horizontal, 11).padding(.vertical, 7)
-                        .background(.ultraThinMaterial, in: Capsule()).padding(10)
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -198,22 +217,44 @@ struct UploadView: View {
             .frame(maxWidth: .infinity, maxHeight: 360)
             .overlay {
                 GeometryReader { proxy in
-                    Image(uiImage: image).resizable().scaledToFill()
+                    Image(uiImage: image).resizable().scaledToFit()
                     watermarkMark(width: proxy.size.width)
-                        .position(
-                            x: max(26, min(proxy.size.width - 26, watermarkX * proxy.size.width + 30)),
-                            y: max(18, min(proxy.size.height - 22, watermarkY * proxy.size.height + 14))
+                        .scaleEffect(watermarkMagnification, anchor: .topLeading)
+                        .offset(
+                            x: CGFloat(watermarkX) * proxy.size.width + watermarkDrag.width,
+                            y: CGFloat(watermarkY) * proxy.size.height + watermarkDrag.height
+                        )
+                        .gesture(
+                            DragGesture()
+                                .updating($watermarkDrag) { value, state, _ in state = value.translation }
+                                .onEnded { value in
+                                    let bounds = watermarkBounds(in: proxy.size)
+                                    watermarkX = min(max(0, watermarkX + value.translation.width / proxy.size.width), bounds.x)
+                                    watermarkY = min(max(0, watermarkY + value.translation.height / proxy.size.height), bounds.y)
+                                }
+                        )
+                        .simultaneousGesture(
+                            MagnifyGesture()
+                                .updating($watermarkMagnification) { value, state, _ in state = value.magnification }
+                                .onEnded { value in
+                                    let range = watermarkType == "image" ? 0.06...0.60 : 0.008...0.08
+                                    let newScale = min(max(watermarkScale * value.magnification, range.lowerBound), range.upperBound)
+                                    watermarkScale = newScale
+                                    let bounds = watermarkBounds(in: proxy.size, scale: newScale)
+                                    watermarkX = min(watermarkX, bounds.x)
+                                    watermarkY = min(watermarkY, bounds.y)
+                                }
                         )
                     HStack {
-                        Text("YHPhotos")
+                        Text("YHPhotos").foregroundStyle(.white)
                         Spacer()
-                        Text("© \(appModel.sessionUser?.displayName ?? "YHPhotos")")
+                        Text("Image Copyright @\(appModel.sessionUser?.username ?? "user")")
+                            .foregroundStyle(Color(red: 225 / 255, green: 225 / 255, blue: 225 / 255))
                     }
-                    .font(.system(size: max(7, proxy.size.height * 0.018), weight: .medium))
-                    .foregroundStyle(.white.opacity(0.9))
-                    .padding(.horizontal, 8)
-                    .frame(height: max(14, proxy.size.height * 0.04))
-                    .background(Color.black.opacity(0.78))
+                    .font(.system(size: max(7, max(14, proxy.size.height * 0.035) * 0.48), weight: .medium))
+                    .padding(.horizontal, proxy.size.width * 0.02)
+                    .frame(height: max(14, proxy.size.height * 0.035))
+                    .background(Color.black)
                     .frame(maxHeight: .infinity, alignment: .bottom)
                 }
             }
@@ -222,20 +263,52 @@ struct UploadView: View {
 
     @ViewBuilder private func watermarkMark(width: CGFloat) -> some View {
         if watermarkType == "image" {
-            Label("YHPhotos", systemImage: "camera.aperture")
-                .font(.system(size: max(9, width * watermarkScale * 0.17), weight: .bold))
-                .foregroundStyle(watermarkVariant == "white" ? .white : .black)
-                .shadow(color: watermarkVariant == "white" ? .black.opacity(0.65) : .white.opacity(0.55), radius: 2)
-                .frame(width: max(54, width * watermarkScale))
-        } else {
-            VStack(alignment: .leading, spacing: 1) {
-                Text("YHPhotos").fontWeight(.bold)
-                Text("@\(appModel.sessionUser?.username ?? "user")").font(.caption2)
+            AsyncImage(url: URL(string: "https://www.yhphotos.top/watermark_\(watermarkVariant).png")) { image in
+                image.resizable().scaledToFit()
+            } placeholder: {
+                ProgressView().controlSize(.small)
             }
-            .font(.system(size: max(8, width * watermarkScale)))
+            .frame(width: max(1, width * watermarkScale), height: max(1, width * watermarkScale / 1.5624))
+        } else {
+            let fontSize = max(8, width * watermarkScale)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("YHPhotos")
+                    .font(watermarkFont(size: fontSize))
+                Text("@\(appModel.sessionUser?.username ?? "user")")
+                    .font(watermarkFont(size: fontSize * 0.76))
+            }
+            .padding(.horizontal, 6).padding(.vertical, 4)
             .foregroundStyle(Color(hex: watermarkColor))
             .shadow(color: .black.opacity(0.7), radius: 2)
         }
+    }
+
+    private func watermarkFont(size: CGFloat) -> Font {
+        switch watermarkFont {
+        case "serif": .system(size: size, design: .serif)
+        case "mono": .system(size: size, design: .monospaced)
+        case "condensed": .system(size: size, design: .rounded).width(.condensed)
+        default: .system(size: size, design: .default)
+        }
+    }
+
+    private func watermarkBounds(in size: CGSize, scale override: Double? = nil) -> (x: Double, y: Double) {
+        let scale = override ?? watermarkScale
+        let barHeight = max(14, size.height * 0.035)
+        let markWidth: CGFloat
+        let markHeight: CGFloat
+        if watermarkType == "image" {
+            markWidth = size.width * scale
+            markHeight = markWidth / 1.5624
+        } else {
+            let fontSize = max(8, size.width * scale)
+            markWidth = fontSize * 4.9 + 12
+            markHeight = fontSize * 1.12 * 1.76 + 8
+        }
+        return (
+            max(0, Double((size.width - markWidth) / max(size.width, 1))),
+            max(0, Double((size.height - barHeight - markHeight) / max(size.height, 1)))
+        )
     }
 
     private var basicFields: some View {
@@ -328,14 +401,18 @@ struct UploadView: View {
                     Text(L10n.string("橙色")).tag("#fb923c")
                 }
             }
-            watermarkSlider(L10n.string("水平位置"), value: $watermarkX, range: 0...0.9)
-            watermarkSlider(L10n.string("垂直位置"), value: $watermarkY, range: 0...0.9)
-            watermarkSlider(
-                L10n.string("水印大小"),
-                value: $watermarkScale,
-                range: watermarkType == "image" ? 0.06...0.60 : 0.008...0.08
-            )
-            Text(L10n.string("上方预览会同步显示水印位置和大小；服务端生成最终版权栏。"))
+            HStack {
+                Label(L10n.string("在图片上拖动水印，双指缩放大小"), systemImage: "hand.draw.fill")
+                    .font(.caption).foregroundStyle(.secondary)
+                Spacer()
+                Button(L10n.string("复位")) {
+                    watermarkX = 0.03
+                    watermarkY = 0.80
+                    watermarkScale = watermarkType == "image" ? 0.18 : 0.024
+                }
+                .font(.caption.weight(.semibold))
+            }
+            Text(L10n.string("预览和最终图片均使用网站相同的水印坐标、缩放比例及底部版权栏。"))
                 .font(.caption).foregroundStyle(.secondary)
         }
     }
@@ -431,18 +508,6 @@ struct UploadView: View {
             onEdited: { entityIDs.removeValue(forKey: idKey) },
             onPick: applySuggestion
         )
-    }
-
-    private func watermarkSlider(_ title: String, value: Binding<Double>, range: ClosedRange<Double>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(title).font(.caption)
-                Spacer()
-                Text(value.wrappedValue, format: .percent.precision(.fractionLength(0)))
-                    .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
-            }
-            Slider(value: value, in: range)
-        }
     }
 
     private var domainPhotoTypes: [UploadPhotoType] {

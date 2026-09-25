@@ -44,6 +44,7 @@ struct LoginView: View {
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                 Spacer()
+                SiteLegalFooter(compact: true)
             }
             .padding(28)
             .navigationTitle("登录")

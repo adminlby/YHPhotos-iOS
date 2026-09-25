@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct YHPhotosApp: App {
+    @UIApplicationDelegateAdaptor(YHPhotosAppDelegate.self) private var appDelegate
     @StateObject private var appModel = AppModel()
     @AppStorage(AppAppearance.storageKey) private var appAppearance = AppAppearance.system.rawValue
 

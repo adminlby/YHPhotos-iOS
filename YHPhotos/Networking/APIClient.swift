@@ -288,6 +288,11 @@ extension APIClient {
     }
 
     struct SSOExchangeBody: Encodable, Sendable { let code: String }
+    struct PushDeviceBody: Encodable, Sendable {
+        let deviceToken: String
+        let environment: String
+        let bundleId: String
+    }
 
     func prepareSSO() async throws -> (url: URL, callbackScheme: String) {
         let value: SSOPreparation = try await send("api/auth/app/sso/prepare", body: EmptyBody())
@@ -307,5 +312,17 @@ extension APIClient {
 
     func exchangeSSO(code: String) async throws -> AppSSOResponse {
         try await send("api/auth/app/sso/exchange", body: SSOExchangeBody(code: code))
+    }
+
+    func registerPushDevice(token: String, environment: String, bundleID: String) async throws {
+        let _: EmptyResponse = try await send(
+            "api/me/push-devices",
+            body: PushDeviceBody(deviceToken: token, environment: environment, bundleId: bundleID)
+        )
+    }
+
+    func unregisterPushDevice(token: String) async throws {
+        let escaped = token.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? token
+        let _: EmptyResponse = try await send("api/me/push-devices/\(escaped)", method: "DELETE")
     }
 }

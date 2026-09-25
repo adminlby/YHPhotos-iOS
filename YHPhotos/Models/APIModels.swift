@@ -221,10 +221,11 @@ struct SessionUser: Codable, Identifiable, Sendable {
     let username: String
     let displayName: String
     let avatarFilename: String?
+    let avatar: String?
     let role: String
 
     enum CodingKeys: String, CodingKey {
-        case id, username, role
+        case id, username, role, avatar
         case displayName = "display_name"
         case avatarFilename = "avatar_filename"
     }

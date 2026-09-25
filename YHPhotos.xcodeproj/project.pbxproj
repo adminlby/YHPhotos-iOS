@@ -68,6 +68,7 @@
 				A10000000000000000000008 /* Sources */,
 				A10000000000000000000003 /* Frameworks */,
 				A10000000000000000000009 /* Resources */,
+				A10000000000000000000011 /* Inject Git Commit */,
 			);
 			buildRules = (
 			);
@@ -128,6 +129,29 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A10000000000000000000011 /* Inject Git Commit */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Inject Git Commit";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/yhphotos-git-commit.stamp",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nPLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nif [ ! -f \"$PLIST\" ]; then\n  echo \"warning: Info.plist not ready for git commit injection\" >&2\n  exit 0\nfi\nGIT=$(git -C \"${SRCROOT}\" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)\nif ! git -C \"${SRCROOT}\" diff --quiet --ignore-submodules HEAD 2>/dev/null; then\n  GIT=\"${GIT}-dirty\"\nfi\nif /usr/libexec/PlistBuddy -c \"Print :YHPhotosGitCommit\" \"$PLIST\" >/dev/null 2>&1; then\n  /usr/libexec/PlistBuddy -c \"Set :YHPhotosGitCommit ${GIT}\" \"$PLIST\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :YHPhotosGitCommit string ${GIT}\" \"$PLIST\"\nfi\necho \"${GIT}\" > \"${DERIVED_FILE_DIR}/yhphotos-git-commit.stamp\"\necho \"Injected YHPhotosGitCommit=${GIT}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A10000000000000000000008 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -181,12 +205,14 @@
 		A1000000000000000000000E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APNS_SERVER_ENVIRONMENT = sandbox;
 				APP_ATTEST_ENVIRONMENT = development;
+				APS_ENVIRONMENT = development;
 				ASSETCATALOG_COMPILER_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = YHPhotos/YHPhotos.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = U93J9KY6T7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -203,18 +229,21 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				YHPHOTOS_API_BASE_URL = "https://dev.yhphotos.top";
+				YHPHOTOS_GIT_COMMIT = local;
 			};
 			name = Debug;
 		};
 		A1000000000000000000000F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APNS_SERVER_ENVIRONMENT = production;
 				APP_ATTEST_ENVIRONMENT = production;
+				APS_ENVIRONMENT = production;
 				ASSETCATALOG_COMPILER_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = YHPhotos/YHPhotos.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = U93J9KY6T7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -231,6 +260,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				YHPHOTOS_API_BASE_URL = "https://www.yhphotos.top";
+				YHPHOTOS_GIT_COMMIT = local;
 			};
 			name = Release;
 		};

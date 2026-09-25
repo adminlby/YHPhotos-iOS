@@ -57,7 +57,7 @@ struct DiscoverView: View {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if let user = appModel.sessionUser {
                         Button { appModel.select(.profile) } label: {
-                            AvatarView(urlString: nil, name: user.displayName, size: 34)
+                            AvatarView(urlString: user.avatar, name: user.displayName, size: 34)
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(L10n.string("个人中心"))

@@ -27,12 +27,19 @@ struct UserCenterView: View {
     }
 
     private var signedOut: some View {
-        ContentUnavailableView {
-            Label("登录后管理作品", systemImage: "person.crop.circle.badge.checkmark")
-        } description: {
-            Text("查看审核进度、获赞数据、收藏与私信。")
-        } actions: {
-            Button("登录 YHPhotos") { appModel.showingLogin = true }.buttonStyle(.borderedProminent)
+        VStack(spacing: 24) {
+            Spacer(minLength: 0)
+            ContentUnavailableView {
+                Label("登录后管理作品", systemImage: "person.crop.circle.badge.checkmark")
+            } description: {
+                Text("查看审核进度、获赞数据、收藏与私信。")
+            } actions: {
+                Button("登录 YHPhotos") { appModel.showingLogin = true }.buttonStyle(.borderedProminent)
+            }
+            Spacer(minLength: 0)
+            SiteLegalFooter(compact: true)
+                .padding(.horizontal, 18)
+                .padding(.bottom, 12)
         }
     }
 
@@ -47,6 +54,8 @@ struct UserCenterView: View {
                     workSection
                 }
                 LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
+                SiteLegalFooter(compact: true)
+                    .padding(.top, 8)
             }
             .padding(.horizontal, 18)
             .padding(.bottom, 18)

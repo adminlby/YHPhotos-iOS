@@ -27,7 +27,7 @@ struct RootView: View {
             tab(.messages) { MessagesView() }
             tab(.profile) { UserCenterView() }
         }
-        .tint(.primary)
+        .tint(AppTheme.accent)
     }
 
     private func tab<Content: View>(_ section: AppSection, @ViewBuilder content: () -> Content) -> some View {

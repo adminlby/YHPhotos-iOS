@@ -46,6 +46,13 @@ final class AppModel: ObservableObject {
            let cached = try? JSONDecoder().decode(SessionUser.self, from: data) {
             sessionUser = cached
         }
+        NotificationCenter.default.addObserver(
+            forName: .yhPushNotificationOpened,
+            object: nil,
+            queue: .main
+        ) { [weak self] note in
+            Task { @MainActor in self?.openPushNotification(category: note.userInfo?["category"] as? String) }
+        }
     }
 
     func select(_ section: AppSection) {
@@ -60,6 +67,7 @@ final class AppModel: ObservableObject {
         do {
             let envelope: SessionEnvelope = try await api.get("api/auth/me")
             setSession(envelope.user)
+            await PushNotificationManager.shared.registerCurrentDevice()
             await refreshUnreadCount()
         } catch let error as APIClientError {
             if case let .server(_, _, status) = error, status == 401 {
@@ -83,14 +91,25 @@ final class AppModel: ObservableObject {
         let response = try await api.exchangeSSO(code: code)
         SessionCredentialStore.save(response.sessionToken)
         setSession(response.user)
+        await PushNotificationManager.shared.registerCurrentDevice()
         await refreshUnreadCount()
     }
 
     func logout() async {
+        await PushNotificationManager.shared.unregisterCurrentDevice()
         _ = try? await api.send("api/auth/logout", method: "POST", as: APIClient.EmptyResponse.self)
         SessionCredentialStore.clear()
         clearSession()
         selectedSection = .discover
+    }
+
+    private func openPushNotification(category: String?) {
+        switch category {
+        case "message", "comment", "follow", "like", "review", "photo", "saved_search", "newsletter", "security", .none:
+            selectedSection = .messages
+        default:
+            selectedSection = .messages
+        }
     }
 
     func refreshUnreadCount() async {

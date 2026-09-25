@@ -48,6 +48,12 @@ struct AppSettingsView: View {
                     }
                 }
             }
+
+            Section {
+                SiteLegalFooter(compact: true)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
+                    .listRowBackground(Color.clear)
+            }
         }
         .navigationTitle(L10n.string("设置"))
         .navigationBarTitleDisplayMode(.inline)
@@ -317,61 +323,77 @@ private struct ThemePreviewView: View {
     }
 }
 
-private struct NotificationPreferences: Codable, Sendable {
-    var emailOnReview: Bool
-    var emailOnComment: Bool
-    var emailOnFollow: Bool
-    var emailOnMessage: Bool
-    var emailOnLike: Bool
-    var emailOnSavedSearch: Bool
-    var emailNewsletter: Bool
-    var siteOnReview: Bool
-    var siteOnComment: Bool
-    var siteOnFollow: Bool
-
-    enum CodingKeys: String, CodingKey {
-        case emailOnReview = "email_on_review"
-        case emailOnComment = "email_on_comment"
-        case emailOnFollow = "email_on_follow"
-        case emailOnMessage = "email_on_message"
-        case emailOnLike = "email_on_like"
-        case emailOnSavedSearch = "email_on_saved_search"
-        case emailNewsletter = "email_newsletter"
-        case siteOnReview = "site_on_review"
-        case siteOnComment = "site_on_comment"
-        case siteOnFollow = "site_on_follow"
-    }
-
-    var dictionary: [String: Bool] {
-        ["email_on_review": emailOnReview, "email_on_comment": emailOnComment,
-         "email_on_follow": emailOnFollow, "email_on_message": emailOnMessage,
-         "email_on_like": emailOnLike, "email_on_saved_search": emailOnSavedSearch,
-         "email_newsletter": emailNewsletter, "site_on_review": siteOnReview,
-         "site_on_comment": siteOnComment, "site_on_follow": siteOnFollow]
-    }
-}
-
 private struct NotificationPreferencesView: View {
-    @State private var preferences: NotificationPreferences?
+    private struct Item: Identifiable {
+        let key: String
+        let title: String
+        var id: String { key }
+    }
+    private struct Channel: Identifiable {
+        let title: String
+        let icon: String
+        let items: [Item]
+        var id: String { title }
+    }
+
+    private static let channels = [
+        Channel(title: L10n.string("邮件通知"), icon: "envelope.fill", items: [
+            Item(key: "email_on_review", title: L10n.string("审核结果")),
+            Item(key: "email_on_comment", title: L10n.string("评论与回复")),
+            Item(key: "email_on_follow", title: L10n.string("新增关注")),
+            Item(key: "email_on_message", title: L10n.string("新私信")),
+            Item(key: "email_on_like", title: L10n.string("点赞")),
+            Item(key: "email_on_saved_search", title: L10n.string("保存的搜索")),
+            Item(key: "email_newsletter", title: L10n.string("社区通讯")),
+        ]),
+        Channel(title: L10n.string("站内通知"), icon: "bell.fill", items: [
+            Item(key: "site_on_review", title: L10n.string("审核结果")),
+            Item(key: "site_on_comment", title: L10n.string("评论与回复")),
+            Item(key: "site_on_follow", title: L10n.string("新增关注")),
+            Item(key: "site_on_message", title: L10n.string("新私信")),
+            Item(key: "site_on_like", title: L10n.string("点赞")),
+            Item(key: "site_on_saved_search", title: L10n.string("保存的搜索")),
+            Item(key: "site_on_newsletter", title: L10n.string("社区通讯")),
+            Item(key: "site_on_system", title: L10n.string("系统与安全")),
+        ]),
+        Channel(title: L10n.string("App 推送"), icon: "app.badge.fill", items: [
+            Item(key: "push_on_review", title: L10n.string("审核结果")),
+            Item(key: "push_on_comment", title: L10n.string("评论与回复")),
+            Item(key: "push_on_follow", title: L10n.string("新增关注")),
+            Item(key: "push_on_message", title: L10n.string("新私信")),
+            Item(key: "push_on_like", title: L10n.string("点赞")),
+            Item(key: "push_on_saved_search", title: L10n.string("保存的搜索")),
+            Item(key: "push_on_newsletter", title: L10n.string("社区通讯")),
+            Item(key: "push_on_system", title: L10n.string("系统与安全")),
+        ]),
+    ]
+
+    @State private var preferences: [String: Bool]?
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @StateObject private var pushManager = PushNotificationManager.shared
 
     var body: some View {
         Form {
-            if let binding = Binding($preferences) {
-                Section(L10n.string("邮件通知")) {
-                    Toggle(L10n.string("审核结果"), isOn: binding.emailOnReview)
-                    Toggle(L10n.string("评论与回复"), isOn: binding.emailOnComment)
-                    Toggle(L10n.string("新增关注"), isOn: binding.emailOnFollow)
-                    Toggle(L10n.string("新私信"), isOn: binding.emailOnMessage)
-                    Toggle(L10n.string("点赞"), isOn: binding.emailOnLike)
-                    Toggle(L10n.string("保存的搜索"), isOn: binding.emailOnSavedSearch)
-                    Toggle(L10n.string("社区通讯"), isOn: binding.emailNewsletter)
+            if preferences != nil {
+                Section {
+                    Toggle(L10n.string("全部通知"), isOn: bulkBinding(keys: allKeys))
+                        .fontWeight(.semibold)
                 }
-                Section(L10n.string("站内通知")) {
-                    Toggle(L10n.string("审核结果"), isOn: binding.siteOnReview)
-                    Toggle(L10n.string("评论与回复"), isOn: binding.siteOnComment)
-                    Toggle(L10n.string("新增关注"), isOn: binding.siteOnFollow)
+                ForEach(Self.channels) { channel in
+                    Section {
+                        Toggle(L10n.string("本渠道全部通知"), isOn: bulkBinding(keys: channel.items.map(\.key)))
+                            .fontWeight(.semibold)
+                        ForEach(channel.items) { item in
+                            Toggle(item.title, isOn: preferenceBinding(item.key))
+                        }
+                    } header: {
+                        Label(channel.title, systemImage: channel.icon)
+                    } footer: {
+                        if channel.title == L10n.string("App 推送") {
+                            pushAuthorizationFooter
+                        }
+                    }
                 }
             } else {
                 ProgressView().frame(maxWidth: .infinity)
@@ -380,20 +402,63 @@ private struct NotificationPreferencesView: View {
         }
         .navigationTitle(L10n.string("通知偏好"))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar { ToolbarItem(placement: .confirmationAction) { Button(L10n.string("保存")) { Task { await save() } }.disabled(preferences == nil || isSaving) } }
-        .task { await load() }
+        .overlay(alignment: .top) { if isSaving { ProgressView().padding(8) } }
+        .task { await load(); await pushManager.refreshAuthorizationStatus() }
+    }
+
+    @ViewBuilder private var pushAuthorizationFooter: some View {
+        switch pushManager.authorizationStatus {
+        case .denied:
+            Button(L10n.string("系统通知已关闭，前往设置开启")) {
+                if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+            }
+        case .notDetermined:
+            Button(L10n.string("允许系统推送通知")) { Task { _ = await pushManager.requestAuthorizationAndRegister() } }
+        default:
+            Text(L10n.string("推送内容会遵循上述开关和系统锁屏预览设置。"))
+        }
+    }
+
+    private var allKeys: [String] { Self.channels.flatMap { $0.items.map(\.key) } }
+
+    private func preferenceBinding(_ key: String) -> Binding<Bool> {
+        Binding(
+            get: { preferences?[key] ?? false },
+            set: { value in
+                preferences?[key] = value
+                Task {
+                    if value, key.hasPrefix("push_") { _ = await pushManager.requestAuthorizationAndRegister() }
+                    await save([key: value])
+                }
+            }
+        )
+    }
+
+    private func bulkBinding(keys: [String]) -> Binding<Bool> {
+        Binding(
+            get: { keys.allSatisfy { preferences?[$0] == true } },
+            set: { value in
+                let updates = Dictionary(uniqueKeysWithValues: keys.map { ($0, value) })
+                for key in keys { preferences?[key] = value }
+                Task {
+                    if value, keys.contains(where: { $0.hasPrefix("push_") }) {
+                        _ = await pushManager.requestAuthorizationAndRegister()
+                    }
+                    await save(updates)
+                }
+            }
+        )
     }
 
     @MainActor private func load() async {
         do { preferences = try await APIClient.shared.get("api/me/notification-preferences") }
         catch { errorMessage = error.localizedDescription }
     }
-    @MainActor private func save() async {
+    @MainActor private func save(_ updates: [String: Bool]) async {
         struct Body: Encodable, Sendable { let prefs: [String: Bool] }
-        guard let preferences else { return }
         isSaving = true; defer { isSaving = false }
         do {
-            self.preferences = try await APIClient.shared.send("api/me/notification-preferences", method: "PUT", body: Body(prefs: preferences.dictionary))
+            self.preferences = try await APIClient.shared.send("api/me/notification-preferences", method: "PUT", body: Body(prefs: updates))
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
     }
