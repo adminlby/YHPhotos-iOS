@@ -34,8 +34,11 @@ struct GlassPanel<Content: View>: View {
     }
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        // Clip first so intro gradients / fills don't draw square edges outside the glass shape.
         content
-            .appGlass(in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .clipShape(shape)
+            .appGlass(in: shape)
     }
 }
 

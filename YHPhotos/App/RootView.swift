@@ -22,7 +22,7 @@ struct RootView: View {
             set: { appModel.select($0) }
         )) {
             tab(.discover) { DiscoverView() }
-            tab(.wiki) { WikiHomeView() }
+            tab(.tools) { ToolsHomeView() }
             tab(.upload) { Color.clear }
             tab(.messages) { MessagesView() }
             tab(.profile) { UserCenterView() }
@@ -61,7 +61,7 @@ struct RootView: View {
     private var selectedScreen: some View {
         switch appModel.selectedSection {
         case .discover: DiscoverView()
-        case .wiki: WikiHomeView()
+        case .tools: ToolsHomeView()
         case .upload: DiscoverView()
         case .messages: MessagesView()
         case .profile: UserCenterView()

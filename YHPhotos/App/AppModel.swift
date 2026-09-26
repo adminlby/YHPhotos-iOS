@@ -3,7 +3,7 @@ import SwiftUI
 
 enum AppSection: String, CaseIterable, Identifiable {
     case discover
-    case wiki
+    case tools
     case upload
     case messages
     case profile
@@ -12,7 +12,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .discover: L10n.string("发现")
-        case .wiki: L10n.string("百科")
+        case .tools: L10n.string("工具")
         case .upload: L10n.string("上传")
         case .messages: L10n.string("消息")
         case .profile: L10n.string("我的")
@@ -21,7 +21,7 @@ enum AppSection: String, CaseIterable, Identifiable {
     var icon: String {
         switch self {
         case .discover: "safari.fill"
-        case .wiki: "book.fill"
+        case .tools: "wrench.and.screwdriver.fill"
         case .upload: "plus"
         case .messages: "bubble.left.fill"
         case .profile: "person.fill"

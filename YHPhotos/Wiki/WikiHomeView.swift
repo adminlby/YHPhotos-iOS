@@ -103,50 +103,55 @@ struct WikiHomeView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 20) {
-                    intro
-                    categoryStrip
-                    HStack {
-                        Text(category.title).font(.title2.bold())
-                        Spacer()
-                        Text("按社区作品自动更新").font(.caption).foregroundStyle(.secondary)
-                    }
-                    LazyVStack(spacing: 12) {
-                        ForEach(entries) { entry in
-                            NavigationLink {
-                                WikiEntryDetailView(category: category, entry: entry)
-                            } label: {
-                                entryRow(entry)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 20) {
+                intro
+                categoryStrip
+                HStack {
+                    Text(category.title).font(.title2.bold())
+                    Spacer()
+                    Text("按社区作品自动更新").font(.caption).foregroundStyle(.secondary)
                 }
-                .padding(.horizontal, 18).padding(.bottom, 18)
+                LazyVStack(spacing: 12) {
+                    ForEach(entries) { entry in
+                        NavigationLink {
+                            WikiEntryDetailView(category: category, entry: entry)
+                        } label: {
+                            entryRow(entry)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
             }
-            .navigationTitle("百科")
-            .searchable(text: $query, prompt: L10n.format("搜索%@", category.title))
-            .onSubmit(of: .search) { reload() }
-            .onChange(of: category) { _ in query = ""; reload() }
-            .task { await load() }
-            .appScreenBackground()
+            .padding(.horizontal, 18).padding(.bottom, 18)
         }
+        .navigationTitle(L10n.string("百科"))
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, prompt: L10n.format("搜索%@", category.title))
+        .onSubmit(of: .search) { reload() }
+        .onChange(of: category) { _ in query = ""; reload() }
+        .task { await load() }
+        .appScreenBackground()
     }
 
     private var intro: some View {
         GlassPanel(cornerRadius: 24) {
-            ZStack(alignment: .leading) {
-                LinearGradient(colors: [AppTheme.accent.opacity(0.28), .purple.opacity(0.16), .clear], startPoint: .topLeading, endPoint: .bottomTrailing)
-                VStack(alignment: .leading, spacing: 8) {
-                    Image(systemName: "books.vertical.fill").font(.title).foregroundStyle(AppTheme.accent)
-                    Text("由每一张作品构成的百科").font(.title3.bold())
-                    Text("从航空公司、机场、机型到每一架飞机，资料与社区作品相互连接。")
-                        .font(.subheadline).foregroundStyle(.secondary)
-                }.padding(20)
-            }.frame(minHeight: 142)
+            VStack(alignment: .leading, spacing: 8) {
+                Image(systemName: "books.vertical.fill").font(.title).foregroundStyle(AppTheme.accent)
+                Text("由每一张作品构成的百科").font(.title3.bold())
+                Text("从航空公司、机场、机型到每一架飞机，资料与社区作品相互连接。")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+            .padding(20)
+            .frame(maxWidth: .infinity, minHeight: 142, alignment: .leading)
+            .background(
+                LinearGradient(
+                    colors: [AppTheme.accent.opacity(0.22), Color.cyan.opacity(0.08), .clear],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
         }.padding(.top, 4)
     }
 
