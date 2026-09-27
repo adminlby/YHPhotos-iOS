@@ -45,36 +45,37 @@ struct HeroPhotoView: View {
     let photo: Photo
 
     var body: some View {
-        Color.clear
-            .aspectRatio(16 / 9, contentMode: .fit)
-            .overlay {
-                ZStack(alignment: .bottomLeading) {
-                    RemoteImage(url: photo.imageURL)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .clipped()
-                    LinearGradient(
-                        colors: [.clear, AppTheme.canvas.opacity(0.2), AppTheme.canvas.opacity(0.96)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(L10n.string("编辑精选"))
-                            .font(.caption.weight(.semibold))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .appGlass(in: Capsule())
-                        Text(photo.title).font(.title2.bold()).lineLimit(2)
-                        Text([photo.primaryMetadata, photo.secondaryMetadata].filter { !$0.isEmpty }.joined(separator: " · "))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                    }
-                    .padding(20)
+        GeometryReader { geometry in
+            ZStack(alignment: .bottomLeading) {
+                RemoteImage(url: photo.imageURL)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipped()
+                LinearGradient(
+                    colors: [.clear, AppTheme.canvas.opacity(0.2), AppTheme.canvas.opacity(0.96)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(L10n.string("编辑精选"))
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .appGlass(in: Capsule())
+                    Text(photo.title).font(.title2.bold()).lineLimit(2)
+                    Text([photo.primaryMetadata, photo.secondaryMetadata].filter { !$0.isEmpty }.joined(separator: " · "))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
                 }
-                .clipped()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20)
             }
-            .frame(maxWidth: .infinity)
-            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .bottomLeading)
+            .clipped()
+        }
+        .aspectRatio(16 / 9, contentMode: .fit)
+        .frame(maxWidth: .infinity)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }
 
