@@ -858,6 +858,17 @@
         }
       }
     },
+    "历史价值" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historical value"
+          }
+        }
+      }
+    },
     "历史场景" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1604,6 +1615,17 @@
         }
       }
     },
+    "换机" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equipment change"
+          }
+        }
+      }
+    },
     "排行" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1721,6 +1743,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Collection Progress"
+          }
+        }
+      }
+    },
+    "新交付" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New delivery"
           }
         }
       }
@@ -2228,6 +2261,28 @@
         }
       }
     },
+    "特殊个体" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Special airframe"
+          }
+        }
+      }
+    },
+    "特殊涂装" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Special livery"
+          }
+        }
+      }
+    },
     "状态" : {
       "localizations" : {
         "en" : {
@@ -2486,6 +2541,17 @@
         }
       }
     },
+    "稀有机型" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rare type"
+          }
+        }
+      }
+    },
     "简体中文" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2608,6 +2674,7 @@
       }
     },
     "编辑精选" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2824,6 +2891,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resources"
+          }
+        }
+      }
+    },
+    "起降时间按 %@ 显示" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight times shown in %1$@"
+          }
+        }
+      }
+    },
+    "起飞 %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Departure %1$@"
           }
         }
       }
@@ -3160,6 +3249,17 @@
         }
       }
     },
+    "降落 %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrival %1$@"
+          }
+        }
+      }
+    },
     "隐私政策" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3244,105 +3344,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yellow grid divides by image proportion; red crosshair through the center can be toggled independently. Move your finger for a 3× circular loupe to check the horizon."
-          }
-        }
-      }
-    },
-    "历史价值" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Historical value"
-          }
-        }
-      }
-    },
-    "换机" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Equipment change"
-          }
-        }
-      }
-    },
-    "降落 %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arrival %1$@"
-          }
-        }
-      }
-    },
-    "起降时间按 %@ 显示" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Flight times shown in %1$@"
-          }
-        }
-      }
-    },
-    "起飞 %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Departure %1$@"
-          }
-        }
-      }
-    },
-    "稀有机型" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rare type"
-          }
-        }
-      }
-    },
-    "特殊个体" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Special airframe"
-          }
-        }
-      }
-    },
-    "特殊涂装" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Special livery"
-          }
-        }
-      }
-    },
-    "新交付" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New delivery"
           }
         }
       }
