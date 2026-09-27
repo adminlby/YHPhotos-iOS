@@ -1,6 +1,28 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "单指拖动 · 双指缩放" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drag with one finger · Pinch to zoom"
+          }
+        }
+      }
+    },
+    "缩放比例，点按恢复默认" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom level. Tap to reset"
+          }
+        }
+      }
+    },
     "" : {
 
     },

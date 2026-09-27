@@ -211,7 +211,6 @@ struct ForecastView: View {
     @State private var loadedAirportQuery = ""
     @State private var directionFilter: ForecastDirectionFilter = .all
     @State private var selectedMinute = 12 * 60
-    @State private var timelineJumpToken = 0
     @State private var result: ForecastResp?
     @State private var isLoading = false
     @State private var errorMessage: String?
@@ -279,8 +278,7 @@ struct ForecastView: View {
                 events: events,
                 day: result.day,
                 timeZone: timeZone,
-                selectedMinute: $selectedMinute,
-                jumpToken: timelineJumpToken
+                selectedMinute: $selectedMinute
             )
 
             nearbyFlights(events, result: result, timeZone: timeZone)
@@ -384,7 +382,6 @@ struct ForecastView: View {
                         Button {
                             withAnimation(.easeOut(duration: 0.2)) {
                                 selectedMinute = adjacent.minute
-                                timelineJumpToken += 1
                             }
                         } label: {
                             HStack(spacing: 10) {
@@ -641,7 +638,6 @@ struct ForecastView: View {
         selectedMinute = response.day == airportToday
             ? ForecastTime.minute(Date(), in: timeZone)
             : (allEvents.first?.minute ?? 12 * 60)
-        timelineJumpToken += 1
     }
 }
 
@@ -650,10 +646,14 @@ private struct RareFlightTimeline: View {
     let day: String
     let timeZone: TimeZone
     @Binding var selectedMinute: Int
-    let jumpToken: Int
 
-    private let contentWidth: CGFloat = 1_968
-    private let horizontalInset: CGFloat = 24
+    @State private var pointsPerMinute: CGFloat = 1.35
+    @State private var dragStartMinute: Int?
+    @State private var zoomStartScale: CGFloat?
+
+    private let defaultPointsPerMinute: CGFloat = 1.35
+    private let minimumPointsPerMinute: CGFloat = 0.45
+    private let maximumPointsPerMinute: CGFloat = 4.5
     private let scaleY: CGFloat = 66
     private let timelineHeight: CGFloat = 238
 
@@ -668,78 +668,76 @@ private struct RareFlightTimeline: View {
 
     private func timeline(nowMinute: Int?) -> some View {
         GlassPanel(cornerRadius: 22) {
-            ScrollViewReader { proxy in
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(L10n.string("选中时间"))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text("\(ForecastTime.clock(minute: selectedMinute)) · \(ForecastTime.zoneLabel(timeZone))")
-                                .font(.title3.monospacedDigit().weight(.bold))
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 10) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(L10n.string("单指拖动 · 双指缩放"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("\(ForecastTime.clock(minute: selectedMinute)) · \(ForecastTime.zoneLabel(timeZone))")
+                            .font(.title3.monospacedDigit().weight(.bold))
+                    }
+
+                    Spacer(minLength: 4)
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            pointsPerMinute = defaultPointsPerMinute
                         }
+                    } label: {
+                        Text(String(format: "%.1f×", pointsPerMinute / defaultPointsPerMinute))
+                            .font(.caption.monospacedDigit().weight(.semibold))
+                            .frame(minWidth: 44, minHeight: 44)
+                            .background(AppTheme.elevated, in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(L10n.string("缩放比例，点按恢复默认"))
 
-                        Spacer()
-
-                        if let nowMinute, abs(nowMinute - selectedMinute) > 1 {
-                            Button {
-                                withAnimation(.easeOut(duration: 0.2)) {
-                                    selectedMinute = nowMinute
-                                    proxy.scrollTo(anchorID(for: nowMinute), anchor: .center)
-                                }
-                            } label: {
-                                Label(L10n.string("回到现在"), systemImage: "location.fill")
-                                    .font(.caption.weight(.semibold))
-                                    .frame(minHeight: 44)
+                    if let nowMinute, abs(nowMinute - selectedMinute) > 1 {
+                        Button {
+                            withAnimation(.easeOut(duration: 0.2)) {
+                                selectedMinute = nowMinute
                             }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(AppTheme.accent)
+                        } label: {
+                            Label(L10n.string("回到现在"), systemImage: "location.fill")
+                                .font(.caption.weight(.semibold))
+                                .frame(minHeight: 44)
                         }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        timelineCanvas(nowMinute: nowMinute, proxy: proxy)
-                            .frame(width: contentWidth, height: timelineHeight)
-                    }
-                    .frame(height: timelineHeight)
-                    .coordinateSpace(name: "rare-flight-timeline")
-                    .onAppear {
-                        DispatchQueue.main.async {
-                            proxy.scrollTo(anchorID(for: selectedMinute), anchor: .center)
-                        }
-                    }
-                    .onChange(of: jumpToken) { _ in
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            proxy.scrollTo(anchorID(for: selectedMinute), anchor: .center)
-                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(AppTheme.accent)
                     }
                 }
-                .padding(.bottom, 10)
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+
+                GeometryReader { geometry in
+                    timelineCanvas(nowMinute: nowMinute, width: geometry.size.width)
+                }
+                .frame(height: timelineHeight)
             }
+            .padding(.bottom, 10)
         }
     }
 
-    private func timelineCanvas(nowMinute: Int?, proxy: ScrollViewProxy) -> some View {
-        let markers = TimelineMarker.build(from: events)
+    private func timelineCanvas(nowMinute: Int?, width: CGFloat) -> some View {
+        let markers = TimelineMarker.build(from: events, pointsPerMinute: pointsPerMinute)
 
         return ZStack(alignment: .topLeading) {
             Rectangle()
                 .fill(Color.clear)
                 .contentShape(Rectangle())
-                .simultaneousGesture(selectionGesture)
 
             Path { path in
-                path.move(to: CGPoint(x: horizontalInset, y: scaleY))
-                path.addLine(to: CGPoint(x: contentWidth - horizontalInset, y: scaleY))
+                path.move(to: CGPoint(x: xPosition(for: 0, width: width), y: scaleY))
+                path.addLine(to: CGPoint(x: xPosition(for: 1_439, width: width), y: scaleY))
             }
             .stroke(Color.secondary.opacity(0.55), lineWidth: 1)
 
             ForEach(0..<97, id: \.self) { quarter in
                 let minute = min(quarter * 15, 1_439)
-                let x = xPosition(for: minute)
-                let isHour = minute % 60 == 0
+                let x = xPosition(for: minute, width: width)
+                let isHour = minute % 60 == 0 || quarter == 96
 
                 Rectangle()
                     .fill(isHour ? Color.primary.opacity(0.65) : Color.secondary.opacity(0.35))
@@ -750,41 +748,38 @@ private struct RareFlightTimeline: View {
                     Text(ForecastTime.clock(minute: minute))
                         .font(.caption2.monospacedDigit().weight(.medium))
                         .foregroundStyle(.secondary)
-                        .position(x: min(max(x, 22), contentWidth - 22), y: scaleY - 22)
+                        .position(x: x, y: scaleY - 22)
                 }
-
-                Color.clear
-                    .frame(width: 1, height: 1)
-                    .position(x: x, y: scaleY)
-                    .id(anchorID(for: minute))
             }
 
             if let nowMinute {
-                currentTimeIndicator(minute: nowMinute)
+                currentTimeIndicator(minute: nowMinute, width: width)
             }
-
-            selectedTimeIndicator
 
             ForEach(markers) { marker in
                 Button {
                     withAnimation(.easeOut(duration: 0.2)) {
                         selectedMinute = marker.minute
-                        proxy.scrollTo(anchorID(for: marker.minute), anchor: .center)
                     }
                 } label: {
                     markerLabel(marker)
                 }
                 .buttonStyle(.plain)
-                .position(x: xPosition(for: marker.minute), y: 96 + CGFloat(marker.lane) * 38)
+                .position(x: xPosition(for: marker.minute, width: width), y: 96 + CGFloat(marker.lane) * 38)
                 .accessibilityLabel(marker.accessibilityLabel)
                 .accessibilityHint(L10n.string("点按查看这个时间附近的航班"))
             }
+
+            selectedTimeIndicator(width: width)
         }
+        .contentShape(Rectangle())
+        .simultaneousGesture(timelineGesture)
+        .simultaneousGesture(tapGesture(width: width))
         .clipped()
     }
 
-    private func currentTimeIndicator(minute: Int) -> some View {
-        let x = xPosition(for: minute)
+    private func currentTimeIndicator(minute: Int, width: CGFloat) -> some View {
+        let x = xPosition(for: minute, width: width)
         return ZStack(alignment: .top) {
             Path { path in
                 path.move(to: CGPoint(x: x, y: 20))
@@ -798,23 +793,22 @@ private struct RareFlightTimeline: View {
                 .padding(.vertical, 3)
                 .background(Color.red, in: Capsule())
                 .foregroundStyle(.white)
-                .position(x: min(max(x, 26), contentWidth - 26), y: 12)
+                .position(x: x, y: 12)
         }
     }
 
-    private var selectedTimeIndicator: some View {
-        let x = xPosition(for: selectedMinute)
-        return ZStack(alignment: .top) {
+    private func selectedTimeIndicator(width: CGFloat) -> some View {
+        ZStack(alignment: .top) {
             Rectangle()
                 .fill(AppTheme.accent)
-                .frame(width: 2, height: timelineHeight - 42)
-                .position(x: x, y: scaleY + (timelineHeight - 42) / 2 - 18)
+                .frame(width: 2.5, height: timelineHeight - 24)
+                .position(x: width / 2, y: timelineHeight / 2 + 12)
 
             Image(systemName: "triangle.fill")
                 .font(.caption)
                 .foregroundStyle(AppTheme.accent)
                 .rotationEffect(.degrees(180))
-                .position(x: x, y: scaleY - 10)
+                .position(x: width / 2, y: scaleY - 10)
         }
         .allowsHitTesting(false)
     }
@@ -841,27 +835,51 @@ private struct RareFlightTimeline: View {
         .padding(.vertical, 6)
     }
 
-    private var selectionGesture: some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .local)
+    private var timelineGesture: some Gesture {
+        DragGesture(minimumDistance: 4, coordinateSpace: .local)
+            .simultaneously(with: MagnificationGesture())
             .onChanged { value in
-                selectedMinute = minute(at: value.location.x)
+                if let magnification = value.second {
+                    let baseScale = zoomStartScale ?? pointsPerMinute
+                    if zoomStartScale == nil {
+                        zoomStartScale = baseScale
+                        dragStartMinute = nil
+                    }
+                    pointsPerMinute = min(
+                        max(baseScale * magnification, minimumPointsPerMinute),
+                        maximumPointsPerMinute
+                    )
+                } else if let drag = value.first {
+                    let baseMinute = dragStartMinute ?? selectedMinute
+                    if dragStartMinute == nil {
+                        dragStartMinute = baseMinute
+                    }
+                    let minuteDelta = Int((drag.translation.width / pointsPerMinute).rounded())
+                    selectedMinute = min(max(baseMinute - minuteDelta, 0), 1_439)
+                }
+            }
+            .onEnded { _ in
+                dragStartMinute = nil
+                zoomStartScale = nil
             }
     }
 
-    private func xPosition(for minute: Int) -> CGFloat {
-        let availableWidth = contentWidth - horizontalInset * 2
-        return horizontalInset + CGFloat(min(max(minute, 0), 1_439)) / 1_439 * availableWidth
+    private func tapGesture(width: CGFloat) -> some Gesture {
+        SpatialTapGesture()
+            .onEnded { value in
+                withAnimation(.easeOut(duration: 0.18)) {
+                    selectedMinute = minute(at: value.location.x, width: width)
+                }
+            }
     }
 
-    private func minute(at x: CGFloat) -> Int {
-        let availableWidth = contentWidth - horizontalInset * 2
-        let progress = min(max((x - horizontalInset) / availableWidth, 0), 1)
-        return min(max(Int((progress * 1_439).rounded()), 0), 1_439)
+    private func xPosition(for minute: Int, width: CGFloat) -> CGFloat {
+        width / 2 + CGFloat(minute - selectedMinute) * pointsPerMinute
     }
 
-    private func anchorID(for minute: Int) -> String {
-        let quarter = min(max(Int((Double(minute) / 15).rounded()) * 15, 0), 1_439)
-        return "forecast-minute-\(quarter)"
+    private func minute(at x: CGFloat, width: CGFloat) -> Int {
+        let minute = selectedMinute + Int(((x - width / 2) / pointsPerMinute).rounded())
+        return min(max(minute, 0), 1_439)
     }
 }
 
@@ -891,22 +909,24 @@ private struct TimelineMarker: Identifiable {
         return "\(ForecastTime.clock(minute: minute))，\(flights)"
     }
 
-    static func build(from events: [ForecastEvent]) -> [TimelineMarker] {
+    static func build(from events: [ForecastEvent], pointsPerMinute: CGFloat) -> [TimelineMarker] {
         guard !events.isEmpty else { return [] }
 
+        let clusterWindow = max(8, Int((20 / pointsPerMinute).rounded(.up)))
         var groups: [[ForecastEvent]] = []
         for event in events.sorted(by: { $0.minute < $1.minute }) {
-            if let lastEvent = groups.last?.last, event.minute - lastEvent.minute <= 8 {
+            if let lastEvent = groups.last?.last, event.minute - lastEvent.minute <= clusterWindow {
                 groups[groups.count - 1].append(event)
             } else {
                 groups.append([event])
             }
         }
 
+        let laneSpacing = max(20, Int((106 / pointsPerMinute).rounded(.up)))
         var lastMinuteByLane = Array(repeating: -10_000, count: 4)
         return groups.map { group in
             let minute = Int((Double(group.map(\.minute).reduce(0, +)) / Double(group.count)).rounded())
-            let lane = lastMinuteByLane.firstIndex(where: { minute - $0 >= 76 })
+            let lane = lastMinuteByLane.firstIndex(where: { minute - $0 >= laneSpacing })
                 ?? lastMinuteByLane.enumerated().min(by: { $0.element < $1.element })!.offset
             lastMinuteByLane[lane] = minute
             return TimelineMarker(events: group, minute: minute, lane: lane)
