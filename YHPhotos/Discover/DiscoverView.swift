@@ -82,11 +82,9 @@ struct DiscoverView: View {
 
     @ViewBuilder
     private var featuredContent: some View {
-        if let hero = featured.first ?? photos.first {
-            NavigationLink { PhotoDetailView(photoID: hero.id) } label: {
-                HeroPhotoView(photo: hero)
-            }
-            .buttonStyle(.plain)
+        let heroPhotos = featured.isEmpty ? Array(photos.prefix(1)) : featured
+        if !heroPhotos.isEmpty {
+            HeroCarouselView(photos: heroPhotos)
         }
 
         if let stats { CommunityStatsCard(stats: stats) }

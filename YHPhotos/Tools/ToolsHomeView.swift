@@ -74,7 +74,8 @@ struct ToolsHomeView: View {
                     colors: [AppTheme.accent.opacity(0.22), Color.cyan.opacity(0.08), .clear],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
-                )
+                ),
+                in: RoundedRectangle(cornerRadius: 24, style: .continuous)
             )
         }
         .padding(.top, 4)

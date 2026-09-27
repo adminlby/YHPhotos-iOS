@@ -3248,6 +3248,105 @@
         }
       }
     },
+    "历史价值" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historical value"
+          }
+        }
+      }
+    },
+    "换机" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equipment change"
+          }
+        }
+      }
+    },
+    "降落 %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrival %1$@"
+          }
+        }
+      }
+    },
+    "起降时间按 %@ 显示" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight times shown in %1$@"
+          }
+        }
+      }
+    },
+    "起飞 %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Departure %1$@"
+          }
+        }
+      }
+    },
+    "稀有机型" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rare type"
+          }
+        }
+      }
+    },
+    "特殊个体" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Special airframe"
+          }
+        }
+      }
+    },
+    "特殊涂装" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Special livery"
+          }
+        }
+      }
+    },
+    "新交付" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New delivery"
+          }
+        }
+      }
+    },
     "黄色线为固定 23/50/77% 与 28/50/72% 参考线；选择水平或垂直后拖动生成镜像辅助线。" : {
       "extractionState" : "manual",
       "localizations" : {

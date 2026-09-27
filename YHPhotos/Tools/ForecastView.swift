@@ -23,8 +23,12 @@ private struct ForecastItem: Decodable, Identifiable, Sendable {
     let status: String?
     let runway: String?
     let scheduledAtIso: String?
+    let scheduledDepartureIso: String?
+    let scheduledArrivalIso: String?
     let estimatedDepartureIso: String?
     let estimatedArrivalIso: String?
+    let realDepartureIso: String?
+    let realArrivalIso: String?
     let departureIso: String?
     let arrivalIso: String?
     let score: Double
@@ -58,6 +62,7 @@ private struct ForecastResp: Decodable, Sendable {
         let city: String?
         let iata: String?
         let icao: String?
+        let timezone: String?
     }
     struct Cache: Decodable, Sendable {
         let hit: Bool
@@ -98,7 +103,7 @@ struct ForecastView: View {
                         summaryCard(result)
                         LazyVStack(spacing: 12) {
                             ForEach(result.items) { item in
-                                forecastRow(item)
+                                forecastRow(item, timeZoneIdentifier: result.airportInfo?.timezone)
                             }
                         }
                         if result.items.isEmpty && !isLoading {
@@ -173,12 +178,15 @@ struct ForecastView: View {
                      : L10n.string("已拉取最新数据并缓存"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                Text(L10n.format("起降时间按 %@ 显示", result.airportInfo?.timezone ?? "UTC"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             .padding(14)
         }
     }
 
-    private func forecastRow(_ item: ForecastItem) -> some View {
+    private func forecastRow(_ item: ForecastItem, timeZoneIdentifier: String?) -> some View {
         GlassPanel(cornerRadius: 18) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
@@ -200,8 +208,14 @@ struct ForecastView: View {
                 .foregroundStyle(.secondary)
 
                 let times = [
-                    ToolUI.clock(item.estimatedArrivalIso ?? item.arrivalIso).map { "ETA \($0)" },
-                    ToolUI.clock(item.estimatedDepartureIso ?? item.departureIso).map { "ETD \($0)" },
+                    ToolUI.forecastDateTime(
+                        item.arrivalIso ?? item.realArrivalIso ?? item.estimatedArrivalIso ?? item.scheduledArrivalIso,
+                        timeZoneIdentifier: timeZoneIdentifier
+                    ).map { L10n.format("降落 %@", $0) },
+                    ToolUI.forecastDateTime(
+                        item.departureIso ?? item.realDepartureIso ?? item.estimatedDepartureIso ?? item.scheduledDepartureIso,
+                        timeZoneIdentifier: timeZoneIdentifier
+                    ).map { L10n.format("起飞 %@", $0) },
                     item.runway.map { "\(L10n.string("跑道")) \($0)" },
                 ].compactMap { $0 }
                 if !times.isEmpty {
@@ -209,7 +223,7 @@ struct ForecastView: View {
                 }
 
                 if !item.tags.isEmpty {
-                    FlowChips(items: item.tags)
+                    FlowChips(items: item.tags.map(ToolUI.forecastTagLabel))
                 }
                 if !item.reasons.isEmpty {
                     Text(item.reasons.joined(separator: " · "))

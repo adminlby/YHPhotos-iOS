@@ -35,6 +35,31 @@ enum ToolUI {
         let end = normalized.index(start, offsetBy: 5)
         return String(normalized[start..<end])
     }
+
+    static func forecastDateTime(_ iso: String?, timeZoneIdentifier: String?) -> String? {
+        guard let iso else { return nil }
+        let parser = ISO8601DateFormatter()
+        guard let date = parser.date(from: iso) else { return nil }
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = AppLanguage.resolved.locale
+        formatter.timeZone = timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
+            ?? TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss zzz"
+        return formatter.string(from: date)
+    }
+
+    static func forecastTagLabel(_ tag: String) -> String {
+        switch tag {
+        case "rare_type": return L10n.string("稀有机型")
+        case "special_livery": return L10n.string("特殊涂装")
+        case "new_delivery": return L10n.string("新交付")
+        case "history_value": return L10n.string("历史价值")
+        case "special_airframe": return L10n.string("特殊个体")
+        case "equipment_change": return L10n.string("换机")
+        default: return tag.replacingOccurrences(of: "_", with: " ")
+        }
+    }
 }
 
 struct StatusChip: View {

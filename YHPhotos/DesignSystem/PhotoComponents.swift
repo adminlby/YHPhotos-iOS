@@ -45,31 +45,77 @@ struct HeroPhotoView: View {
     let photo: Photo
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            RemoteImage(url: photo.imageURL)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        Color.clear
+            .aspectRatio(16 / 9, contentMode: .fit)
+            .overlay {
+                ZStack(alignment: .bottomLeading) {
+                    RemoteImage(url: photo.imageURL)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipped()
+                    LinearGradient(
+                        colors: [.clear, AppTheme.canvas.opacity(0.2), AppTheme.canvas.opacity(0.96)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(L10n.string("编辑精选"))
+                            .font(.caption.weight(.semibold))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .appGlass(in: Capsule())
+                        Text(photo.title).font(.title2.bold()).lineLimit(2)
+                        Text([photo.primaryMetadata, photo.secondaryMetadata].filter { !$0.isEmpty }.joined(separator: " · "))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    .padding(20)
+                }
                 .clipped()
-            LinearGradient(
-                colors: [.clear, AppTheme.canvas.opacity(0.2), AppTheme.canvas.opacity(0.96)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            VStack(alignment: .leading, spacing: 6) {
-                Text("编辑精选")
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .appGlass(in: Capsule())
-                Text(photo.title).font(.title2.bold()).lineLimit(2)
-                Text([photo.primaryMetadata, photo.secondaryMetadata].filter { !$0.isEmpty }.joined(separator: " · "))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
             }
-            .padding(20)
-        }
-        .aspectRatio(16 / 9, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .frame(maxWidth: .infinity)
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+    }
+}
+
+struct HeroCarouselView: View {
+    let photos: [Photo]
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var selection = 0
+
+    private var carouselID: String {
+        photos.map { String($0.id) }.joined(separator: ",")
+    }
+
+    var body: some View {
+        Color.clear
+            .aspectRatio(16 / 9, contentMode: .fit)
+            .overlay {
+                TabView(selection: $selection) {
+                    ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
+                        NavigationLink { PhotoDetailView(photoID: photo.id) } label: {
+                            HeroPhotoView(photo: photo)
+                        }
+                        .buttonStyle(.plain)
+                        .tag(index)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: photos.count > 1 ? .automatic : .never))
+            }
+            .frame(maxWidth: .infinity)
+            .clipped()
+            .task(id: carouselID) {
+                selection = min(selection, max(photos.count - 1, 0))
+                guard photos.count > 1, !reduceMotion else { return }
+                while !Task.isCancelled {
+                    try? await Task.sleep(nanoseconds: 6_000_000_000)
+                    guard !Task.isCancelled else { return }
+                    withAnimation(.easeInOut(duration: 0.8)) {
+                        selection = (selection + 1) % photos.count
+                    }
+                }
+            }
     }
 }
 
