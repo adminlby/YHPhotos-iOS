@@ -13,7 +13,9 @@ extension View {
         if #available(iOS 26.0, *) {
             glassEffect(interactive ? .regular.interactive() : .regular, in: shape)
         } else {
-            background(.ultraThinMaterial, in: shape)
+            // Clip fills/gradients to the rounded shape, then apply material.
+            clipShape(shape)
+                .background(.ultraThinMaterial, in: shape)
                 .overlay(shape.stroke(Color.primary.opacity(0.1), lineWidth: 0.75))
                 .shadow(color: .black.opacity(0.12), radius: 18, y: 8)
         }
@@ -35,9 +37,7 @@ struct GlassPanel<Content: View>: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        // Clip first so intro gradients / fills don't draw square edges outside the glass shape.
         content
-            .clipShape(shape)
             .appGlass(in: shape)
     }
 }

@@ -15,7 +15,7 @@ struct PublicProfileView: View {
     @State private var isStartingConversation = false
     @State private var showingReport = false
 
-    private let columns = [GridItem(.flexible(), spacing: 4), GridItem(.flexible(), spacing: 4), GridItem(.flexible(), spacing: 4)]
+    private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
     var body: some View {
         ScrollView {
@@ -60,11 +60,13 @@ struct PublicProfileView: View {
         VStack(spacing: 14) {
             ZStack(alignment: .bottom) {
                 LinearGradient(
-                    colors: [AppTheme.accent.opacity(0.55), .purple.opacity(0.28), AppTheme.canvas],
+                    colors: [AppTheme.accent.opacity(0.45), Color.cyan.opacity(0.16), AppTheme.canvas],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
+                .frame(maxWidth: .infinity)
                 .frame(height: 168)
+                .clipped()
                 AvatarView(urlString: value.avatar, name: value.displayName, size: 92)
                     .overlay(Circle().stroke(AppTheme.canvas, lineWidth: 5))
                     .offset(y: 28)
@@ -167,18 +169,17 @@ struct PublicProfileView: View {
     }
 
     private var photoSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             sectionTitle(L10n.string("作品"), detail: photos.count.formatted())
-            LazyVGrid(columns: columns, spacing: 4) {
+            LazyVGrid(columns: columns, spacing: 18) {
                 ForEach(photos) { photo in
                     NavigationLink { PhotoDetailView(photoID: photo.id) } label: {
-                        RemoteImage(url: photo.thumbnailURL)
-                            .aspectRatio(1, contentMode: .fill)
-                            .clipped()
+                        PhotoGridCard(photo: photo)
                     }
                     .buttonStyle(.plain)
                 }
             }
+            .padding(.horizontal, 18)
         }
     }
 

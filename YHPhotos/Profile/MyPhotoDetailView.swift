@@ -103,7 +103,7 @@ struct MyPhotoDetailView: View {
                 if let layer {
                     AuthenticatedReviewImage(path: layer.image.url)
                 } else {
-                    RemoteImage(url: URL(string: photo.image ?? photo.thumb ?? ""), contentMode: .fit)
+                    RemoteImage(url: MediaURL.resolve(photo.image ?? photo.thumb), contentMode: .fit)
                 }
                 if showsAnnotations {
                     Canvas { context, size in

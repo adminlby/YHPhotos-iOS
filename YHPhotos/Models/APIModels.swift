@@ -32,7 +32,7 @@ struct PhotoAuthor: Codable, Hashable, Sendable {
 struct Photo: Codable, Identifiable, Hashable, Sendable {
     let id: Int
     let title: String
-    let image: String
+    let image: String?
     let thumb: String?
     let publicUrl: String?
     let pageUrl: String?
@@ -56,8 +56,8 @@ struct Photo: Codable, Identifiable, Hashable, Sendable {
     let hotReason: String?
     let createdAt: String
 
-    var imageURL: URL? { URL(string: image) }
-    var thumbnailURL: URL? { URL(string: thumb ?? image) }
+    var imageURL: URL? { MediaURL.resolve(image ?? publicUrl ?? thumb) }
+    var thumbnailURL: URL? { MediaURL.resolve(thumb ?? image ?? publicUrl) }
 
     var primaryMetadata: String {
         switch domain {
@@ -163,7 +163,7 @@ struct MeOverview: Codable, Sendable {
     struct Profile: Codable, Sendable {
         let id: Int
         let username: String
-        let email: String
+        let email: String?
         let displayName: String
         let avatar: String?
         let role: String

@@ -65,7 +65,9 @@ struct UserCenterView: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(value.profile.displayName).font(.title2.bold())
                 Text("@\(value.profile.username)").font(.subheadline).foregroundStyle(.secondary)
-                Text(value.profile.email).font(.caption).foregroundStyle(.secondary)
+                if let email = value.profile.email, !email.isEmpty {
+                    Text(email).font(.caption).foregroundStyle(.secondary)
+                }
             }
             Spacer()
             NavigationLink { PublicProfileView(userID: value.profile.id) } label: {
@@ -150,7 +152,7 @@ struct UserCenterView: View {
                 ForEach(photos) { photo in
                     NavigationLink { MyPhotoDetailView(photoID: photo.id) } label: {
                         HStack(spacing: 12) {
-                            RemoteImage(url: URL(string: photo.thumb ?? photo.image ?? ""))
+                            RemoteImage(url: MediaURL.resolve(photo.thumb ?? photo.image))
                                 .frame(width: 104, height: 76).clipShape(RoundedRectangle(cornerRadius: 13))
                             VStack(alignment: .leading, spacing: 7) {
                                 Text(photo.title).font(.headline).lineLimit(1)

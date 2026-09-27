@@ -18,7 +18,7 @@ struct PhotoDetailView: View {
         ScrollView {
             if let detail {
                 VStack(spacing: 20) {
-                    RemoteImage(url: URL(string: detail.image), contentMode: .fit)
+                    RemoteImage(url: MediaURL.resolve(detail.image), contentMode: .fit)
                         .frame(maxWidth: .infinity)
                         .background(Color.black)
 

@@ -101,7 +101,7 @@ struct RankingHomeView: View {
                                         .font(.headline.monospacedDigit())
                                         .foregroundStyle(AppTheme.accent)
                                         .frame(width: 36, alignment: .leading)
-                                    RemoteImage(url: URL(string: row.avatar ?? ""))
+                                    RemoteImage(url: MediaURL.resolve(row.avatar))
                                         .frame(width: 40, height: 40)
                                         .clipShape(Circle())
                                     VStack(alignment: .leading, spacing: 2) {
@@ -322,7 +322,7 @@ struct ActivityDetailView: View {
             GlassPanel(cornerRadius: 16) {
                 HStack(spacing: 12) {
                     Text("#\(row.rank)").font(.headline.monospacedDigit()).foregroundStyle(AppTheme.accent).frame(width: 36, alignment: .leading)
-                    RemoteImage(url: URL(string: row.avatar ?? ""))
+                    RemoteImage(url: MediaURL.resolve(row.avatar))
                         .frame(width: 40, height: 40).clipShape(Circle())
                     VStack(alignment: .leading, spacing: 2) {
                         Text(row.displayName ?? L10n.string("用户")).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)

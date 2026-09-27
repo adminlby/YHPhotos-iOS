@@ -223,7 +223,7 @@ struct ForecastView: View {
                                 NavigationLink {
                                     PhotoDetailView(photoID: photo.id)
                                 } label: {
-                                    RemoteImage(url: URL(string: photo.thumb ?? ""))
+                                    RemoteImage(url: MediaURL.resolve(photo.thumb))
                                         .frame(width: 72, height: 54)
                                         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                                 }

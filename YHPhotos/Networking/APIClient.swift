@@ -257,7 +257,11 @@ actor APIClient {
             do {
                 return try JSONDecoder().decode(Response.self, from: data)
             } catch {
-                throw APIClientError.invalidResponse
+                throw APIClientError.server(
+                    code: "decode_error",
+                    message: L10n.string("服务器返回了无法识别的响应"),
+                    status: http.statusCode
+                )
             }
         }
         tail = Task { _ = try? await operation.value }
