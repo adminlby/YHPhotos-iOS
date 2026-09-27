@@ -76,6 +76,57 @@
         }
       }
     },
+    "%@ · %@ · %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "%@ %@，%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@，%3$@"
+          }
+        }
+      }
+    },
+    "%@ → %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "%@ 附近暂无好货" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No highlights near %@"
+          }
+        }
+      }
+    },
+    "%@–%@ · %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@–%2$@ · %3$@"
+          }
+        }
+      }
+    },
     "%d 个有作品的机场" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -409,6 +460,17 @@
     "YHPhotos" : {
 
     },
+    "上一架" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous"
+          }
+        }
+      }
+    },
     "上传" : {
       "localizations" : {
         "en" : {
@@ -437,6 +499,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Upload failed (%d)"
+          }
+        }
+      }
+    },
+    "下一架" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
           }
         }
       }
@@ -481,6 +554,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Beijing ICP No. 2025139513"
+          }
+        }
+      }
+    },
+    "今天 · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today · %@"
+          }
+        }
+      }
+    },
+    "今天暂无好货预报" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No highlights forecast today"
           }
         }
       }
@@ -676,6 +771,17 @@
         }
       }
     },
+    "共 %d 架" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d aircraft total"
+          }
+        }
+      }
+    },
     "关注" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -799,6 +905,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Creator Stats"
+          }
+        }
+      }
+    },
+    "到港" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrival"
           }
         }
       }
@@ -1018,6 +1135,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A new identity with the same email cannot replace an existing link. Make the change explicitly in the account center."
+          }
+        }
+      }
+    },
+    "回到现在" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back to now"
           }
         }
       }
@@ -1780,6 +1908,17 @@
         }
       }
     },
+    "时间轴仍可浏览全天；切换进港或离港筛选查看对应结果。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The timeline still covers the full day. Switch the arrival or departure filter to see matching results."
+          }
+        }
+      }
+    },
     "显示宫格" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2032,6 +2171,17 @@
         }
       }
     },
+    "查看今天" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View today"
+          }
+        }
+      }
+    },
     "查看审核进度、获赞数据、收藏与私信。" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2240,6 +2390,17 @@
         }
       }
     },
+    "点按查看这个时间附近的航班" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to view flights around this time"
+          }
+        }
+      }
+    },
     "热门" : {
       "localizations" : {
         "en" : {
@@ -2289,6 +2450,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Status"
+          }
+        }
+      }
+    },
+    "现在" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now"
           }
         }
       }
@@ -2552,6 +2724,17 @@
         }
       }
     },
+    "稀有机型概率" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rare aircraft probability"
+          }
+        }
+      }
+    },
     "简体中文" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2750,6 +2933,17 @@
         }
       }
     },
+    "航班状态 · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight status · %@"
+          }
+        }
+      }
+    },
     "航空" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2902,6 +3096,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flight times shown in %1$@"
+          }
+        }
+      }
+    },
+    "起飞" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Departure"
           }
         }
       }
@@ -3170,6 +3375,28 @@
         }
       }
     },
+    "选中时间" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected time"
+          }
+        }
+      }
+    },
+    "选中时间附近" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Near selected time"
+          }
+        }
+      }
+    },
     "选择一个工具" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3245,6 +3472,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compress long edge to 1024px"
+          }
+        }
+      }
+    },
+    "降落" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Landing"
           }
         }
       }
