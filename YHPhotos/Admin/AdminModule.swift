@@ -216,7 +216,7 @@ enum AdminModule: String, CaseIterable, Identifiable, Hashable, Sendable {
         case .announcements: "megaphone.fill"
         case .news: "newspaper.fill"
         case .ranking: "trophy.fill"
-        case .jury: "gavel.fill"
+        case .jury: "checkmark.seal.fill"
         case .badges: "medal.fill"
         case .risk: "shield.lefthalf.filled.trianglebadge.exclamationmark"
         case .team: "person.text.rectangle.fill"

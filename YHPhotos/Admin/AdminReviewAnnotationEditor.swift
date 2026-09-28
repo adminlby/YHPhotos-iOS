@@ -109,11 +109,15 @@ struct AdminReviewAnnotationEditor: View {
                 .offset(x: rect.minX, y: rect.minY)
                 .allowsHitTesting(false)
 
+                // Keep the gesture in the GeometryReader's coordinate space. An
+                // offset view still reports drag locations in its pre-offset
+                // layout coordinates on some iOS releases, which made strokes
+                // move by the letterbox inset. Converting explicitly through the
+                // fitted image rect keeps touch and drawing coordinates identical.
                 Color.clear
                     .contentShape(Rectangle())
-                    .frame(width: rect.width, height: rect.height)
-                    .offset(x: rect.minX, y: rect.minY)
-                    .gesture(annotationGesture(size: rect.size))
+                    .frame(width: proxy.size.width, height: proxy.size.height)
+                    .gesture(annotationGesture(in: rect))
             }
         }
     }
@@ -141,16 +145,18 @@ struct AdminReviewAnnotationEditor: View {
         .background(.bar)
     }
 
-    private func annotationGesture(size: CGSize) -> some Gesture {
+    private func annotationGesture(in imageRect: CGRect) -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
                 guard let reason = activeReason else { return }
-                let point = normalized(value.location, size: size)
                 if startPoint == nil {
+                    guard imageRect.contains(value.startLocation) else { return }
+                    let point = normalized(value.location, in: imageRect)
                     startPoint = point
                     draft = baseAnnotation(reason: reason, start: point)
                     return
                 }
+                let point = normalized(value.location, in: imageRect)
                 guard let start = startPoint, var current = draft else { return }
                 switch tool {
                 case .rect, .ellipse:
@@ -223,10 +229,10 @@ struct AdminReviewAnnotationEditor: View {
         working.append(item)
     }
 
-    private func normalized(_ point: CGPoint, size: CGSize) -> AdminReviewAnnotation.Point {
+    private func normalized(_ point: CGPoint, in rect: CGRect) -> AdminReviewAnnotation.Point {
         .init(
-            x: min(max(Double(point.x / max(size.width, 1)), 0), 1),
-            y: min(max(Double(point.y / max(size.height, 1)), 0), 1)
+            x: min(max(Double((point.x - rect.minX) / max(rect.width, 1)), 0), 1),
+            y: min(max(Double((point.y - rect.minY) / max(rect.height, 1)), 0), 1)
         )
     }
 

@@ -20,7 +20,7 @@ struct AdminAuditView: View {
                 Section { Label("当前权限只能查看你自己的后台操作。", systemImage: "person.crop.circle.badge.checkmark").font(.footnote).foregroundStyle(.secondary) }
             }
             Section("筛选") {
-                TextField("动作前缀，如 user. / photo.", text: $action).textInputAutocapitalization(.never).font(.system(.body, design: .monospaced))
+                TextField("动作关键词", text: $action).textInputAutocapitalization(.never).font(.system(.body, design: .monospaced))
                 TextField("对象类型（精确匹配）", text: $targetType).textInputAutocapitalization(.never)
                 if response?.scope != "own" { TextField("操作人用户 ID", text: $adminID).keyboardType(.numberPad) }
                 if !action.isEmpty || !targetType.isEmpty || !adminID.isEmpty {
@@ -32,16 +32,16 @@ struct AdminAuditView: View {
                     ForEach(response.items) { log in
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
-                                Text(log.action).font(.system(.caption, design: .monospaced).weight(.semibold)).foregroundStyle(AppTheme.accent)
+                                Text(adminCompositeSystemLabel(log.action)).font(.caption.weight(.semibold)).foregroundStyle(AppTheme.accent)
                                 Spacer()
                                 Text(log.createdAt?.replacingOccurrences(of: "T", with: " ").prefix(19).description ?? "—").font(.caption2).foregroundStyle(.tertiary)
                             }
                             HStack {
                                 Label(log.admin ?? "系统", systemImage: "person.fill")
-                                if let type = log.targetType { Label("\(type)\(log.targetId.map { " #\($0)" } ?? "")", systemImage: "scope") }
+                                if let type = log.targetType { Label("\(adminCompositeSystemLabel(type))\(log.targetId.map { " #\($0)" } ?? "")", systemImage: "scope") }
                             }.font(.caption).foregroundStyle(.secondary)
                             if let description = log.description, !description.isEmpty { Text(description).font(.subheadline).textSelection(.enabled) }
-                            if let ip = log.ip, !ip.isEmpty { Text("IP  \(ip)").font(.system(.caption2, design: .monospaced)).foregroundStyle(.tertiary).textSelection(.enabled) }
+                            if let ip = log.ip, !ip.isEmpty { Text("网络地址  \(ip)").font(.system(.caption2, design: .monospaced)).foregroundStyle(.tertiary).textSelection(.enabled) }
                         }.padding(.vertical, 4)
                     }
                 }

@@ -178,10 +178,6 @@ private struct AdminModuleRow: View {
                 .background(AppTheme.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
             Text(module.title)
                 .foregroundStyle(.primary)
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption.bold())
-                .foregroundStyle(.tertiary)
         }
         .contentShape(Rectangle())
     }
@@ -207,7 +203,7 @@ private struct AdminPermissionSummaryView: View {
                             .foregroundStyle(.green)
                     }
                     ForEach(identity.permissions.sorted(), id: \.self) { permission in
-                        Text(permission).font(.system(.footnote, design: .monospaced))
+                        Text(permissionLabel(permission)).font(.footnote)
                     }
                 }
             }
@@ -219,5 +215,31 @@ private struct AdminPermissionSummaryView: View {
                 }
             }
         }
+    }
+
+    private func permissionLabel(_ permission: String) -> String {
+        let module = AdminModule.allCases.first { $0.permissions.contains(permission) }?.title ?? "后台"
+        let verb: String
+        switch permission.split(separator: ".").last.map(String.init) {
+        case "access": verb = "访问"
+        case "view": verb = "查看"
+        case "manage": verb = "管理"
+        case "handle": verb = "处理"
+        case "edit": verb = "编辑"
+        case "delete": verb = "删除"
+        case "create": verb = "新建"
+        case "enable": verb = "启用"
+        case "disable": verb = "停用"
+        case "ban": verb = "封禁"
+        case "rotate": verb = "重签"
+        case "logs": verb = "查看日志"
+        case "applications": verb = "审批申请"
+        case "whitelist": verb = "管理白名单"
+        case "moderate": verb = "审核"
+        case "feature": verb = "精选"
+        case "appeal": verb = "处理申诉"
+        default: verb = "使用"
+        }
+        return "\(module) · \(verb)"
     }
 }

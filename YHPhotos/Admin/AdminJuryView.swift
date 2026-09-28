@@ -45,7 +45,7 @@ private struct AdminJuryMembersPanel: View {
                     }
                 }
                 JuryPager(offset: $offset, limit: limit, total: response.total)
-            } else if !isLoading && errorMessage == nil { EmptyStateView("还没有评审团成员", systemImage: "gavel").listRowBackground(Color.clear) }
+            } else if !isLoading && errorMessage == nil { EmptyStateView("还没有评审团成员", systemImage: "checkmark.seal").listRowBackground(Color.clear) }
             if isLoading { HStack { Spacer(); ProgressView(); Spacer() }.listRowBackground(Color.clear) }
             if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } }
         }
@@ -156,7 +156,7 @@ private struct AdminJuryReviewsPanel: View {
                         }.padding(.vertical, 4)
                     }
                 }
-            } else if !isLoading && errorMessage == nil { EmptyStateView("暂无仲裁记录", systemImage: "gavel").listRowBackground(Color.clear) }
+            } else if !isLoading && errorMessage == nil { EmptyStateView("暂无仲裁记录", systemImage: "checkmark.seal").listRowBackground(Color.clear) }
             if isLoading { HStack { Spacer(); ProgressView(); Spacer() }.listRowBackground(Color.clear) }
             if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } }
         }

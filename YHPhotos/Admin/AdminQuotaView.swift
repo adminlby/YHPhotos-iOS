@@ -18,7 +18,7 @@ struct AdminQuotaView: View {
                 ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
                     Button { editor = QuotaEditorState(index: index, row: row) } label: {
                         VStack(alignment: .leading, spacing: 5) {
-                            HStack { Text(row.roleLabel).font(.subheadline.weight(.semibold)).foregroundStyle(.primary); Text(row.role).font(.system(.caption, design: .monospaced)).foregroundStyle(.secondary); Spacer(); Text(row.maxPerUpload.map { $0 == 0 ? "不限" : "单批 \($0)" } ?? "不限").font(.caption.weight(.semibold)).foregroundStyle(AppTheme.accent) }
+                            HStack { Text(row.roleLabel).font(.subheadline.weight(.semibold)).foregroundStyle(.primary); Spacer(); Text(row.maxPerUpload.map { $0 == 0 ? "不限" : "单批 \($0)" } ?? "不限").font(.caption.weight(.semibold)).foregroundStyle(AppTheme.accent) }
                             if let description = row.description, !description.isEmpty { Text(description).font(.caption).foregroundStyle(.secondary) }
                             if row.dailyUploadLimit != nil || row.maxPending != nil { Text("兼容字段：每日 \(row.dailyUploadLimit.map(String.init) ?? "—") · 待审 \(row.maxPending.map(String.init) ?? "—")").font(.caption2).foregroundStyle(.tertiary) }
                         }.padding(.vertical, 3)
@@ -30,7 +30,7 @@ struct AdminQuotaView: View {
             }
             Section {
                 Button { Task { await save() } } label: { HStack { Spacer(); if isSaving { ProgressView() } else { Text(saved ? "已保存" : "保存全部规则") }; Spacer() } }.disabled(isSaving)
-            } footer: { Text("default 为默认规则，其余角色规则覆盖默认值。拖动可调整保存顺序。") }
+            } footer: { Text("“默认”规则用于兜底，其余用户组规则会覆盖默认值。拖动可调整保存顺序。") }
             if isLoading { HStack { Spacer(); ProgressView(); Spacer() }.listRowBackground(Color.clear) }
             if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } }
         }

@@ -30,7 +30,7 @@ struct AdminReviewView: View {
                 }
                 Picker("队列", selection: $kind) {
                     Text("全部队列").tag("all")
-                    Text("Hot").tag("hot")
+                    Text("热门").tag("hot")
                     Text("优先").tag("priority")
                     Text("普通").tag("normal")
                 }
@@ -114,7 +114,7 @@ private struct AdminReviewQueueRow: View {
                     .frame(width: 96, height: 74)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 HStack(spacing: 3) {
-                    if item.hot { badge("Hot", color: .orange) }
+                    if item.hot { badge("热门", color: .orange) }
                     else if item.priority { badge("优先", color: .blue) }
                     if item.conflict { badge("冲突", color: .red) }
                 }
@@ -211,8 +211,8 @@ private struct AdminReviewDetailView: View {
                             Text(description).foregroundStyle(.secondary)
                         }
                         LabeledContent("领域", value: domainName(detail.domain))
-                        if let type = detail.photoType { LabeledContent("上传类型", value: type) }
-                        if let category = detail.category { LabeledContent("分类", value: category) }
+                        if let type = detail.photoType { LabeledContent("上传类型", value: adminSystemLabel(type)) }
+                        if let category = detail.category { LabeledContent("分类", value: adminSystemLabel(category)) }
                     }
 
                     Section("上传者") {
@@ -223,11 +223,11 @@ private struct AdminReviewDetailView: View {
                     }
 
                     Section("风险与阶段") {
-                        Label(detail.hashed ? "已完成重复性比对" : "尚未生成图片哈希", systemImage: detail.hashed ? "checkmark.shield" : "questionmark.diamond")
+                        AdminDuplicateRiskCard(detail: detail)
                         if item.dupHit { Label("命中疑似重复作品", systemImage: "doc.on.doc.fill").foregroundStyle(.red) }
                         if detail.inConflict { Label("二审冲突，需仲裁权限", systemImage: "exclamationmark.arrow.triangle.2.circlepath").foregroundStyle(.red) }
                         if let first = detail.firstPass {
-                            LabeledContent("初审", value: "\(first.reviewer ?? "审核员") · \(first.decision)")
+                            LabeledContent("初审", value: "\(first.reviewer ?? "审核员") · \(decisionLabel(first.decision))")
                         }
                     }
 
@@ -237,7 +237,7 @@ private struct AdminReviewDetailView: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text("\(record.reviewer ?? "系统") · \(decisionLabel(record.decision))")
                                         .font(.subheadline.weight(.semibold))
-                                    Text(record.stage).font(.caption).foregroundStyle(.secondary)
+                                    Text(reviewStageLabel(record.stage)).font(.caption).foregroundStyle(.secondary)
                                     if let value = record.reason ?? record.note { Text(value).font(.caption) }
                                 }
                             }
@@ -519,5 +519,81 @@ private struct AdminReviewDetailView: View {
 
     private func decisionLabel(_ value: String) -> String {
         switch value { case "approve": "通过"; case "reject": "驳回"; case "escalate": "转交"; default: value }
+    }
+
+    private func reviewStageLabel(_ value: String) -> String {
+        switch value {
+        case "first": "初审"
+        case "second": "复核"
+        case "jury": "评审团"
+        case "appeal": "申诉"
+        case "conflict": "冲突仲裁"
+        default: adminSystemLabel(value)
+        }
+    }
+}
+
+private struct AdminDuplicateRiskCard: View {
+    let detail: AdminReviewDetail
+
+    private var percentage: Int {
+        guard detail.hashed else { return 0 }
+        guard let match = detail.dup, match.target != nil else { return 4 }
+        if match.exact { return 100 }
+        return max(4, min(100, Int(((1 - Double(match.distance ?? 16) / 16) * 100).rounded())))
+    }
+
+    private var resultText: String {
+        guard detail.hashed else { return "未知" }
+        guard let match = detail.dup, match.target != nil else { return "已比对，未发现相似图片" }
+        if match.exact { return "文件指纹完全相同" }
+        return "相似度距离 \(match.distance ?? 16)"
+    }
+
+    private var tone: Color {
+        percentage >= 70 ? .red : percentage >= 35 ? .orange : .green
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 9) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("盗图风险").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                Spacer()
+                Text(detail.hashed ? "\(percentage)% · \(resultText)" : resultText)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(detail.hashed ? tone : .secondary)
+                    .multilineTextAlignment(.trailing)
+            }
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.secondary.opacity(0.16))
+                    if detail.hashed {
+                        Capsule().fill(Color.green)
+                        Capsule().fill(Color.red)
+                            .frame(width: proxy.size.width * CGFloat(percentage) / 100)
+                    }
+                }
+            }
+            .frame(height: 10)
+
+            if !detail.hashed {
+                Text("未读取到图片指纹，无法评估重复风险")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            } else if let target = detail.dup?.target {
+                HStack(spacing: 9) {
+                    RemoteImage(urlString: target.thumb)
+                        .frame(width: 52, height: 40)
+                        .clipShape(RoundedRectangle(cornerRadius: 7))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(target.title).font(.caption.weight(.medium)).lineLimit(1)
+                        Text("上传者：\(target.uploader)").font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                    }
+                }
+                .padding(8)
+                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 9))
+            }
+        }
+        .padding(.vertical, 4)
     }
 }

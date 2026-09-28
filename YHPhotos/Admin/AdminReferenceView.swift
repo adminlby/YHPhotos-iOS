@@ -19,7 +19,7 @@ struct AdminReferenceView: View {
             Section {
                 Picker("字典", selection: $kind) { ForEach(referenceKinds, id: \.key) { Text($0.name).tag($0.key) } }
                 Button("新建\(kindName(kind))", systemImage: "plus.circle.fill") { if let response { editor = ReferenceEditorState(row: nil, response: response) } }
-                if identity.can("reference.import") { Button("批量导入 JSON", systemImage: "square.and.arrow.down") { importing = true } }
+                if identity.can("reference.import") { Button("批量导入结构化数据", systemImage: "square.and.arrow.down") { importing = true } }
                 if identity.can("reference.backfill") { Button("存量外键回填", systemImage: "arrow.triangle.2.circlepath") { Task { await backfill() } } }
             }
             if let response {
@@ -27,7 +27,7 @@ struct AdminReferenceView: View {
                     ForEach(Array(response.items.enumerated()), id: \.offset) { _, row in
                         VStack(alignment: .leading, spacing: 6) {
                             HStack { Text(row[response.nameCol]?.display ?? "#\(row["id"]?.display ?? "")").font(.subheadline.weight(.semibold)); Spacer(); Text("#\(row["id"]?.display ?? "")").font(.caption.monospaced()).foregroundStyle(.secondary) }
-                            let details = response.columns.filter { $0 != response.nameCol }.prefix(4).compactMap { column -> String? in guard let value = row[column]?.display, !value.isEmpty else { return nil }; return "\(columnLabel(column)): \(value)" }
+                            let details = response.columns.filter { $0 != response.nameCol }.prefix(4).compactMap { column -> String? in guard let value = row[column]?.display, !value.isEmpty else { return nil }; return "\(columnLabel(column)): \(referenceDisplayValue(value, column: column))" }
                             if !details.isEmpty { Text(details.joined(separator: " · ")).font(.caption).foregroundStyle(.secondary).lineLimit(3) }
                             HStack {
                                 if kind == "registration", let id = row["id"]?.intValue { Button("运营人", systemImage: "building.2") { registrationTools = RegistrationToolState(id: id, title: row[response.nameCol]?.display ?? "#\(id)", tab: .operators) }; Button("事件", systemImage: "calendar") { registrationTools = RegistrationToolState(id: id, title: row[response.nameCol]?.display ?? "#\(id)", tab: .events) } }
@@ -89,6 +89,11 @@ private struct AdminReferenceEditor: View {
                         Section(columnLabel(column)) { TextEditor(text: binding(column)).frame(minHeight: 90) }
                     } else if kind == "registration", column == "status" {
                         Picker(columnLabel(column), selection: binding(column)) { ForEach(aircraftStatuses, id: \.key) { Text($0.name).tag($0.key) } }
+                    } else if let choices = referenceChoices(kind: kind, column: column) {
+                        Picker(columnLabel(column), selection: binding(column)) {
+                            Text("请选择").tag("")
+                            ForEach(choices, id: \.key) { Text($0.name).tag($0.key) }
+                        }
                     } else if column == "active" || column == "is_special_livery" {
                         Toggle(columnLabel(column), isOn: Binding(get: { values[column] == "1" || values[column]?.lowercased() == "true" }, set: { values[column] = $0 ? "1" : "0" }))
                     } else {
@@ -125,7 +130,7 @@ private struct AdminReferencePicker: View {
 private struct AdminReferenceImporter: View {
     @Environment(\.dismiss) private var dismiss; let kind: String
     @State private var text = ""; @State private var busy = false; @State private var errorMessage: String?; @State private var resultMessage: String?
-    var body: some View { NavigationStack { Form { Section { TextEditor(text: $text).font(.system(.caption, design: .monospaced)).frame(minHeight: 220) } header: { Text("JSON 数组") } footer: { Text("每个对象的键使用数据库列名；单次最多 5000 条。") }; if let resultMessage { Section { Text(resultMessage).foregroundStyle(.green) } }; if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } } }.navigationTitle("批量导入 · \(kindName(kind))").navigationBarTitleDisplayMode(.inline).toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { dismiss() } }; ToolbarItem(placement: .confirmationAction) { Button("导入") { Task { await run() } }.disabled(text.isEmpty || busy) } } } }
+    var body: some View { NavigationStack { Form { Section { TextEditor(text: $text).font(.system(.caption, design: .monospaced)).frame(minHeight: 220) } header: { Text("数据数组") } footer: { Text("内容使用结构化数据格式及服务端字段名；单次最多 5000 条。") }; if let resultMessage { Section { Text(resultMessage).foregroundStyle(.green) } }; if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } } }.navigationTitle("批量导入 · \(kindName(kind))").navigationBarTitleDisplayMode(.inline).toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { dismiss() } }; ToolbarItem(placement: .confirmationAction) { Button("导入") { Task { await run() } }.disabled(text.isEmpty || busy) } } } }
     @MainActor private func run() async { busy = true; defer { busy = false }; do { guard let data = text.data(using: .utf8) else { throw APIClientError.invalidResponse }; let rows = try JSONDecoder().decode([[String: ReferenceValue]].self, from: data); let result: ReferenceImportResponse = try await APIClient.shared.send("api/admin/reference/\(kind)/import", body: ReferenceImportBody(rows: rows)); resultMessage = "已导入 \(result.imported) 条，跳过 \(result.skipped) 条"; errorMessage = nil } catch { errorMessage = error.localizedDescription } }
 }
 
@@ -183,9 +188,29 @@ private struct CoordinateMapView: UIViewRepresentable { @Binding var coordinate:
 private let referenceKinds = [(key: "aircraft-type", name: "机型"), (key: "airline", name: "航空公司"), (key: "airport", name: "机场"), (key: "registration", name: "注册号"), (key: "train-model", name: "车型"), (key: "bureau", name: "路局"), (key: "line", name: "线路"), (key: "station", name: "车站")]
 private let aircraftStatuses = [(key: "active", name: "正常运营"), (key: "maintenance", name: "维修中"), (key: "stored", name: "停场 / 封存"), (key: "retired", name: "退役"), (key: "written_off", name: "失事 / 全损"), (key: "scrapped", name: "拆解 / 报废"), (key: "registration_changed", name: "注册号已变更"), (key: "unknown", name: "状态不明")]
 private let eventTypes = [(key: "livery", name: "涂装变化"), (key: "transfer", name: "转场 / 转手"), (key: "registration", name: "注册号变更"), (key: "conversion", name: "客改货 / 改装"), (key: "storage", name: "停场 / 封存"), (key: "retirement", name: "退役"), (key: "scrapped", name: "拆解 / 报废"), (key: "delivery", name: "交付"), (key: "first_flight", name: "首飞"), (key: "operator", name: "运营人变化"), (key: "other", name: "其他")]
+private let aircraftCategories = [(key: "narrow_body", name: "窄体客机"), (key: "wide_body", name: "宽体客机"), (key: "regional", name: "支线客机"), (key: "cargo", name: "货机"), (key: "business_jet", name: "公务机"), (key: "general", name: "通用航空器"), (key: "helicopter", name: "直升机"), (key: "military", name: "军用航空器"), (key: "other", name: "其他")]
+private let airportTypes = [(key: "airport", name: "机场"), (key: "spotting_point", name: "拍摄点"), (key: "other", name: "其他")]
+private let trainCategories = [(key: "emu", name: "动车组"), (key: "locomotive", name: "机车"), (key: "passenger_car", name: "客车"), (key: "freight", name: "货车"), (key: "metro", name: "地铁"), (key: "tram", name: "有轨电车"), (key: "other", name: "其他")]
+private let railwayLineTypes = [(key: "high_speed", name: "高速铁路"), (key: "intercity", name: "城际铁路"), (key: "conventional", name: "普速铁路"), (key: "metro", name: "地铁"), (key: "freight", name: "货运铁路"), (key: "other", name: "其他")]
 private let referenceColumnLabels: [String: String] = ["icao_code":"ICAO", "iata_code":"IATA", "manufacturer":"制造商", "model":"型号", "name":"名称", "name_en":"英文名", "category":"类别", "engine_count":"发动机数", "typical_seats":"典型座位", "first_flight_year":"首飞年份", "description":"描述", "country":"国家", "callsign":"呼号", "active":"启用", "city":"城市", "province":"省份", "type":"类型", "registration":"注册号", "aircraft_type_id":"机型", "airline_id":"所属航司", "current_operator_id":"当前运营人", "serial_number":"序列号", "line_number":"线号", "status":"状态", "notes":"备注", "code":"代码", "power_type":"动力", "max_speed":"最高速度", "short_name":"简称", "line_type":"线路类型", "bureau_id":"路局", "start_station":"起点", "end_station":"终点", "pinyin":"拼音", "level":"等级", "manufacturing_date":"制造日期", "first_flight":"首飞日期", "delivery_date":"交付日期", "data_source":"数据来源", "is_special_livery":"是否彩绘", "special_livery_name":"彩绘名称", "latitude":"纬度", "longitude":"经度", "elevation":"海拔", "timezone":"时区"]
 private func kindName(_ kind: String) -> String { referenceKinds.first { $0.key == kind }?.name ?? kind }
 private func columnLabel(_ column: String) -> String { referenceColumnLabels[column] ?? column }
+private func referenceDisplayValue(_ value: String, column: String) -> String {
+    switch column {
+    case "category", "type", "line_type", "status": adminSystemLabel(value)
+    case "active", "is_special_livery": (value == "1" || value.lowercased() == "true") ? "是" : "否"
+    default: value
+    }
+}
+private func referenceChoices(kind: String, column: String) -> [(key: String, name: String)]? {
+    switch (kind, column) {
+    case ("aircraft-type", "category"): aircraftCategories
+    case ("airport", "type"): airportTypes
+    case ("train-model", "category"): trainCategories
+    case ("line", "line_type"): railwayLineTypes
+    default: nil
+    }
+}
 private func targetKind(for column: String) -> String? { switch column { case "aircraft_type_id": "aircraft-type"; case "airline_id", "current_operator_id": "airline"; case "bureau_id": "bureau"; default: nil } }
 private func eventName(_ type: String) -> String { eventTypes.first { $0.key == type }?.name ?? type }
 

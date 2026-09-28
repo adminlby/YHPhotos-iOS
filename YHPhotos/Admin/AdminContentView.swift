@@ -318,7 +318,7 @@ private struct AdminContentTagsView: View {
                     ForEach(response.items) { tag in
                         HStack {
                             Button { if let source = mergeSource, source.id != tag.id { Task { await merge(source.id, into: tag.id) } } } label: {
-                                VStack(alignment: .leading) { Text(tag.name); Text("使用 \(tag.used) 次 · \(tag.type)").font(.caption).foregroundStyle(.secondary) }
+                                VStack(alignment: .leading) { Text(tag.name); Text("使用 \(tag.used) 次 · \(tagTypeLabel(tag.type))").font(.caption).foregroundStyle(.secondary) }
                             }.buttonStyle(.plain)
                             Spacer()
                             Menu {
@@ -385,3 +385,10 @@ private struct ContentStatusBody: Encodable, Sendable { let status: String }
 private struct VisibilityBody: Encodable, Sendable { let visibility: String }
 private struct TagMergeBody: Encodable, Sendable { let from_id: Int; let into_id: Int }
 private struct TagNameBody: Encodable, Sendable { let name: String }
+
+private func tagTypeLabel(_ type: String) -> String {
+    switch type {
+    case "general": "通用"
+    default: adminSystemLabel(type)
+    }
+}

@@ -103,6 +103,21 @@ struct AdminReviewQueueResponse: Codable, Sendable {
 }
 
 struct AdminReviewDetail: Codable, Sendable {
+    struct DuplicateMatch: Codable, Sendable {
+        struct Target: Codable, Sendable {
+            let id: Int
+            let title: String
+            let status: String
+            let thumb: String?
+            let uploader: String
+            let href: String
+        }
+
+        let distance: Int?
+        let exact: Bool
+        let target: Target?
+    }
+
     struct Uploader: Codable, Sendable {
         struct Stats: Codable, Sendable {
             let total: Int
@@ -156,6 +171,7 @@ struct AdminReviewDetail: Codable, Sendable {
     let canResolveConflict: Bool
     let uploader: Uploader
     let hashed: Bool
+    let dup: DuplicateMatch?
     let history: [History]
     let reviewAnnotations: [AdminReviewAnnotation]?
 }

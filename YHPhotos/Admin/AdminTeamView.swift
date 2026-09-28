@@ -273,7 +273,7 @@ private struct AdminPartnersPanel: View {
         .environment(\.editMode, .constant(.active))
         .task { await load() }.refreshable { await load() }
         .sheet(item: $editor, onDismiss: { Task { await load() } }) { AdminPartnerEditor(state: $0) }
-        .confirmationDialog("删除合作商“\(deleting?.nameZh ?? "")”？其 Logo 文件也会被清理。", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), titleVisibility: .visible) {
+        .confirmationDialog("删除合作商“\(deleting?.nameZh ?? "")”？其标志图片也会被清理。", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), titleVisibility: .visible) {
             Button("删除", role: .destructive) { if let id = deleting?.id { Task { await delete(id) } } }; Button("取消", role: .cancel) { deleting = nil }
         }
     }
@@ -298,11 +298,11 @@ private struct AdminPartnerEditor: View {
                 Section("名称") { TextField("中文名称", text: $nameZh); TextField("英文名称", text: $nameEn).textInputAutocapitalization(.words) }
                 Section("简介") { TextField("中文简介", text: $bioZh, axis: .vertical).lineLimit(3...7); TextField("英文简介", text: $bioEn, axis: .vertical).lineLimit(3...7) }
                 Section("展示") { TextField("官网（http:// 或 https://）", text: $websiteURL).keyboardType(.URL).textInputAutocapitalization(.never); Toggle("在关于页显示", isOn: $visible) }
-                Section("Logo") {
+                Section("标志图片") {
                     if let logoURL { TeamRemoteImage(url: logoURL, symbol: "building.2.fill", width: 160, height: 90, cornerRadius: 12) }
-                    PhotosPicker(selection: $selectedLogo, matching: .images) { Label(logoFilename.isEmpty ? "选择 Logo" : "更换 Logo", systemImage: "photo.badge.plus") }.disabled(uploading)
+                    PhotosPicker(selection: $selectedLogo, matching: .images) { Label(logoFilename.isEmpty ? "选择标志图片" : "更换标志图片", systemImage: "photo.badge.plus") }.disabled(uploading)
                     if uploading { HStack { ProgressView(); Text("正在上传并处理…") } }
-                    if !logoFilename.isEmpty { Button("移除 Logo", role: .destructive) { logoFilename = ""; logoURL = nil } }
+                    if !logoFilename.isEmpty { Button("移除标志图片", role: .destructive) { logoFilename = ""; logoURL = nil } }
                 }
                 if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } }
             }
@@ -332,7 +332,7 @@ private struct AdminPartnerEditor: View {
 
 private struct TeamRemoteImage: View {
     let url: String?; let symbol: String; let width: CGFloat; let height: CGFloat; let cornerRadius: CGFloat
-    var body: some View { AsyncImage(url: url.flatMap(URL.init(string:))) { phase in if case .success(let image) = phase { image.resizable().scaledToFill() } else { Image(systemName: symbol).foregroundStyle(AppTheme.accent) } }.frame(width: width, height: height).background(AppTheme.accent.opacity(0.1)).clipShape(RoundedRectangle(cornerRadius: cornerRadius)) }
+    var body: some View { AsyncImage(url: MediaURL.resolve(url)) { phase in if case .success(let image) = phase { image.resizable().scaledToFill() } else { Image(systemName: symbol).foregroundStyle(AppTheme.accent) } }.frame(width: width, height: height).background(AppTheme.accent.opacity(0.1)).clipShape(RoundedRectangle(cornerRadius: cornerRadius)) }
 }
 
 private enum TeamAdminMode: Hashable { case members, partners }

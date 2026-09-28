@@ -159,7 +159,7 @@ private struct AdminRiskMonitorView: View {
     var body: some View {
         List {
             Section {
-                Picker("记录类型", selection: $mode) { Text("API 违规").tag(RiskMonitorMode.api); Text("登录").tag(RiskMonitorMode.login); Text("验证码").tag(RiskMonitorMode.captcha); Text("设备").tag(RiskMonitorMode.devices) }.pickerStyle(.menu)
+                Picker("记录类型", selection: $mode) { Text("接口违规").tag(RiskMonitorMode.api); Text("登录").tag(RiskMonitorMode.login); Text("验证码").tag(RiskMonitorMode.captcha); Text("设备").tag(RiskMonitorMode.devices) }.pickerStyle(.menu)
                 if mode == .api { TextField("事件类型（可空）", text: $eventType).textInputAutocapitalization(.never); Picker("封禁状态", selection: $outcome) { Text("全部").tag(-1); Text("未封禁").tag(0); Text("已封禁").tag(1) } }
                 if mode == .login { Picker("登录结果", selection: $outcome) { Text("全部").tag(-1); Text("失败").tag(0); Text("成功").tag(1) } }
             }
