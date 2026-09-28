@@ -33,6 +33,7 @@ enum AppSection: String, CaseIterable, Identifiable {
 final class AppModel: ObservableObject {
     @Published var selectedSection: AppSection = .discover
     @Published var sessionUser: SessionUser?
+    @Published private(set) var adminIdentity: AdminIdentity?
     @Published var showingUpload = false
     @Published var showingLogin = false
     @Published var unreadMessages = 0
@@ -67,6 +68,7 @@ final class AppModel: ObservableObject {
         do {
             let envelope: SessionEnvelope = try await api.get("api/auth/me")
             setSession(envelope.user)
+            await refreshAdminAccess()
             await PushNotificationManager.shared.registerCurrentDevice()
             await refreshUnreadCount()
         } catch let error as APIClientError {
@@ -91,6 +93,7 @@ final class AppModel: ObservableObject {
         let response = try await api.exchangeSSO(code: code)
         SessionCredentialStore.save(response.sessionToken)
         setSession(response.user)
+        await refreshAdminAccess()
         await PushNotificationManager.shared.registerCurrentDevice()
         await refreshUnreadCount()
     }
@@ -120,6 +123,21 @@ final class AppModel: ObservableObject {
         unreadMessages = (direct?.unread ?? 0) + (site?.unread ?? 0)
     }
 
+    /// Checks the real RBAC entry point instead of inferring access from a role
+    /// name. Custom permission groups and user-level grants/denies are therefore
+    /// reflected exactly as they are in the website administration console.
+    func refreshAdminAccess() async {
+        guard sessionUser != nil else {
+            adminIdentity = nil
+            return
+        }
+        do {
+            adminIdentity = try await api.get("api/admin/me")
+        } catch {
+            adminIdentity = nil
+        }
+    }
+
     private func setSession(_ user: SessionUser) {
         sessionUser = user
         if let data = try? JSONEncoder().encode(user) {
@@ -129,6 +147,7 @@ final class AppModel: ObservableObject {
 
     private func clearSession() {
         sessionUser = nil
+        adminIdentity = nil
         unreadMessages = 0
         UserDefaults.standard.removeObject(forKey: "sessionUser")
         SessionCredentialStore.clear()

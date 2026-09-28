@@ -493,20 +493,20 @@ struct ImageInspectorView: View {
         analysis = nil
 
         let source = image
-        let result: AnalysisResult? = await Task.detached(priority: .userInitiated) {
-            guard let rgba = Self.rgbaBytes(from: source, width: nil, height: nil) else { return nil }
+        guard let rgba = Self.rgbaBytes(from: source, width: nil, height: nil) else {
+            analysisError = true
+            analysisPending = false
+            return
+        }
+        let result: AnalysisResult = await Task.detached(priority: .userInitiated) {
             let histograms = ImageInspectorMath.collectHistograms(rgba: rgba)
             let luts = ImageInspectorMath.buildEqualizationLuts(histograms: histograms)
             return AnalysisResult(histograms: histograms, luts: luts)
         }.value
 
-        if let result {
-            analysis = result
-            analysisError = false
-            rebuildEqualizedIfNeeded()
-        } else {
-            analysisError = true
-        }
+        analysis = result
+        analysisError = false
+        rebuildEqualizedIfNeeded()
         analysisPending = false
     }
 

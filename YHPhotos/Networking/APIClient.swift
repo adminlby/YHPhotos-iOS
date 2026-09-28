@@ -70,6 +70,15 @@ actor APIClient {
         try await request(path, method: method, query: [], body: Optional<Data>.none, as: type)
     }
 
+    func send<Response: Decodable & Sendable>(
+        _ path: String,
+        method: String,
+        query: [URLQueryItem],
+        as type: Response.Type = Response.self
+    ) async throws -> Response {
+        try await request(path, method: method, query: query, body: Optional<Data>.none, as: type)
+    }
+
     /// Loads authenticated binary content while preserving the same App Attest
     /// token-rotation ordering as JSON requests. Used for owner-only media such
     /// as the historical image attached to a moderation annotation.
@@ -193,6 +202,76 @@ actor APIClient {
             guard let decoded = try? JSONDecoder().decode(Response.self, from: data) else {
                 throw APIClientError.invalidResponse
             }
+            return decoded
+        }
+        tail = Task { _ = try? await operation.value }
+        return try await operation.value
+    }
+
+    /// Uploads an arbitrary authenticated file using multipart/form-data.
+    /// Admin rule PDFs use PUT rather than the image uploader's POST route.
+    func uploadFile<Response: Decodable & Sendable>(
+        _ path: String,
+        method: String = "POST",
+        data fileData: Data,
+        filename: String,
+        mimeType: String,
+        fieldName: String = "file",
+        as type: Response.Type = Response.self
+    ) async throws -> Response {
+        let boundary = "YHPhotos-\(UUID().uuidString)"
+        var body = Data()
+        func append(_ value: String) { body.append(Data(value.utf8)) }
+        append("--\(boundary)\r\n")
+        append("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(filename.replacingOccurrences(of: "\"", with: ""))\"\r\n")
+        append("Content-Type: \(mimeType)\r\n\r\n")
+        body.append(fileData)
+        append("\r\n--\(boundary)--\r\n")
+
+        let previous = tail
+        let operation = Task<Response, Error> { [baseURL, session] in
+            if let previous { await previous.value }
+            let normalizedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+            let url = baseURL.appendingPathComponent(normalizedPath)
+            var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+
+            func makeRequest(_ token: String) -> URLRequest {
+                var request = APIRequestFactory.make(
+                    url: url,
+                    method: method,
+                    body: body,
+                    contentType: "multipart/form-data; boundary=\(boundary)",
+                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+                )
+                request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
+                if let sessionToken = SessionCredentialStore.token {
+                    request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
+                }
+                return request
+            }
+
+            var (data, response) = try await session.data(for: makeRequest(token))
+            guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+            await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            if http.statusCode == 403,
+               let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
+               envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
+                await AppAttestManager.shared.invalidateToken()
+                token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+                (data, response) = try await session.data(for: makeRequest(token))
+                guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+                http = retriedHTTP
+                await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            }
+            guard (200..<300).contains(http.statusCode) else {
+                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
+                throw APIClientError.server(
+                    code: envelope?.error.code ?? "http_\(http.statusCode)",
+                    message: envelope?.error.message ?? L10n.format("上传失败（%d）", http.statusCode),
+                    status: http.statusCode
+                )
+            }
+            guard let decoded = try? JSONDecoder().decode(Response.self, from: data) else { throw APIClientError.invalidResponse }
             return decoded
         }
         tail = Task { _ = try? await operation.value }

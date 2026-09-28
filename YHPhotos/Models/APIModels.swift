@@ -233,6 +233,31 @@ struct SessionUser: Codable, Identifiable, Sendable {
 
 struct SessionEnvelope: Codable, Sendable { let user: SessionUser }
 
+/// The backend is authoritative for both access to the administration console
+/// and every individual action exposed by it. Keep this response separate from
+/// `SessionUser`: a staff role alone does not necessarily grant `admin.access`.
+struct AdminIdentity: Codable, Identifiable, Sendable {
+    let id: Int
+    let username: String
+    let displayName: String
+    let avatar: String?
+    let role: String
+    let roleLabel: String
+    let level: Int
+    let permissions: [String]
+
+    func can(_ permission: String) -> Bool {
+        role == "admin" || permissions.contains(permission)
+    }
+
+    /// Navigation entries mirror the website console: an administrator may
+    /// always enter, while every other role needs at least one listed grant.
+    /// The server still validates the permission again for every API action.
+    func can(anyOf requiredPermissions: [String]) -> Bool {
+        role == "admin" || requiredPermissions.contains(where: permissions.contains)
+    }
+}
+
 struct PublicSettings: Codable, Sendable {
     let ssoEnabled: Bool
     let ssoConfigured: Bool

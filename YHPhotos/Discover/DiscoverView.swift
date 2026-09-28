@@ -33,6 +33,7 @@ struct DiscoverView: View {
     @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var showingSearch = false
+    @State private var showingAdmin = false
 
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
@@ -62,12 +63,30 @@ struct DiscoverView: View {
                         .buttonStyle(.plain)
                         .accessibilityLabel(L10n.string("个人中心"))
                     }
+                    if let admin = appModel.adminIdentity {
+                        Button { showingAdmin = true } label: {
+                            Image(systemName: "lock.shield.fill")
+                        }
+                        .accessibilityLabel(L10n.string("管理后台"))
+                        .help(L10n.format("管理后台 · %@", admin.roleLabel))
+                    }
                     Button { showingSearch = true } label: { Image(systemName: "magnifyingglass") }
                 }
             }
             .navigationDestination(isPresented: $showingSearch) { SearchView() }
-            .refreshable { await load() }
+            .fullScreenCover(isPresented: $showingAdmin, onDismiss: {
+                Task { await appModel.restoreSession() }
+            }) {
+                if let admin = appModel.adminIdentity {
+                    AdminConsoleView(identity: admin)
+                }
+            }
+            .refreshable {
+                await load()
+                await appModel.refreshAdminAccess()
+            }
             .task(id: filter) { await load() }
+            .task(id: appModel.sessionUser?.id) { await appModel.refreshAdminAccess() }
             .appScreenBackground()
         }
     }
