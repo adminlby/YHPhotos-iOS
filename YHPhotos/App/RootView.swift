@@ -6,15 +6,45 @@ struct RootView: View {
 
     var body: some View {
         Group {
+#if DEBUG
+            if AppStoreDemo.isEnabled, isDirectDemoScreen {
+                directDemoRoot
+            } else if horizontalSizeClass == .regular {
+                tabletRoot
+            } else {
+                phoneRoot
+            }
+#else
             if horizontalSizeClass == .regular {
                 tabletRoot
             } else {
                 phoneRoot
             }
+#endif
         }
         .sheet(isPresented: $appModel.showingUpload) { UploadView() }
         .sheet(isPresented: $appModel.showingLogin) { LoginView() }
     }
+
+#if DEBUG
+    private var isDirectDemoScreen: Bool {
+        [.photo, .map, .inspector].contains(AppStoreDemo.screen)
+    }
+
+    @ViewBuilder
+    private var directDemoRoot: some View {
+        switch AppStoreDemo.screen {
+        case .photo:
+            NavigationStack { PhotoDetailView(photoID: 1) }
+        case .map:
+            NavigationStack { MapBrowserView() }
+        case .inspector:
+            NavigationStack { ImageInspectorLauncherView() }
+        default:
+            phoneRoot
+        }
+    }
+#endif
 
     private var phoneRoot: some View {
         TabView(selection: Binding(

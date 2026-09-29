@@ -24,6 +24,14 @@ enum AppBuildInfo {
         }
         return URL(string: "https://www.yhphotos.top")!
     }
+
+    static var privacyPolicyURL: URL {
+        if let raw = Bundle.main.object(forInfoDictionaryKey: "YHPhotosPrivacyPolicyURL") as? String,
+           let url = URL(string: raw) {
+            return url
+        }
+        return siteOrigin.appending(path: "privacy")
+    }
 }
 
 /// Shared public legal footer matching the website bottom strip.
@@ -36,7 +44,7 @@ struct SiteLegalFooter: View {
             HStack(spacing: 0) {
                 footerLink(L10n.string("服务协议"), AppBuildInfo.siteOrigin.appending(path: "terms"))
                 separator
-                footerLink(L10n.string("隐私政策"), AppBuildInfo.siteOrigin.appending(path: "privacy"))
+                footerLink(L10n.string("隐私政策"), AppBuildInfo.privacyPolicyURL)
                 separator
                 footerLink(L10n.string("系统状态"), URL(string: "https://status.yhphotos.top")!)
             }

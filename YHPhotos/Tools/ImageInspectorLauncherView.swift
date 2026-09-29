@@ -100,12 +100,21 @@ struct ImageInspectorLauncherView: View {
         .navigationTitle(L10n.string("图片检查工具"))
         .navigationBarTitleDisplayMode(.inline)
         .task(id: selection) { await loadSelectedImage() }
+        .task { await loadDemoImageIfNeeded() }
         .sheet(isPresented: $showingInspector) {
             if let imageData, let image = UIImage(data: imageData) {
                 ImageInspectorView(image: image, byteCount: imageData.count)
             }
         }
         .appScreenBackground()
+    }
+
+    @MainActor
+    private func loadDemoImageIfNeeded() async {
+#if DEBUG
+        guard AppStoreDemo.isEnabled, imageData == nil else { return }
+        imageData = try? await URLSession.shared.data(from: AppStoreDemo.sampleImageURL).0
+#endif
     }
 
     private func loadSelectedImage() async {

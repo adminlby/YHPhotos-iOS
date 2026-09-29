@@ -67,5 +67,7 @@
 	<string>$(APNS_SERVER_ENVIRONMENT)</string>
 	<key>YHPhotosGitCommit</key>
 	<string>$(YHPHOTOS_GIT_COMMIT)</string>
+	<key>YHPhotosPrivacyPolicyURL</key>
+	<string>https://www.yhphotos.top/privacy</string>
 </dict>
 </plist>

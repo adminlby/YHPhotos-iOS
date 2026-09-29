@@ -41,6 +41,12 @@ struct AppSettingsView: View {
                     NavigationLink { BlockedUsersView() } label: { Label(L10n.string("黑名单"), systemImage: "person.crop.circle.badge.xmark") }
                     NavigationLink { SavedSearchesView() } label: { Label(L10n.string("搜索订阅"), systemImage: "magnifyingglass.circle.fill") }
                     NavigationLink { APIPublishingSettingsView() } label: { Label(L10n.string("API 图片发布"), systemImage: "network") }
+                    NavigationLink { SupportCenterView() } label: {
+                        Label(
+                            SupportCopy.text("帮助与反馈", "支援與意見回饋", "Help & Feedback"),
+                            systemImage: "lifepreserver.fill"
+                        )
+                    }
                 }
                 Section {
                     Button(role: .destructive) { Task { await appModel.logout() } } label: {

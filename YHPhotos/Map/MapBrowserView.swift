@@ -92,7 +92,14 @@ struct MapBrowserView: View {
         .navigationTitle(L10n.string("地图浏览"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { ToolbarItem(placement: .topBarTrailing) { Button { fitAll() } label: { Image(systemName: "scope") } } }
-        .task { regionResolver.resolve(); await load() }
+        .task {
+#if DEBUG
+            if !AppStoreDemo.isEnabled { regionResolver.resolve() }
+#else
+            regionResolver.resolve()
+#endif
+            await load()
+        }
         .alert(L10n.string("加载失败"), isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
             Button(L10n.string("重试")) { Task { await load() } }
         } message: { Text(errorMessage ?? "") }

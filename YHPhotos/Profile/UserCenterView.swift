@@ -47,6 +47,7 @@ struct UserCenterView: View {
                     dashboard(overview)
                     quickActions
                     accountSecurityCard
+                    supportCenterCard
                     workSection
                 }
                 LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
@@ -120,6 +121,35 @@ struct UserCenterView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("账号与安全").font(.headline)
                         Text("通过 SSO 修改密码、管理登录方式")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(16)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var supportCenterCard: some View {
+        NavigationLink {
+            SupportCenterView()
+        } label: {
+            GlassPanel(cornerRadius: 22) {
+                HStack(spacing: 14) {
+                    Image(systemName: "lifepreserver.fill")
+                        .font(.title2.weight(.semibold))
+                        .foregroundStyle(.orange)
+                        .frame(width: 46, height: 46)
+                        .background(Color.orange.opacity(0.13), in: Circle())
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(SupportCopy.text("帮助与反馈", "支援與意見回饋", "Help & Feedback"))
+                            .font(.headline)
+                        Text(SupportCopy.text("联系客服、跟进工单或提交产品建议", "聯絡客服、跟進支援單或提交產品建議", "Contact support, track tickets, or share product ideas"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

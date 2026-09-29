@@ -37,6 +37,14 @@ struct DiscoverView: View {
 
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
+    init() {
+#if DEBUG
+        if AppStoreDemo.isEnabled, AppStoreDemo.screen == .aviation {
+            _filter = State(initialValue: .aviation)
+        }
+#endif
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {

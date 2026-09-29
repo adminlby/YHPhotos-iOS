@@ -43,10 +43,22 @@ final class AppModel: ObservableObject {
 
     init(api: APIClient = .shared) {
         self.api = api
+#if DEBUG
+        if AppStoreDemo.isEnabled {
+            sessionUser = AppStoreDemo.sessionUser
+            if AppStoreDemo.screen == .tools || AppStoreDemo.screen == .inspector {
+                selectedSection = .tools
+            }
+        } else if let data = UserDefaults.standard.data(forKey: "sessionUser"),
+                  let cached = try? JSONDecoder().decode(SessionUser.self, from: data) {
+            sessionUser = cached
+        }
+#else
         if let data = UserDefaults.standard.data(forKey: "sessionUser"),
            let cached = try? JSONDecoder().decode(SessionUser.self, from: data) {
             sessionUser = cached
         }
+#endif
         NotificationCenter.default.addObserver(
             forName: .yhPushNotificationOpened,
             object: nil,
@@ -65,6 +77,13 @@ final class AppModel: ObservableObject {
     }
 
     func restoreSession() async {
+#if DEBUG
+        if AppStoreDemo.isEnabled {
+            sessionUser = AppStoreDemo.sessionUser
+            unreadMessages = 2
+            return
+        }
+#endif
         do {
             let envelope: SessionEnvelope = try await api.get("api/auth/me")
             setSession(envelope.user)

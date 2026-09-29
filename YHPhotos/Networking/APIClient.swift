@@ -217,11 +217,17 @@ actor APIClient {
         filename: String,
         mimeType: String,
         fieldName: String = "file",
+        fields: [String: String] = [:],
         as type: Response.Type = Response.self
     ) async throws -> Response {
         let boundary = "YHPhotos-\(UUID().uuidString)"
         var body = Data()
         func append(_ value: String) { body.append(Data(value.utf8)) }
+        for (name, value) in fields.sorted(by: { $0.key < $1.key }) {
+            append("--\(boundary)\r\n")
+            append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n")
+            append("\(value)\r\n")
+        }
         append("--\(boundary)\r\n")
         append("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(filename.replacingOccurrences(of: "\"", with: ""))\"\r\n")
         append("Content-Type: \(mimeType)\r\n\r\n")
@@ -285,6 +291,12 @@ actor APIClient {
         body: Data?,
         as type: Response.Type
     ) async throws -> Response {
+#if DEBUG
+        if AppStoreDemo.isEnabled,
+           let demoData = try AppStoreDemo.responseData(path: path, query: query) {
+            return try JSONDecoder().decode(Response.self, from: demoData)
+        }
+#endif
         let previous = tail
         let operation = Task<Response, Error> { [baseURL, session] in
             if let previous { await previous.value }
