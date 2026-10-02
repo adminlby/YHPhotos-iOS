@@ -141,11 +141,33 @@ struct BadgeIconView: View {
 struct LoadingOrErrorView: View {
     let isLoading: Bool
     let error: String?
+    let loadingMessage: String?
     let retry: () -> Void
+
+    init(
+        isLoading: Bool,
+        error: String?,
+        loadingMessage: String? = nil,
+        retry: @escaping () -> Void
+    ) {
+        self.isLoading = isLoading
+        self.error = error
+        self.loadingMessage = loadingMessage
+        self.retry = retry
+    }
 
     var body: some View {
         if isLoading {
-            ProgressView().frame(maxWidth: .infinity, minHeight: 180)
+            VStack(spacing: 12) {
+                ProgressView()
+                if let loadingMessage {
+                    Text(loadingMessage)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 180)
         } else if let error {
             EmptyStateView("加载失败", systemImage: "wifi.exclamationmark", description: error) {
                 Button(action: retry) {

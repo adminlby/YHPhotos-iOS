@@ -4802,6 +4802,17 @@
     "正在安全加载…" : {
 
     },
+    "正在恢复设备安全认证…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restoring device security verification…"
+          }
+        }
+      }
+    },
     "正在安全加载原图…" : {
 
     },
@@ -6408,6 +6419,17 @@
     },
     "设备" : {
 
+    },
+    "设备安全验证超时，请检查网络后重试" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Device security verification timed out. Check your connection and try again."
+          }
+        }
+      }
     },
     "设置到期时间" : {
 

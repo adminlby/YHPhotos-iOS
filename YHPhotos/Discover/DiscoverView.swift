@@ -26,6 +26,7 @@ private enum DiscoverFilter: String, CaseIterable, Identifiable {
 
 struct DiscoverView: View {
     @EnvironmentObject private var appModel: AppModel
+    @ObservedObject private var appAttestStatus = AppAttestRecoveryStatus.shared
     @State private var filter: DiscoverFilter = .featured
     @State private var featured: [Photo] = []
     @State private var photos: [Photo] = []
@@ -55,7 +56,12 @@ struct DiscoverView: View {
                     } else if let domain = filter.domain {
                         DomainSectionContent(domain: domain, photos: photos, featured: featured.first)
                     }
-                    LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
+                    LoadingOrErrorView(
+                        isLoading: isLoading,
+                        error: errorMessage,
+                        loadingMessage: appAttestStatus.message,
+                        retry: reload
+                    )
                 }
                 .padding(.horizontal, 18)
                 .padding(.bottom, 16)
@@ -140,13 +146,25 @@ struct DiscoverView: View {
         errorMessage = nil
         do {
             let domainQuery = filter.domain.map { [URLQueryItem(name: "domain", value: $0.rawValue)] } ?? []
-            featured = try await APIClient.shared.get("api/photos/featured", query: [URLQueryItem(name: "limit", value: "8")])
-            photos = try await APIClient.shared.get(
+            async let nextFeatured: [Photo] = APIClient.shared.get(
+                "api/photos/featured",
+                query: [URLQueryItem(name: "limit", value: "8")]
+            )
+            async let nextPhotos: [Photo] = APIClient.shared.get(
                 "api/photos",
                 query: domainQuery + [URLQueryItem(name: "limit", value: "24"), URLQueryItem(name: "sort", value: "new")]
             )
             if filter == .featured {
-                stats = try await APIClient.shared.get("api/stats")
+                async let nextStats: CommunityStats = APIClient.shared.get("api/stats")
+                let values = try await (nextFeatured, nextPhotos, nextStats)
+                featured = values.0
+                photos = values.1
+                stats = values.2
+            } else {
+                let values = try await (nextFeatured, nextPhotos)
+                featured = values.0
+                photos = values.1
+                stats = nil
             }
         } catch {
             errorMessage = error.localizedDescription

@@ -22,13 +22,12 @@ private struct APIErrorEnvelope: Decodable {
     let error: Payload
 }
 
-/// 原生 App 来源 token 会随响应轮换，因此请求严格串行，避免响应顺序覆盖新 token。
+/// App 来源 token 在有效期内可并发使用；只有凭据恢复由 AppAttestManager 合并为单任务。
 actor APIClient {
     static let shared = APIClient()
 
     private let session: URLSession
     private let baseURL: URL
-    private var tail: Task<Void, Never>?
 
     init(baseURL: URL? = nil) {
         let configured = Bundle.main.object(forInfoDictionaryKey: "YHPhotosAPIBaseURL") as? String
@@ -79,68 +78,60 @@ actor APIClient {
         try await request(path, method: method, query: query, body: Optional<Data>.none, as: type)
     }
 
-    /// Loads authenticated binary content while preserving the same App Attest
-    /// token-rotation ordering as JSON requests. Used for owner-only media such
-    /// as the historical image attached to a moderation annotation.
+    /// Loads authenticated binary content. Used for owner-only media such as
+    /// the historical image attached to a moderation annotation.
     func data(_ path: String, query: [URLQueryItem] = []) async throws -> Data {
-        let previous = tail
-        let operation = Task<Data, Error> { [baseURL, session] in
-            if let previous { await previous.value }
+        let normalizedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+        guard var components = URLComponents(
+            url: baseURL.appendingPathComponent(normalizedPath),
+            resolvingAgainstBaseURL: false
+        ) else { throw APIClientError.invalidBaseURL }
+        if !query.isEmpty { components.queryItems = query }
+        guard let url = components.url else { throw APIClientError.invalidBaseURL }
 
-            let normalizedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
-            guard var components = URLComponents(
-                url: baseURL.appendingPathComponent(normalizedPath),
-                resolvingAgainstBaseURL: false
-            ) else { throw APIClientError.invalidBaseURL }
-            if !query.isEmpty { components.queryItems = query }
-            guard let url = components.url else { throw APIClientError.invalidBaseURL }
-
-            func makeRequest(token: String) -> URLRequest {
-                var request = APIRequestFactory.make(
-                    url: url,
-                    method: "GET",
-                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
-                )
-                request.setValue("image/*, application/octet-stream", forHTTPHeaderField: "Accept")
-                request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
-                if let sessionToken = SessionCredentialStore.token {
-                    request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
-                }
-                return request
+        func makeRequest(token: String) -> URLRequest {
+            var request = APIRequestFactory.make(
+                url: url,
+                method: "GET",
+                userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+            )
+            request.setValue("image/*, application/octet-stream", forHTTPHeaderField: "Accept")
+            request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
+            if let sessionToken = SessionCredentialStore.token {
+                request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
             }
+            return request
+        }
 
-            var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
-            var (data, response) = try await session.data(for: makeRequest(token: token))
-            guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+        var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+        var (data, response) = try await session.data(for: makeRequest(token: token))
+        guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+        await AppAttestManager.shared.acceptRotatedToken(
+            http.value(forHTTPHeaderField: "X-YH-App-Token"),
+            baseURL: baseURL
+        )
+        if http.statusCode == 403,
+           let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
+           envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
+            await AppAttestManager.shared.invalidateToken(token, baseURL: baseURL)
+            token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+            (data, response) = try await session.data(for: makeRequest(token: token))
+            guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+            http = retriedHTTP
             await AppAttestManager.shared.acceptRotatedToken(
                 http.value(forHTTPHeaderField: "X-YH-App-Token"),
                 baseURL: baseURL
             )
-            if http.statusCode == 403,
-               let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
-               envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
-                token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
-                (data, response) = try await session.data(for: makeRequest(token: token))
-                guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-                http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(
-                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
-                    baseURL: baseURL
-                )
-            }
-            guard (200..<300).contains(http.statusCode) else {
-                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
-                throw APIClientError.server(
-                    code: envelope?.error.code ?? "http_\(http.statusCode)",
-                    message: envelope?.error.message ?? L10n.format("请求失败（%d）", http.statusCode),
-                    status: http.statusCode
-                )
-            }
-            return data
         }
-        tail = Task { _ = try? await operation.value }
-        return try await operation.value
+        guard (200..<300).contains(http.statusCode) else {
+            let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
+            throw APIClientError.server(
+                code: envelope?.error.code ?? "http_\(http.statusCode)",
+                message: envelope?.error.message ?? L10n.format("请求失败（%d）", http.statusCode),
+                status: http.statusCode
+            )
+        }
+        return data
     }
 
     func upload<Response: Decodable & Sendable>(
@@ -165,59 +156,53 @@ actor APIClient {
         body.append(imageData)
         append("\r\n--\(boundary)--\r\n")
 
-        let previous = tail
-        let operation = Task<Response, Error> { [baseURL, session] in
-            if let previous { await previous.value }
-            let url = baseURL.appendingPathComponent(path)
-            var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
-            func makeRequest(_ token: String) -> URLRequest {
-                var request = APIRequestFactory.make(
-                    url: url,
-                    method: "POST",
-                    body: body,
-                    contentType: "multipart/form-data; boundary=\(boundary)",
-                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
-                )
-                request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
-                if let sessionToken = SessionCredentialStore.token {
-                    request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
-                }
-                return request
+        let url = baseURL.appendingPathComponent(path)
+        var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+        func makeRequest(_ token: String) -> URLRequest {
+            var request = APIRequestFactory.make(
+                url: url,
+                method: "POST",
+                body: body,
+                contentType: "multipart/form-data; boundary=\(boundary)",
+                userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+            )
+            request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
+            if let sessionToken = SessionCredentialStore.token {
+                request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
             }
-            var (data, response) = try await session.data(for: makeRequest(token))
-            guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+            return request
+        }
+        var (data, response) = try await session.data(for: makeRequest(token))
+        guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+        await AppAttestManager.shared.acceptRotatedToken(
+            http.value(forHTTPHeaderField: "X-YH-App-Token"),
+            baseURL: baseURL
+        )
+        if http.statusCode == 403,
+           let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
+           envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
+            await AppAttestManager.shared.invalidateToken(token, baseURL: baseURL)
+            token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+            (data, response) = try await session.data(for: makeRequest(token))
+            guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+            http = retriedHTTP
             await AppAttestManager.shared.acceptRotatedToken(
                 http.value(forHTTPHeaderField: "X-YH-App-Token"),
                 baseURL: baseURL
             )
-            if http.statusCode == 403,
-               let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
-               envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
-                token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
-                (data, response) = try await session.data(for: makeRequest(token))
-                guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-                http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(
-                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
-                    baseURL: baseURL
-                )
-            }
-            guard (200..<300).contains(http.statusCode) else {
-                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
-                throw APIClientError.server(
-                    code: envelope?.error.code ?? "http_\(http.statusCode)",
-                    message: envelope?.error.message ?? L10n.format("上传失败（%d）", http.statusCode),
-                    status: http.statusCode
-                )
-            }
-            guard let decoded = try? JSONDecoder().decode(Response.self, from: data) else {
-                throw APIClientError.invalidResponse
-            }
-            return decoded
         }
-        tail = Task { _ = try? await operation.value }
-        return try await operation.value
+        guard (200..<300).contains(http.statusCode) else {
+            let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
+            throw APIClientError.server(
+                code: envelope?.error.code ?? "http_\(http.statusCode)",
+                message: envelope?.error.message ?? L10n.format("上传失败（%d）", http.statusCode),
+                status: http.statusCode
+            )
+        }
+        guard let decoded = try? JSONDecoder().decode(Response.self, from: data) else {
+            throw APIClientError.invalidResponse
+        }
+        return decoded
     }
 
     /// Uploads an arbitrary authenticated file using multipart/form-data.
@@ -246,60 +231,54 @@ actor APIClient {
         body.append(fileData)
         append("\r\n--\(boundary)--\r\n")
 
-        let previous = tail
-        let operation = Task<Response, Error> { [baseURL, session] in
-            if let previous { await previous.value }
-            let normalizedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
-            let url = baseURL.appendingPathComponent(normalizedPath)
-            var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+        let normalizedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+        let url = baseURL.appendingPathComponent(normalizedPath)
+        var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
 
-            func makeRequest(_ token: String) -> URLRequest {
-                var request = APIRequestFactory.make(
-                    url: url,
-                    method: method,
-                    body: body,
-                    contentType: "multipart/form-data; boundary=\(boundary)",
-                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
-                )
-                request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
-                if let sessionToken = SessionCredentialStore.token {
-                    request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
-                }
-                return request
+        func makeRequest(_ token: String) -> URLRequest {
+            var request = APIRequestFactory.make(
+                url: url,
+                method: method,
+                body: body,
+                contentType: "multipart/form-data; boundary=\(boundary)",
+                userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+            )
+            request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
+            if let sessionToken = SessionCredentialStore.token {
+                request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
             }
+            return request
+        }
 
-            var (data, response) = try await session.data(for: makeRequest(token))
-            guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+        var (data, response) = try await session.data(for: makeRequest(token))
+        guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+        await AppAttestManager.shared.acceptRotatedToken(
+            http.value(forHTTPHeaderField: "X-YH-App-Token"),
+            baseURL: baseURL
+        )
+        if http.statusCode == 403,
+           let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
+           envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
+            await AppAttestManager.shared.invalidateToken(token, baseURL: baseURL)
+            token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+            (data, response) = try await session.data(for: makeRequest(token))
+            guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+            http = retriedHTTP
             await AppAttestManager.shared.acceptRotatedToken(
                 http.value(forHTTPHeaderField: "X-YH-App-Token"),
                 baseURL: baseURL
             )
-            if http.statusCode == 403,
-               let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
-               envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
-                token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
-                (data, response) = try await session.data(for: makeRequest(token))
-                guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-                http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(
-                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
-                    baseURL: baseURL
-                )
-            }
-            guard (200..<300).contains(http.statusCode) else {
-                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
-                throw APIClientError.server(
-                    code: envelope?.error.code ?? "http_\(http.statusCode)",
-                    message: envelope?.error.message ?? L10n.format("上传失败（%d）", http.statusCode),
-                    status: http.statusCode
-                )
-            }
-            guard let decoded = try? JSONDecoder().decode(Response.self, from: data) else { throw APIClientError.invalidResponse }
-            return decoded
         }
-        tail = Task { _ = try? await operation.value }
-        return try await operation.value
+        guard (200..<300).contains(http.statusCode) else {
+            let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
+            throw APIClientError.server(
+                code: envelope?.error.code ?? "http_\(http.statusCode)",
+                message: envelope?.error.message ?? L10n.format("上传失败（%d）", http.statusCode),
+                status: http.statusCode
+            )
+        }
+        guard let decoded = try? JSONDecoder().decode(Response.self, from: data) else { throw APIClientError.invalidResponse }
+        return decoded
     }
 
     private func request<Response: Decodable & Sendable>(
@@ -315,72 +294,65 @@ actor APIClient {
             return try JSONDecoder().decode(Response.self, from: demoData)
         }
 #endif
-        let previous = tail
-        let operation = Task<Response, Error> { [baseURL, session] in
-            if let previous { await previous.value }
+        guard var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false) else {
+            throw APIClientError.invalidBaseURL
+        }
+        if !query.isEmpty { components.queryItems = query }
+        guard let url = components.url else { throw APIClientError.invalidBaseURL }
 
-            guard var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false) else {
-                throw APIClientError.invalidBaseURL
+        func makeRequest(token: String) -> URLRequest {
+            var request = APIRequestFactory.make(
+                url: url,
+                method: method,
+                body: body,
+                contentType: body == nil ? nil : "application/json",
+                userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
+            )
+            request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
+            if let sessionToken = SessionCredentialStore.token {
+                request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
             }
-            if !query.isEmpty { components.queryItems = query }
-            guard let url = components.url else { throw APIClientError.invalidBaseURL }
+            return request
+        }
 
-            func makeRequest(token: String) -> URLRequest {
-                var request = APIRequestFactory.make(
-                    url: url,
-                    method: method,
-                    body: body,
-                    contentType: body == nil ? nil : "application/json",
-                    userAgent: "YHPhotos-iOS/0.1 (native; iOS)"
-                )
-                request.setValue(token, forHTTPHeaderField: "X-YH-App-Token")
-                if let sessionToken = SessionCredentialStore.token {
-                    request.setValue("Bearer \(sessionToken)", forHTTPHeaderField: "Authorization")
-                }
-                return request
-            }
+        var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+        var (data, response) = try await session.data(for: makeRequest(token: token))
+        guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+        await AppAttestManager.shared.acceptRotatedToken(
+            http.value(forHTTPHeaderField: "X-YH-App-Token"),
+            baseURL: baseURL
+        )
 
-            var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
-            var (data, response) = try await session.data(for: makeRequest(token: token))
-            guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+        if http.statusCode == 403,
+           let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
+           envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
+            await AppAttestManager.shared.invalidateToken(token, baseURL: baseURL)
+            token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
+            (data, response) = try await session.data(for: makeRequest(token: token))
+            guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
+            http = retriedHTTP
             await AppAttestManager.shared.acceptRotatedToken(
                 http.value(forHTTPHeaderField: "X-YH-App-Token"),
                 baseURL: baseURL
             )
-
-            if http.statusCode == 403,
-               let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
-               envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
-                token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
-                (data, response) = try await session.data(for: makeRequest(token: token))
-                guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-                http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(
-                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
-                    baseURL: baseURL
-                )
-            }
-            guard (200..<300).contains(http.statusCode) else {
-                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
-                throw APIClientError.server(
-                    code: envelope?.error.code ?? "http_\(http.statusCode)",
-                    message: envelope?.error.message ?? L10n.format("请求失败（%d）", http.statusCode),
-                    status: http.statusCode
-                )
-            }
-            do {
-                return try JSONDecoder().decode(Response.self, from: data)
-            } catch {
-                throw APIClientError.server(
-                    code: "decode_error",
-                    message: L10n.string("服务器返回了无法识别的响应"),
-                    status: http.statusCode
-                )
-            }
         }
-        tail = Task { _ = try? await operation.value }
-        return try await operation.value
+        guard (200..<300).contains(http.statusCode) else {
+            let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
+            throw APIClientError.server(
+                code: envelope?.error.code ?? "http_\(http.statusCode)",
+                message: envelope?.error.message ?? L10n.format("请求失败（%d）", http.statusCode),
+                status: http.statusCode
+            )
+        }
+        do {
+            return try JSONDecoder().decode(Response.self, from: data)
+        } catch {
+            throw APIClientError.server(
+                code: "decode_error",
+                message: L10n.string("服务器返回了无法识别的响应"),
+                status: http.statusCode
+            )
+        }
     }
 }
 

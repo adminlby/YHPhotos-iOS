@@ -1,3 +1,4 @@
+import Combine
 import CryptoKit
 import DeviceCheck
 import Foundation
@@ -7,6 +8,7 @@ enum AppOriginError: LocalizedError {
     case unsupported
     case invalidChallenge
     case invalidServerResponse
+    case recoveryTimedOut
     case server(code: String, message: String, status: Int)
 
     var errorDescription: String? {
@@ -17,9 +19,28 @@ enum AppOriginError: LocalizedError {
             L10n.string("服务器下发的 App Attest challenge 无效")
         case .invalidServerResponse:
             L10n.string("App 鉴权服务返回了无法识别的数据")
+        case .recoveryTimedOut:
+            L10n.string("设备安全验证超时，请检查网络后重试")
         case let .server(_, message, _):
             message
         }
+    }
+}
+
+@MainActor
+final class AppAttestRecoveryStatus: ObservableObject {
+    static let shared = AppAttestRecoveryStatus()
+
+    @Published private(set) var message: String?
+
+    private init() { }
+
+    func begin() {
+        message = L10n.string("正在恢复设备安全认证…")
+    }
+
+    func finish() {
+        message = nil
     }
 }
 
@@ -72,6 +93,11 @@ private enum AppOriginKeychain {
 actor AppAttestManager {
     static let shared = AppAttestManager()
 
+    private struct BootstrapOperation {
+        let id: UUID
+        let task: Task<String, Error>
+    }
+
     private struct Challenge: Decodable {
         let challengeId: String
         let challenge: String
@@ -105,12 +131,34 @@ actor AppAttestManager {
     private let service = DCAppAttestService.shared
     private let keyIdAccount = "app-attest-key-id"
     private let tokenAccount = "api-origin-token"
+    private let recoveryTimeoutNanoseconds: UInt64 = 15_000_000_000
+    private var bootstrapOperation: BootstrapOperation?
 
     func validToken(session: URLSession, baseURL: URL) async throws -> String {
         if let token = storedValue(for: tokenAccount, baseURL: baseURL), !token.isEmpty {
             return token
         }
-        return try await bootstrap(session: session, baseURL: baseURL)
+        if let operation = bootstrapOperation {
+            return try await operation.task.value
+        }
+
+        let operationID = UUID()
+        let task = Task { [self] in
+            try await bootstrapWithTimeout(session: session, baseURL: baseURL)
+        }
+        bootstrapOperation = BootstrapOperation(id: operationID, task: task)
+        // Publish the in-flight operation before the first suspension so every
+        // concurrent caller joins this task instead of starting another one.
+        await AppAttestRecoveryStatus.shared.begin()
+
+        do {
+            let token = try await task.value
+            await finishBootstrap(operationID)
+            return token
+        } catch {
+            await finishBootstrap(operationID)
+            throw error
+        }
     }
 
     func acceptRotatedToken(_ token: String?, baseURL: URL) {
@@ -118,8 +166,33 @@ actor AppAttestManager {
         AppOriginKeychain.set(token, for: scopedAccount(tokenAccount, baseURL: baseURL))
     }
 
-    func invalidateToken(baseURL: URL) {
-        AppOriginKeychain.remove(scopedAccount(tokenAccount, baseURL: baseURL))
+    func invalidateToken(_ rejectedToken: String, baseURL: URL) {
+        let account = scopedAccount(tokenAccount, baseURL: baseURL)
+        guard AppOriginKeychain.string(for: account) == rejectedToken else { return }
+        AppOriginKeychain.remove(account)
+    }
+
+    private func finishBootstrap(_ operationID: UUID) async {
+        guard bootstrapOperation?.id == operationID else { return }
+        bootstrapOperation = nil
+        await AppAttestRecoveryStatus.shared.finish()
+    }
+
+    private func bootstrapWithTimeout(session: URLSession, baseURL: URL) async throws -> String {
+        try await withThrowingTaskGroup(of: String.self) { group in
+            group.addTask { [self] in
+                try await bootstrap(session: session, baseURL: baseURL)
+            }
+            group.addTask { [recoveryTimeoutNanoseconds] in
+                try await Task.sleep(nanoseconds: recoveryTimeoutNanoseconds)
+                throw AppOriginError.recoveryTimedOut
+            }
+            defer { group.cancelAll() }
+            guard let token = try await group.next() else {
+                throw AppOriginError.invalidServerResponse
+            }
+            return token
+        }
     }
 
     private func bootstrap(session: URLSession, baseURL: URL) async throws -> String {
