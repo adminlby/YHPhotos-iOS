@@ -65,6 +65,8 @@
 	<string>$(YHPHOTOS_API_BASE_URL)</string>
 	<key>YHPhotosAPNSEnvironment</key>
 	<string>$(APNS_SERVER_ENVIRONMENT)</string>
+	<key>YHPhotosAppAttestEnvironment</key>
+	<string>$(APP_ATTEST_ENVIRONMENT)</string>
 	<key>YHPhotosGitCommit</key>
 	<string>$(YHPHOTOS_GIT_COMMIT)</string>
 	<key>YHPhotosPrivacyPolicyURL</key>

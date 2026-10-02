@@ -107,19 +107,19 @@ actor AppAttestManager {
     private let tokenAccount = "api-origin-token"
 
     func validToken(session: URLSession, baseURL: URL) async throws -> String {
-        if let token = AppOriginKeychain.string(for: tokenAccount), !token.isEmpty {
+        if let token = storedValue(for: tokenAccount, baseURL: baseURL), !token.isEmpty {
             return token
         }
         return try await bootstrap(session: session, baseURL: baseURL)
     }
 
-    func acceptRotatedToken(_ token: String?) {
+    func acceptRotatedToken(_ token: String?, baseURL: URL) {
         guard let token, !token.isEmpty else { return }
-        AppOriginKeychain.set(token, for: tokenAccount)
+        AppOriginKeychain.set(token, for: scopedAccount(tokenAccount, baseURL: baseURL))
     }
 
-    func invalidateToken() {
-        AppOriginKeychain.remove(tokenAccount)
+    func invalidateToken(baseURL: URL) {
+        AppOriginKeychain.remove(scopedAccount(tokenAccount, baseURL: baseURL))
     }
 
     private func bootstrap(session: URLSession, baseURL: URL) async throws -> String {
@@ -129,7 +129,7 @@ actor AppAttestManager {
             throw AppOriginError.invalidChallenge
         }
 
-        if let keyId = AppOriginKeychain.string(for: keyIdAccount) {
+        if let keyId = storedValue(for: keyIdAccount, baseURL: baseURL) {
             do {
                 let hash = Data(SHA256.hash(data: challengeData))
                 let assertion = try await service.generateAssertion(keyId, clientDataHash: hash)
@@ -143,19 +143,24 @@ actor AppAttestManager {
                     session: session,
                     baseURL: baseURL
                 )
-                AppOriginKeychain.set(envelope.apiToken, for: tokenAccount)
+                AppOriginKeychain.set(
+                    envelope.apiToken,
+                    for: scopedAccount(tokenAccount, baseURL: baseURL)
+                )
                 return envelope.apiToken
             } catch let error as AppOriginError {
-                if case let .server(code, _, _) = error, code == "ios_app_key_unknown" {
-                    AppOriginKeychain.remove(keyIdAccount)
+                if case let .server(code, _, _) = error,
+                   code == "ios_app_key_unknown" || code == "ios_app_assertion_invalid" {
+                    resetCredentials(baseURL: baseURL)
                 } else {
                     throw error
                 }
             } catch {
                 let nsError = error as NSError
                 guard nsError.domain == DCErrorDomain else { throw error }
-                AppOriginKeychain.remove(keyIdAccount)
+                resetCredentials(baseURL: baseURL)
             }
+            // A stale/invalid key gets exactly one fresh attestation attempt.
             return try await attestNewKey(session: session, baseURL: baseURL)
         }
         return try await attestNewKey(
@@ -198,9 +203,48 @@ actor AppAttestManager {
             session: session,
             baseURL: baseURL
         )
-        AppOriginKeychain.set(keyId, for: keyIdAccount)
-        AppOriginKeychain.set(envelope.apiToken, for: tokenAccount)
+        AppOriginKeychain.set(keyId, for: scopedAccount(keyIdAccount, baseURL: baseURL))
+        AppOriginKeychain.set(
+            envelope.apiToken,
+            for: scopedAccount(tokenAccount, baseURL: baseURL)
+        )
         return envelope.apiToken
+    }
+
+    private func scopedAccount(_ account: String, baseURL: URL) -> String {
+        let configuredEnvironment = (
+            Bundle.main.object(forInfoDictionaryKey: "YHPhotosAppAttestEnvironment") as? String
+        )?.lowercased()
+        let environment: String
+        if let configuredEnvironment,
+           configuredEnvironment == "development" || configuredEnvironment == "production" {
+            environment = configuredEnvironment
+        } else if baseURL.host?.lowercased().hasPrefix("dev.") == true {
+            environment = "development"
+        } else {
+            environment = "production"
+        }
+        let host = baseURL.host?.lowercased() ?? "unknown-host"
+        return "\(account).\(environment).\(host)"
+    }
+
+    /// Claims a legacy unscoped value for the first environment opened after
+    /// upgrade. If it belongs to the other environment, App Attest rejects it
+    /// and `bootstrap` replaces it once with a correctly scoped key.
+    private func storedValue(for account: String, baseURL: URL) -> String? {
+        let scoped = scopedAccount(account, baseURL: baseURL)
+        if let value = AppOriginKeychain.string(for: scoped) {
+            return value
+        }
+        guard let legacyValue = AppOriginKeychain.string(for: account) else { return nil }
+        AppOriginKeychain.set(legacyValue, for: scoped)
+        AppOriginKeychain.remove(account)
+        return legacyValue
+    }
+
+    private func resetCredentials(baseURL: URL) {
+        AppOriginKeychain.remove(scopedAccount(keyIdAccount, baseURL: baseURL))
+        AppOriginKeychain.remove(scopedAccount(tokenAccount, baseURL: baseURL))
     }
 
     private func requestChallenge(session: URLSession, baseURL: URL) async throws -> Challenge {

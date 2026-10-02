@@ -112,16 +112,22 @@ actor APIClient {
             var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
             var (data, response) = try await session.data(for: makeRequest(token: token))
             guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-            await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            await AppAttestManager.shared.acceptRotatedToken(
+                http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                baseURL: baseURL
+            )
             if http.statusCode == 403,
                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
                envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken()
+                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
                 token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
                 (data, response) = try await session.data(for: makeRequest(token: token))
                 guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
                 http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+                await AppAttestManager.shared.acceptRotatedToken(
+                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                    baseURL: baseURL
+                )
             }
             guard (200..<300).contains(http.statusCode) else {
                 let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
@@ -180,16 +186,22 @@ actor APIClient {
             }
             var (data, response) = try await session.data(for: makeRequest(token))
             guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-            await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            await AppAttestManager.shared.acceptRotatedToken(
+                http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                baseURL: baseURL
+            )
             if http.statusCode == 403,
                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
                envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken()
+                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
                 token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
                 (data, response) = try await session.data(for: makeRequest(token))
                 guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
                 http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+                await AppAttestManager.shared.acceptRotatedToken(
+                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                    baseURL: baseURL
+                )
             }
             guard (200..<300).contains(http.statusCode) else {
                 let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
@@ -258,16 +270,22 @@ actor APIClient {
 
             var (data, response) = try await session.data(for: makeRequest(token))
             guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-            await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            await AppAttestManager.shared.acceptRotatedToken(
+                http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                baseURL: baseURL
+            )
             if http.statusCode == 403,
                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
                envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken()
+                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
                 token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
                 (data, response) = try await session.data(for: makeRequest(token))
                 guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
                 http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+                await AppAttestManager.shared.acceptRotatedToken(
+                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                    baseURL: baseURL
+                )
             }
             guard (200..<300).contains(http.statusCode) else {
                 let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
@@ -325,17 +343,23 @@ actor APIClient {
             var token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
             var (data, response) = try await session.data(for: makeRequest(token: token))
             guard var http = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
-            await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+            await AppAttestManager.shared.acceptRotatedToken(
+                http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                baseURL: baseURL
+            )
 
             if http.statusCode == 403,
                let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data),
                envelope.error.code?.hasPrefix("api_ios_app_token_") == true {
-                await AppAttestManager.shared.invalidateToken()
+                await AppAttestManager.shared.invalidateToken(baseURL: baseURL)
                 token = try await AppAttestManager.shared.validToken(session: session, baseURL: baseURL)
                 (data, response) = try await session.data(for: makeRequest(token: token))
                 guard let retriedHTTP = response as? HTTPURLResponse else { throw APIClientError.invalidResponse }
                 http = retriedHTTP
-                await AppAttestManager.shared.acceptRotatedToken(http.value(forHTTPHeaderField: "X-YH-App-Token"))
+                await AppAttestManager.shared.acceptRotatedToken(
+                    http.value(forHTTPHeaderField: "X-YH-App-Token"),
+                    baseURL: baseURL
+                )
             }
             guard (200..<300).contains(http.statusCode) else {
                 let envelope = try? JSONDecoder().decode(APIErrorEnvelope.self, from: data)
