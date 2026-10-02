@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PhotoDetailView: View {
     @EnvironmentObject private var appModel: AppModel
+    @Environment(\.dismiss) private var dismiss
     let photoID: Int
     @State private var detail: PhotoDetail?
     @State private var isLoading = true
@@ -12,7 +13,10 @@ struct PhotoDetailView: View {
     @State private var isFavorited = false
     @State private var isMutatingLike = false
     @State private var showingComments = false
-    @State private var showingReport = false
+    @State private var reportingTarget: ReportTarget?
+    @State private var showingBlockConfirmation = false
+    @State private var isBlockingAuthor = false
+    @State private var showingBlockSuccess = false
 
     var body: some View {
         ScrollView {
@@ -40,8 +44,20 @@ struct PhotoDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    Button(L10n.string("举报"), systemImage: "exclamationmark.bubble", role: .destructive) {
-                        if appModel.sessionUser == nil { appModel.showingLogin = true } else { showingReport = true }
+                    ShareLink(item: detail?.image ?? "") {
+                        Label(L10n.string("分享"), systemImage: "square.and.arrow.up")
+                    }
+                    if let detail, detail.author.id != appModel.sessionUser?.id {
+                        Button(L10n.string("举报图片"), systemImage: "photo.badge.exclamationmark", role: .destructive) {
+                            requireLogin { reportingTarget = .photo(photoID) }
+                        }
+                        Button(L10n.string("举报用户"), systemImage: "exclamationmark.bubble", role: .destructive) {
+                            requireLogin { reportingTarget = .user(detail.author.id) }
+                        }
+                        Button(L10n.string("屏蔽上传者"), systemImage: "person.crop.circle.badge.xmark", role: .destructive) {
+                            requireLogin { showingBlockConfirmation = true }
+                        }
+                        .disabled(isBlockingAuthor)
                     }
                 } label: { Image(systemName: "ellipsis") }
             }
@@ -50,7 +66,24 @@ struct PhotoDetailView: View {
         .sheet(isPresented: $showingComments) {
             NavigationStack { PhotoCommentsView(photoID: photoID, commentCount: $commentCount) }
         }
-        .sheet(isPresented: $showingReport) { NavigationStack { ReportView(target: .photo(photoID)) } }
+        .sheet(item: $reportingTarget) { target in
+            NavigationStack { ReportView(target: target) }
+        }
+        .confirmationDialog(
+            L10n.string("屏蔽此用户？"),
+            isPresented: $showingBlockConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.string("屏蔽用户"), role: .destructive) { Task { await blockAuthor() } }
+            Button(L10n.string("取消"), role: .cancel) { }
+        } message: {
+            Text(L10n.string("屏蔽后你们将互相取消关注，无法再发起或发送私信。此用户的当前内容将立即从视图中移除。"))
+        }
+        .alert(L10n.string("已屏蔽用户"), isPresented: $showingBlockSuccess) {
+            Button(L10n.string("完成")) { dismiss() }
+        } message: {
+            Text(L10n.string("你可以在“设置 → 社区安全 → 已屏蔽用户”中管理屏蔽列表。"))
+        }
         .appScreenBackground()
     }
 
@@ -161,6 +194,15 @@ struct PhotoDetailView: View {
     private func reload() { Task { await load() } }
 
     @MainActor
+    private func requireLogin(_ action: () -> Void) {
+        guard appModel.sessionUser != nil else {
+            appModel.showingLogin = true
+            return
+        }
+        action()
+    }
+
+    @MainActor
     private func load() async {
         isLoading = true
         do {
@@ -213,6 +255,21 @@ struct PhotoDetailView: View {
             isFavorited = response.favorited
         } catch { errorMessage = error.localizedDescription }
     }
+
+    @MainActor
+    private func blockAuthor() async {
+        struct Response: Decodable, Sendable { let blocked: Bool }
+        guard let authorID = detail?.author.id, appModel.sessionUser != nil, !isBlockingAuthor else { return }
+        isBlockingAuthor = true
+        defer { isBlockingAuthor = false }
+        do {
+            let response: Response = try await APIClient.shared.send("api/users/\(authorID)/block", method: "POST")
+            showingBlockSuccess = response.blocked
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
 }
 
 private struct PhotoComment: Decodable, Identifiable, Sendable {
@@ -238,6 +295,12 @@ private struct PhotoCommentsView: View {
     @State private var isLoading = true
     @State private var isSending = false
     @State private var errorMessage: String?
+    @State private var reportingComment: PhotoComment?
+    @State private var pendingBlockUserID: Int?
+    @State private var pendingBlockUserName = ""
+    @State private var showingBlockConfirmation = false
+    @State private var showingBlockSuccess = false
+    @State private var isBlocking = false
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -245,7 +308,14 @@ private struct PhotoCommentsView: View {
                 if isLoading { ProgressView().frame(maxWidth: .infinity) }
                 ForEach(comments) { comment in
                     HStack(alignment: .top, spacing: 11) {
-                        AvatarView(urlString: comment.author.avatar, name: comment.author.displayName ?? "?", size: 38)
+                        if let authorID = comment.author.id {
+                            NavigationLink { PublicProfileView(userID: authorID) } label: {
+                                AvatarView(urlString: comment.author.avatar, name: comment.author.displayName ?? "?", size: 38)
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            AvatarView(urlString: comment.author.avatar, name: comment.author.displayName ?? "?", size: 38)
+                        }
                         VStack(alignment: .leading, spacing: 4) {
                             Text(comment.author.displayName ?? L10n.string("已注销用户"))
                                 .font(.subheadline.weight(.semibold))
@@ -254,6 +324,32 @@ private struct PhotoCommentsView: View {
                                 Text(date.prefix(16).replacingOccurrences(of: "T", with: " "))
                                     .font(.caption2).foregroundStyle(.secondary)
                             }
+                        }
+                        Spacer(minLength: 4)
+                        if let authorID = comment.author.id, authorID != appModel.sessionUser?.id {
+                            Menu {
+                                Button(L10n.string("举报此评论"), systemImage: "exclamationmark.bubble", role: .destructive) {
+                                    guard appModel.sessionUser != nil else {
+                                        appModel.showingLogin = true
+                                        return
+                                    }
+                                    reportingComment = comment
+                                }
+                                Button(L10n.string("屏蔽此用户"), systemImage: "person.crop.circle.badge.xmark", role: .destructive) {
+                                    guard appModel.sessionUser != nil else {
+                                        appModel.showingLogin = true
+                                        return
+                                    }
+                                    pendingBlockUserID = authorID
+                                    pendingBlockUserName = comment.author.displayName ?? L10n.string("此用户")
+                                    showingBlockConfirmation = true
+                                }
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
+                                    .foregroundStyle(.secondary)
+                                    .padding(4)
+                            }
+                            .disabled(isBlocking)
                         }
                     }
                     .padding(.vertical, 4)
@@ -274,6 +370,29 @@ private struct PhotoCommentsView: View {
         .toolbar { ToolbarItem(placement: .cancellationAction) { Button(L10n.string("完成")) { dismiss() } } }
         .safeAreaInset(edge: .bottom, spacing: 0) { composer }
         .task { await load() }
+        .sheet(item: $reportingComment) { comment in
+            NavigationStack {
+                if let authorID = comment.author.id {
+                    ReportView(
+                        target: .user(authorID),
+                        initialDetail: L10n.format("评论 #%d：%@", comment.id, String(comment.content.prefix(1800)))
+                    )
+                }
+            }
+        }
+        .confirmationDialog(
+            L10n.format("屏蔽“%@”？", pendingBlockUserName),
+            isPresented: $showingBlockConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.string("屏蔽用户"), role: .destructive) { Task { await blockPendingUser() } }
+            Button(L10n.string("取消"), role: .cancel) { }
+        } message: {
+            Text(L10n.string("屏蔽后对方无法再向你发起或发送私信，其评论也会立即从当前列表隐藏。"))
+        }
+        .alert(L10n.string("已屏蔽用户"), isPresented: $showingBlockSuccess) {
+            Button(L10n.string("好"), role: .cancel) { }
+        }
         .appScreenBackground()
     }
 
@@ -320,5 +439,25 @@ private struct PhotoCommentsView: View {
             commentCount = comments.count
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
+    }
+
+    @MainActor
+    private func blockPendingUser() async {
+        struct Response: Decodable, Sendable { let blocked: Bool }
+        guard let userID = pendingBlockUserID, !isBlocking else { return }
+        isBlocking = true
+        defer { isBlocking = false }
+        do {
+            let response: Response = try await APIClient.shared.send("api/users/\(userID)/block", method: "POST")
+            if response.blocked {
+                comments.removeAll { $0.author.id == userID }
+                commentCount = comments.count
+                showingBlockSuccess = true
+            }
+            pendingBlockUserID = nil
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

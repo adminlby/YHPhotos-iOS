@@ -3,30 +3,45 @@ import WebKit
 
 enum LegalDocument: String, Identifiable {
     case terms
+    case eula
     case privacy
+    case communityRules
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .terms: L10n.string("服务协议")
+        case .eula: L10n.string("最终用户许可协议（EULA）")
         case .privacy: L10n.string("隐私政策")
+        case .communityRules: L10n.string("社区规范")
         }
     }
 
     var systemImage: String {
         switch self {
         case .terms: "doc.text.fill"
+        case .eula: "checkmark.seal.fill"
         case .privacy: "hand.raised.fill"
+        case .communityRules: "person.2.badge.gearshape.fill"
         }
     }
 
     var url: URL {
         switch self {
         case .terms:
-            AppBuildInfo.siteOrigin.appending(path: "terms")
+            return AppBuildInfo.siteOrigin.appending(path: "terms")
+        case .eula:
+            return URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
         case .privacy:
-            AppBuildInfo.privacyPolicyURL
+            return AppBuildInfo.privacyPolicyURL
+        case .communityRules:
+            var components = URLComponents(
+                url: AppBuildInfo.siteOrigin.appending(path: "rules"),
+                resolvingAgainstBaseURL: false
+            )
+            components?.queryItems = [URLQueryItem(name: "section", value: "site")]
+            return components?.url ?? AppBuildInfo.siteOrigin.appending(path: "rules")
         }
     }
 }
@@ -53,7 +68,7 @@ struct LegalConsentView: View {
                             .font(.title2.bold())
                         Text(
                             L10n.format(
-                                "继续使用 YHPhotos 前，请阅读并同意当前版本（%@）的服务协议与隐私政策。",
+                                "继续使用 YHPhotos 前，请阅读并同意当前版本（%@）的服务协议、EULA、隐私政策与社区规范。",
                                 appModel.requiredLegalVersion ?? L10n.string("当前版本")
                             )
                         )
@@ -67,10 +82,22 @@ struct LegalConsentView: View {
                         VStack(spacing: 0) {
                             documentButton(.terms)
                             Divider().overlay(AppTheme.divider)
+                            documentButton(.eula)
+                            Divider().overlay(AppTheme.divider)
                             documentButton(.privacy)
+                            Divider().overlay(AppTheme.divider)
+                            documentButton(.communityRules)
                         }
                         .padding(.horizontal, 16)
                     }
+
+                    Label(
+                        L10n.string("YHPhotos 对违规内容、骚扰和滥用行为实行零容忍。你可以在图片、评论、私信和用户主页中举报或屏蔽，并通过帮助与反馈联系我们。"),
+                        systemImage: "person.2.badge.gearshape.fill"
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
 
                     Button {
                         hasConfirmed.toggle()
@@ -79,7 +106,7 @@ struct LegalConsentView: View {
                             Image(systemName: hasConfirmed ? "checkmark.square.fill" : "square")
                                 .font(.title3)
                                 .foregroundStyle(hasConfirmed ? AppTheme.accent : .secondary)
-                            Text(L10n.string("我已阅读并同意服务协议与隐私政策"))
+                            Text(L10n.string("我已阅读并同意服务协议、最终用户许可协议（EULA）、隐私政策与社区规范"))
                                 .font(.subheadline)
                                 .foregroundStyle(.primary)
                                 .multilineTextAlignment(.leading)
@@ -208,6 +235,81 @@ struct LegalDocumentView: View {
                     Button(L10n.string("完成")) { dismiss() }
                 }
             }
+        }
+    }
+}
+
+struct CommunitySafetyInfoView: View {
+    @State private var selectedDocument: LegalDocument?
+
+    var body: some View {
+        List {
+            Section {
+                safetyRow(
+                    "上传前审核",
+                    "用户上传的图片须经内容审核通过后才会公开展示。",
+                    systemImage: "checkmark.shield.fill"
+                )
+                safetyRow(
+                    "举报与人工处理",
+                    "图片、评论、私信和用户主页均提供举报入口；举报会进入人工审核并显示处理进度。",
+                    systemImage: "flag.fill"
+                )
+                safetyRow(
+                    "屏蔽滥用用户",
+                    "你可以屏蔽其他用户。屏蔽会解除双方关注、阻止双方私信，并在相关页面隐藏对方内容。",
+                    systemImage: "person.crop.circle.badge.xmark"
+                )
+            } header: {
+                Text(L10n.string("安全机制"))
+            } footer: {
+                Text(L10n.string("YHPhotos 对违规内容、骚扰、威胁与其他滥用行为实行零容忍，并会依据社区规范处置内容和账号。"))
+            }
+
+            Section(L10n.string("协议与规范")) {
+                documentButton(.terms)
+                documentButton(.eula)
+                documentButton(.privacy)
+                documentButton(.communityRules)
+            }
+
+            Section {
+                Link(destination: URL(string: "mailto:support@yhphotos.top")!) {
+                    Label("support@yhphotos.top", systemImage: "envelope.fill")
+                }
+                NavigationLink { SupportCenterView() } label: {
+                    Label(L10n.string("帮助与反馈"), systemImage: "lifepreserver.fill")
+                }
+            } header: {
+                Text(L10n.string("联系我们"))
+            } footer: {
+                Text(L10n.string("如遇到危险、威胁或其他紧急情况，请同时联系所在地的紧急服务机构。"))
+            }
+        }
+        .navigationTitle(L10n.string("社区安全与内容规范"))
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $selectedDocument) { document in
+            LegalDocumentView(document: document)
+        }
+    }
+
+    private func safetyRow(_ title: String, _ description: String, systemImage: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: systemImage)
+                .foregroundStyle(AppTheme.accent)
+                .frame(width: 28)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(L10n.string(title)).font(.headline)
+                Text(L10n.string(description)).font(.subheadline).foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func documentButton(_ document: LegalDocument) -> some View {
+        Button { selectedDocument = document } label: {
+            Label(document.title, systemImage: document.systemImage)
+                .foregroundStyle(.primary)
         }
     }
 }

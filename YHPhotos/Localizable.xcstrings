@@ -10294,6 +10294,270 @@
           }
         }
       }
+    },
+    "YHPhotos 对违规内容、骚扰、威胁与其他滥用行为实行零容忍，并会依据社区规范处置内容和账号。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "YHPhotos has zero tolerance for prohibited content, harassment, threats, and other abuse, and takes action on content and accounts under its Community Guidelines." } } }
+    },
+    "YHPhotos 对违规内容、骚扰与滥用行为实行零容忍。举报会进入人工审核，你也可以随时屏蔽用户或联系支持。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "YHPhotos has zero tolerance for prohibited content, harassment, and abuse. Reports are reviewed by people, and you can block users or contact support at any time." } } }
+    },
+    "YHPhotos 对违规内容、骚扰和滥用行为实行零容忍。你可以在图片、评论、私信和用户主页中举报或屏蔽，并通过帮助与反馈联系我们。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "YHPhotos has zero tolerance for prohibited content, harassment, and abuse. You can report or block from photos, comments, direct messages, and profiles, or contact us through Help & Feedback." } } }
+    },
+    "举报图片" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Report Photo" } } }
+    },
+    "举报已提交" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Report Submitted" } } }
+    },
+    "举报此消息" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Report This Message" } } }
+    },
+    "举报此评论" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Report This Comment" } } }
+    },
+    "举报用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Report User" } } }
+    },
+    "你可以在“设置 → 社区安全 → 已屏蔽用户”中管理屏蔽列表。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Manage your block list in Settings > Community Safety > Blocked Users." } } }
+    },
+    "你已屏蔽此用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "You Blocked This User" } } }
+    },
+    "你已屏蔽此用户，无法继续发送私信。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "You blocked this user and can no longer send direct messages." } } }
+    },
+    "你还没有提交过举报" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "You Haven’t Submitted Any Reports" } } }
+    },
+    "协议与规范" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Agreements & Guidelines" } } }
+    },
+    "只有仍在待处理状态的举报可以撤回。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Only reports that are still pending can be withdrawn." } } }
+    },
+    "图片 #%d" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Photo #%d" } } }
+    },
+    "在图片、评论、私信或用户主页的菜单中可以提交举报。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Submit a report from the menu on a photo, comment, direct message, or user profile." } } }
+    },
+    "处理说明：%@" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Resolution: %@" } } }
+    },
+    "好" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "OK" } } }
+    },
+    "如遇到危险、威胁或其他紧急情况，请同时联系所在地的紧急服务机构。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "If there is danger, a threat, or another emergency, also contact your local emergency services." } } }
+    },
+    "安全机制" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Safety Measures" } } }
+    },
+    "屏蔽“%@”？" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Block “%@”?" } } }
+    },
+    "屏蔽上传者" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Block Uploader" } } }
+    },
+    "屏蔽关系会阻止双方发起或发送私信，并隐藏此页面上的作品与公开动态。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Blocking prevents both users from starting or sending direct messages and hides this user’s work and public activity on this page." } } }
+    },
+    "屏蔽后你们将互相取消关注，双方都无法再发起或发送私信。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Blocking unfollows both users and prevents either person from starting or sending direct messages." } } }
+    },
+    "屏蔽后你们将互相取消关注，无法再发起或发送私信。此用户的当前内容将立即从视图中移除。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Blocking unfollows both users, prevents direct messages, and immediately removes this user’s current content from view." } } }
+    },
+    "屏蔽后你们将互相取消关注，无法再发起或发送私信；该用户的内容也会在此页面隐藏。你可以稍后在设置中解除屏蔽。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Blocking unfollows both users, prevents direct messages, and hides this user’s content on this page. You can unblock them later in Settings." } } }
+    },
+    "屏蔽后对方无法再向你发起或发送私信，其评论也会立即从当前列表隐藏。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "After blocking, this user cannot start or send direct messages with you, and their comments are immediately hidden from this list." } } }
+    },
+    "屏蔽此用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Block This User" } } }
+    },
+    "屏蔽此用户？" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Block This User?" } } }
+    },
+    "屏蔽用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Block User" } } }
+    },
+    "已处理" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Resolved" } } }
+    },
+    "已屏蔽用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Blocked Users" } } }
+    },
+    "已隐藏此用户的内容" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "This User’s Content Is Hidden" } } }
+    },
+    "我们会尽快审核并处理。你可以在“我的举报”中查看进度。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "We will review and respond as soon as possible. Track progress in My Reports." } } }
+    },
+    "我已阅读并同意服务协议、最终用户许可协议（EULA）、隐私政策与社区规范" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "I have read and agree to the Terms of Service, End User License Agreement (EULA), Privacy Policy, and Community Guidelines" } } }
+    },
+    "我的举报" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "My Reports" } } }
+    },
+    "撤回举报" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Withdraw Report" } } }
+    },
+    "撤回这项举报？" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Withdraw This Report?" } } }
+    },
+    "最终用户许可协议（EULA）" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "End User License Agreement (EULA)" } } }
+    },
+    "未知 IP" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Unknown IP" } } }
+    },
+    "未采纳" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Not Upheld" } } }
+    },
+    "查看用户主页" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "View User Profile" } } }
+    },
+    "此用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "this user" } } }
+    },
+    "每一项举报都会进入人工审核。处理结果和说明会显示在这里。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Every report is reviewed by a person. The outcome and resolution notes appear here." } } }
+    },
+    "用户 #%d" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "User #%d" } } }
+    },
+    "社区安全" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Community Safety" } } }
+    },
+    "社区安全与内容规范" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Community Safety & Content Guidelines" } } }
+    },
+    "社区规范" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Community Guidelines" } } }
+    },
+    "私信 #%d：%@" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Direct message #%d: %@" } } }
+    },
+    "私信会话 #%d" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Direct message conversation #%d" } } }
+    },
+    "联系我们" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Contact Us" } } }
+    },
+    "解除屏蔽" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Unblock" } } }
+    },
+    "评论 #%d：%@" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Comment #%d: %@" } } }
+    },
+    "请勿恶意或重复举报。举报会进入人工审核，处理进度可在“设置 → 社区安全 → 我的举报”中查看。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Do not submit malicious or duplicate reports. Reports are reviewed by people, and progress is available under Settings > Community Safety > My Reports." } } }
+    },
+    "这段会话已停止发送消息。你可以在设置的社区安全页面解除屏蔽。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Messaging has stopped in this conversation. You can unblock this user from Community Safety in Settings." } } }
+    },
+    "继续使用 YHPhotos 前，请阅读并同意当前版本（%@）的服务协议、EULA、隐私政策与社区规范。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Before continuing with YHPhotos, read and accept the current version (%@) of the Terms of Service, EULA, Privacy Policy, and Community Guidelines." } } }
+    },
+    "上传前审核" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Review Before Publication" } } }
+    },
+    "用户上传的图片须经内容审核通过后才会公开展示。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "User-uploaded photos are published only after passing content review." } } }
+    },
+    "举报与人工处理" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Reporting & Human Review" } } }
+    },
+    "图片、评论、私信和用户主页均提供举报入口；举报会进入人工审核并显示处理进度。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Photos, comments, direct messages, and user profiles all provide reporting tools. Reports are reviewed by people and show their status." } } }
+    },
+    "屏蔽滥用用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Block Abusive Users" } } }
+    },
+    "你可以屏蔽其他用户。屏蔽会解除双方关注、阻止双方私信，并在相关页面隐藏对方内容。" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "You can block other users. Blocking removes follows in both directions, prevents direct messages, and hides their content on relevant screens." } } }
+    },
+    "显示被举报图片" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Show Reported Photo" } } }
+    },
+    "隐藏被举报图片" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Hide Reported Photo" } } }
+    },
+    "被举报用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Reported User" } } }
+    },
+    "没有已屏蔽的用户" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "No Blocked Users" } } }
     }
   },
   "version" : "1.0"

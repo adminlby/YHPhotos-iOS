@@ -38,12 +38,22 @@ struct AppSettingsView: View {
                     NavigationLink { AccountSecurityView() } label: { Label(L10n.string("账号与安全"), systemImage: "person.badge.key.fill") }
                     NavigationLink { LoginSessionsView() } label: { Label(L10n.string("登录设备"), systemImage: "laptopcomputer.and.iphone") }
                     NavigationLink { NotificationPreferencesView() } label: { Label(L10n.string("通知偏好"), systemImage: "bell.badge.fill") }
-                    NavigationLink { BlockedUsersView() } label: { Label(L10n.string("黑名单"), systemImage: "person.crop.circle.badge.xmark") }
                     NavigationLink { SavedSearchesView() } label: { Label(L10n.string("搜索订阅"), systemImage: "magnifyingglass.circle.fill") }
                     NavigationLink { APIPublishingSettingsView() } label: { Label(L10n.string("API 图片发布"), systemImage: "network") }
                     NavigationLink { AccountDeletionView() } label: {
                         Label(L10n.string("删除账号"), systemImage: "person.crop.circle.badge.minus")
                             .foregroundStyle(.red)
+                    }
+                }
+                Section {
+                    NavigationLink { CommunitySafetyInfoView() } label: {
+                        Label(L10n.string("社区安全与内容规范"), systemImage: "checkmark.shield.fill")
+                    }
+                    NavigationLink { MyReportsView() } label: {
+                        Label(L10n.string("我的举报"), systemImage: "flag.fill")
+                    }
+                    NavigationLink { BlockedUsersView() } label: {
+                        Label(L10n.string("已屏蔽用户"), systemImage: "person.crop.circle.badge.xmark")
                     }
                     NavigationLink { SupportCenterView() } label: {
                         Label(
@@ -51,6 +61,10 @@ struct AppSettingsView: View {
                             systemImage: "lifepreserver.fill"
                         )
                     }
+                } header: {
+                    Text(L10n.string("社区安全"))
+                } footer: {
+                    Text(L10n.string("YHPhotos 对违规内容、骚扰与滥用行为实行零容忍。举报会进入人工审核，你也可以随时屏蔽用户或联系支持。"))
                 }
                 Section {
                     Button(role: .destructive) { Task { await appModel.logout() } } label: {
@@ -181,16 +195,16 @@ private struct BlockedUsersView: View {
                         }
                     }
                     Spacer()
-                    Button(L10n.string("解除")) { Task { await unblock(user.id) } }
+                    Button(L10n.string("解除屏蔽")) { Task { await unblock(user.id) } }
                         .buttonStyle(.bordered).disabled(busyID == user.id)
                 }
             }
             if users.isEmpty && !isLoading && errorMessage == nil {
-                EmptyStateView(L10n.string("没有已拉黑的用户"), systemImage: "person.crop.circle.badge.checkmark")
+                EmptyStateView(L10n.string("没有已屏蔽的用户"), systemImage: "person.crop.circle.badge.checkmark")
             }
             LoadingOrErrorView(isLoading: isLoading, error: errorMessage, retry: reload)
         }
-        .navigationTitle(L10n.string("黑名单"))
+        .navigationTitle(L10n.string("已屏蔽用户"))
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
     }

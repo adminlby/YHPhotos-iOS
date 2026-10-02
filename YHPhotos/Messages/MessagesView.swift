@@ -239,6 +239,12 @@ struct ConversationView: View {
     @State private var draft = ""
     @State private var isSending = false
     @State private var errorMessage: String?
+    @State private var isBlocked = false
+    @State private var isMutatingBlock = false
+    @State private var showingBlockConfirmation = false
+    @State private var showingBlockSuccess = false
+    @State private var showingReport = false
+    @State private var reportContext = ""
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -257,6 +263,17 @@ struct ConversationView: View {
                                     Text(date.prefix(16).replacingOccurrences(of: "T", with: " ")).font(.caption2).foregroundStyle(.secondary)
                                 }
                             }
+                            .contextMenu {
+                                if !message.mine {
+                                    Button(L10n.string("举报此消息"), systemImage: "exclamationmark.bubble", role: .destructive) {
+                                        reportContext = L10n.format("私信 #%d：%@", message.id, String(message.body.prefix(1800)))
+                                        showingReport = true
+                                    }
+                                    Button(L10n.string("屏蔽此用户"), systemImage: "person.crop.circle.badge.xmark", role: .destructive) {
+                                        showingBlockConfirmation = true
+                                    }
+                                }
+                            }
                             if !message.mine { Spacer(minLength: 48) }
                         }
                         .id(message.id)
@@ -272,9 +289,69 @@ struct ConversationView: View {
         }
         .navigationTitle(conversation.other.displayName)
         .navigationBarTitleDisplayMode(.inline)
-        .safeAreaInset(edge: .bottom, spacing: 0) { composer }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    NavigationLink { PublicProfileView(userID: conversation.other.id) } label: {
+                        Label(L10n.string("查看用户主页"), systemImage: "person.crop.circle")
+                    }
+                    Button(L10n.string("举报用户"), systemImage: "exclamationmark.bubble", role: .destructive) {
+                        reportContext = L10n.format("私信会话 #%d", conversation.id)
+                        showingReport = true
+                    }
+                    Button(
+                        L10n.string(isBlocked ? "解除屏蔽" : "屏蔽用户"),
+                        systemImage: isBlocked ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.xmark",
+                        role: isBlocked ? nil : .destructive
+                    ) {
+                        requestBlockChange()
+                    }
+                    .disabled(isMutatingBlock)
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if isBlocked { blockedComposer } else { composer }
+        }
         .task { await load() }
+        .sheet(isPresented: $showingReport) {
+            NavigationStack {
+                ReportView(target: .user(conversation.other.id), initialDetail: reportContext)
+            }
+        }
+        .confirmationDialog(
+            L10n.format("屏蔽“%@”？", conversation.other.displayName),
+            isPresented: $showingBlockConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.string("屏蔽用户"), role: .destructive) { Task { await setBlocked(true) } }
+            Button(L10n.string("取消"), role: .cancel) { }
+        } message: {
+            Text(L10n.string("屏蔽后你们将互相取消关注，双方都无法再发起或发送私信。"))
+        }
+        .alert(L10n.string("已屏蔽用户"), isPresented: $showingBlockSuccess) {
+            Button(L10n.string("好"), role: .cancel) { }
+        } message: {
+            Text(L10n.string("这段会话已停止发送消息。你可以在设置的社区安全页面解除屏蔽。"))
+        }
         .appScreenBackground()
+    }
+
+    private var blockedComposer: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "person.crop.circle.badge.xmark")
+            Text(L10n.string("你已屏蔽此用户，无法继续发送私信。"))
+                .font(.footnote)
+            Spacer()
+            Button(L10n.string("解除")) { Task { await setBlocked(false) } }
+                .disabled(isMutatingBlock)
+        }
+        .foregroundStyle(.secondary)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 11)
+        .background(.bar)
     }
 
     private var composer: some View {
@@ -292,7 +369,10 @@ struct ConversationView: View {
 
     @MainActor private func load() async {
         do {
-            thread = try await APIClient.shared.get("api/conversations/\(conversation.id)/messages")
+            async let threadRequest: ConversationThread = APIClient.shared.get("api/conversations/\(conversation.id)/messages")
+            async let profileRequest: PublicProfile = APIClient.shared.get("api/users/\(conversation.other.id)")
+            thread = try await threadRequest
+            if let profile = try? await profileRequest { isBlocked = profile.isBlocked }
             await appModel.refreshUnreadCount()
         } catch { errorMessage = error.localizedDescription }
     }
@@ -300,7 +380,7 @@ struct ConversationView: View {
     @MainActor private func send() async {
         struct Body: Encodable, Sendable { let body: String }
         let value = draft.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !value.isEmpty else { return }
+        guard !value.isEmpty, !isBlocked else { return }
         isSending = true
         defer { isSending = false }
         do {
@@ -309,6 +389,35 @@ struct ConversationView: View {
             if thread != nil { thread?.messages.append(sent) } else { await load() }
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
+    }
+
+    @MainActor private func requestBlockChange() {
+        if isBlocked {
+            Task { await setBlocked(false) }
+        } else {
+            showingBlockConfirmation = true
+        }
+    }
+
+    @MainActor private func setBlocked(_ blocked: Bool) async {
+        struct Response: Decodable, Sendable { let blocked: Bool }
+        guard !isMutatingBlock else { return }
+        isMutatingBlock = true
+        defer { isMutatingBlock = false }
+        do {
+            let response: Response = try await APIClient.shared.send(
+                "api/users/\(conversation.other.id)/block",
+                method: blocked ? "POST" : "DELETE"
+            )
+            isBlocked = response.blocked
+            if response.blocked {
+                draft = ""
+                showingBlockSuccess = true
+            }
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }
 

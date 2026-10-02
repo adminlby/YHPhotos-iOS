@@ -14,6 +14,9 @@ struct PublicProfileView: View {
     @State private var startedConversation: Conversation?
     @State private var isStartingConversation = false
     @State private var showingReport = false
+    @State private var isBlocked = false
+    @State private var isMutatingBlock = false
+    @State private var showingBlockConfirmation = false
 
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
@@ -22,10 +25,14 @@ struct PublicProfileView: View {
             if let profile {
                 VStack(spacing: 22) {
                     profileHeader(profile)
-                    statistics(profile)
-                    if !badges.isEmpty { badgeSection }
-                    if let spotting { spottingSection(spotting) }
-                    photoSection
+                    if isBlocked {
+                        blockedNotice
+                    } else {
+                        statistics(profile)
+                        if !badges.isEmpty { badgeSection }
+                        if let spotting { spottingSection(spotting) }
+                        photoSection
+                    }
                 }
                 .padding(.bottom, 28)
             }
@@ -39,14 +46,34 @@ struct PublicProfileView: View {
                     ShareLink(item: URL(string: "https://www.yhphotos.top/user/\(userID)")!) {
                         Label(L10n.string("分享主页"), systemImage: "square.and.arrow.up")
                     }
-                    Button(L10n.string("举报"), systemImage: "exclamationmark.bubble", role: .destructive) {
-                        if appModel.sessionUser == nil { appModel.showingLogin = true } else { showingReport = true }
+                    if let profile, !profile.isSelf {
+                        Button(L10n.string("举报用户"), systemImage: "exclamationmark.bubble", role: .destructive) {
+                            if appModel.sessionUser == nil { appModel.showingLogin = true } else { showingReport = true }
+                        }
+                        Button(
+                            L10n.string(isBlocked ? "解除屏蔽" : "屏蔽用户"),
+                            systemImage: isBlocked ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.xmark",
+                            role: isBlocked ? nil : .destructive
+                        ) {
+                            requestBlockChange()
+                        }
+                        .disabled(isMutatingBlock)
                     }
                 } label: { Image(systemName: "ellipsis") }
             }
         }
         .task { await load() }
         .sheet(isPresented: $showingReport) { NavigationStack { ReportView(target: .user(userID)) } }
+        .confirmationDialog(
+            L10n.string("屏蔽此用户？"),
+            isPresented: $showingBlockConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(L10n.string("屏蔽用户"), role: .destructive) { Task { await setBlocked(true) } }
+            Button(L10n.string("取消"), role: .cancel) { }
+        } message: {
+            Text(L10n.string("屏蔽后你们将互相取消关注，无法再发起或发送私信；该用户的内容也会在此页面隐藏。你可以稍后在设置中解除屏蔽。"))
+        }
         .navigationDestination(isPresented: Binding(
             get: { startedConversation != nil },
             set: { if !$0 { startedConversation = nil } }
@@ -88,25 +115,53 @@ struct PublicProfileView: View {
             }
 
             if !value.isSelf {
-                HStack(spacing: 12) {
-                    Button { Task { await toggleFollow() } } label: {
-                        Label(L10n.string(isFollowing ? "已关注" : "关注"), systemImage: isFollowing ? "checkmark" : "plus")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    Button { Task { await startConversation(with: value) } } label: {
-                        if isStartingConversation {
-                            ProgressView().frame(maxWidth: .infinity)
-                        } else {
-                            Label("私信", systemImage: "bubble.left.fill").frame(maxWidth: .infinity)
+                if isBlocked {
+                    Label(L10n.string("你已屏蔽此用户"), systemImage: "person.crop.circle.badge.xmark")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.red)
+                        .padding(.horizontal, 24)
+                } else {
+                    HStack(spacing: 12) {
+                        Button { Task { await toggleFollow() } } label: {
+                            Label(L10n.string(isFollowing ? "已关注" : "关注"), systemImage: isFollowing ? "checkmark" : "plus")
+                                .frame(maxWidth: .infinity)
                         }
+                        .buttonStyle(.borderedProminent)
+                        Button { Task { await startConversation(with: value) } } label: {
+                            if isStartingConversation {
+                                ProgressView().frame(maxWidth: .infinity)
+                            } else {
+                                Label("私信", systemImage: "bubble.left.fill").frame(maxWidth: .infinity)
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(isStartingConversation)
                     }
-                    .buttonStyle(.bordered)
-                    .disabled(isStartingConversation)
+                    .padding(.horizontal, 24)
                 }
-                .padding(.horizontal, 24)
             }
         }
+    }
+
+    private var blockedNotice: some View {
+        EmptyStateView(
+            L10n.string("已隐藏此用户的内容"),
+            systemImage: "eye.slash.fill",
+            description: L10n.string("屏蔽关系会阻止双方发起或发送私信，并隐藏此页面上的作品与公开动态。")
+        ) {
+            Button {
+                Task { await setBlocked(false) }
+            } label: {
+                if isMutatingBlock {
+                    ProgressView()
+                } else {
+                    Label(L10n.string("解除屏蔽"), systemImage: "person.crop.circle.badge.checkmark")
+                }
+            }
+            .buttonStyle(.bordered)
+            .disabled(isMutatingBlock)
+        }
+        .padding(.horizontal, 18)
     }
 
     private func statistics(_ value: PublicProfile) -> some View {
@@ -232,6 +287,7 @@ struct PublicProfileView: View {
             photos = (try? await photosRequest) ?? []
             spotting = try? await spottingRequest
             isFollowing = loadedProfile.isFollowing
+            isBlocked = loadedProfile.isBlocked
             followerCount = loadedProfile.stats.followers
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
@@ -241,6 +297,7 @@ struct PublicProfileView: View {
     @MainActor
     private func toggleFollow() async {
         guard appModel.sessionUser != nil else { appModel.showingLogin = true; return }
+        guard !isBlocked else { return }
         do {
             let response: FollowResponse = try await APIClient.shared.send(
                 "api/users/\(userID)/follow",
@@ -254,6 +311,7 @@ struct PublicProfileView: View {
     @MainActor
     private func startConversation(with profile: PublicProfile) async {
         guard appModel.sessionUser != nil else { appModel.showingLogin = true; return }
+        guard !isBlocked else { return }
         struct Body: Encodable, Sendable { let user_id: Int }
         struct Started: Decodable, Sendable { let id: Int }
         isStartingConversation = true
@@ -269,6 +327,41 @@ struct PublicProfileView: View {
                 unread: 0
             )
         } catch { errorMessage = error.localizedDescription }
+    }
+
+    @MainActor
+    private func requestBlockChange() {
+        guard appModel.sessionUser != nil else {
+            appModel.showingLogin = true
+            return
+        }
+        if isBlocked {
+            Task { await setBlocked(false) }
+        } else {
+            showingBlockConfirmation = true
+        }
+    }
+
+    @MainActor
+    private func setBlocked(_ blocked: Bool) async {
+        struct Response: Decodable, Sendable { let blocked: Bool }
+        guard appModel.sessionUser != nil, !isMutatingBlock else { return }
+        isMutatingBlock = true
+        defer { isMutatingBlock = false }
+        do {
+            let response: Response = try await APIClient.shared.send(
+                "api/users/\(userID)/block",
+                method: blocked ? "POST" : "DELETE"
+            )
+            isBlocked = response.blocked
+            if response.blocked {
+                if isFollowing { followerCount = max(0, followerCount - 1) }
+                isFollowing = false
+            }
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }
 

@@ -45,12 +45,20 @@ struct SiteLegalFooter: View {
             HStack(spacing: 0) {
                 legalLink(.terms)
                 separator
+                legalLink(.eula, title: "EULA")
+                separator
                 legalLink(.privacy)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+
+            HStack(spacing: 0) {
+                legalLink(.communityRules)
                 separator
                 footerLink(L10n.string("系统状态"), URL(string: "https://status.yhphotos.top")!)
             }
             .lineLimit(1)
-            .minimumScaleFactor(0.85)
+            .minimumScaleFactor(0.8)
 
             Text(secondaryLine)
                 .multilineTextAlignment(.center)
@@ -93,8 +101,8 @@ struct SiteLegalFooter: View {
             .foregroundStyle(.secondary)
     }
 
-    private func legalLink(_ document: LegalDocument) -> some View {
-        Button(document.title) { selectedDocument = document }
+    private func legalLink(_ document: LegalDocument, title: String? = nil) -> some View {
+        Button(title ?? document.title) { selectedDocument = document }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
     }
