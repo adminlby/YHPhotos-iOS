@@ -125,6 +125,13 @@ final class AppModel: ObservableObject {
         selectedSection = .discover
     }
 
+    func deleteAccount() async throws {
+        try await api.deleteAccount()
+        SessionCredentialStore.clear()
+        clearSession()
+        selectedSection = .discover
+    }
+
     private func openPushNotification(category: String?) {
         switch category {
         case "message", "comment", "follow", "like", "review", "photo", "saved_search", "newsletter", "security", .none:

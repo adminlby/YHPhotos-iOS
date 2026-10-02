@@ -11,6 +11,7 @@ struct AccountSecurityView: View {
                 identityCard
                 commonOperationsCard
                 sourceOfTruthCard
+                accountDeletionLink
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 14)
@@ -30,8 +31,8 @@ struct AccountSecurityView: View {
                         .frame(width: 52, height: 52)
                         .background(Color.primary.opacity(0.08), in: Circle())
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("SSO 账号与安全").font(.title3.bold())
-                        Text("账号资料与凭据由统一身份中心管理")
+                        Text(L10n.string("SSO 登录与安全")).font(.title3.bold())
+                        Text(L10n.string("登录凭据由统一身份中心管理"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -93,8 +94,8 @@ struct AccountSecurityView: View {
                     .frame(width: 34, height: 34)
                     .background(AppTheme.accent.opacity(0.13), in: Circle())
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("SSO 是账号操作的唯一入口").font(.subheadline.bold())
-                    Text("App 不再调用本站本地密码或绑定接口。只有服务端提供绑定当前用户的 SSO 账号中心链接时才会跳转，避免误入管理员 builtin 组织。")
+                    Text(L10n.string("SSO 管理登录凭据")).font(.subheadline.bold())
+                    Text(L10n.string("密码、第三方登录和双重验证由 SSO 管理；删除 YHPhotos 账号可直接在 App 内完成。"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -102,6 +103,35 @@ struct AccountSecurityView: View {
             }
             .padding(18)
         }
+    }
+
+    private var accountDeletionLink: some View {
+        NavigationLink {
+            AccountDeletionView()
+        } label: {
+            GlassPanel(cornerRadius: 22) {
+                HStack(spacing: 13) {
+                    Image(systemName: "person.crop.circle.badge.minus")
+                        .foregroundStyle(.red)
+                        .frame(width: 34, height: 34)
+                        .background(Color.red.opacity(0.12), in: Circle())
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(L10n.string("删除账号"))
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.red)
+                        Text(L10n.string("在 App 内永久删除 YHPhotos 账号和相关数据"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(18)
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     private func operation(_ title: String, _ icon: String, _ detail: String) -> some View {

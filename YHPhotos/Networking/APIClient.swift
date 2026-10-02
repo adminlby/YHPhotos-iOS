@@ -367,6 +367,7 @@ extension APIClient {
     struct CommentBody: Encodable, Sendable { let content: String }
     struct EmptyResponse: Decodable, Sendable { let ok: Bool? }
     struct EmptyBody: Encodable, Sendable { }
+    struct AccountDeletionBody: Encodable, Sendable { let confirmation: String }
 
     struct SSOPreparation: Decodable, Sendable {
         let startPath: String
@@ -415,5 +416,13 @@ extension APIClient {
     func unregisterPushDevice(token: String) async throws {
         let escaped = token.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? token
         let _: EmptyResponse = try await send("api/me/push-devices/\(escaped)", method: "DELETE")
+    }
+
+    func deleteAccount() async throws {
+        let _: EmptyResponse = try await send(
+            "api/me/account",
+            method: "DELETE",
+            body: AccountDeletionBody(confirmation: "DELETE")
+        )
     }
 }

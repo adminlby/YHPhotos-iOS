@@ -35,12 +35,16 @@ struct AppSettingsView: View {
 
             if appModel.sessionUser != nil {
                 Section(L10n.string("账号")) {
-                    NavigationLink { AccountSecurityView() } label: { Label(L10n.string("SSO 账号与安全"), systemImage: "person.badge.key.fill") }
+                    NavigationLink { AccountSecurityView() } label: { Label(L10n.string("账号与安全"), systemImage: "person.badge.key.fill") }
                     NavigationLink { LoginSessionsView() } label: { Label(L10n.string("登录设备"), systemImage: "laptopcomputer.and.iphone") }
                     NavigationLink { NotificationPreferencesView() } label: { Label(L10n.string("通知偏好"), systemImage: "bell.badge.fill") }
                     NavigationLink { BlockedUsersView() } label: { Label(L10n.string("黑名单"), systemImage: "person.crop.circle.badge.xmark") }
                     NavigationLink { SavedSearchesView() } label: { Label(L10n.string("搜索订阅"), systemImage: "magnifyingglass.circle.fill") }
                     NavigationLink { APIPublishingSettingsView() } label: { Label(L10n.string("API 图片发布"), systemImage: "network") }
+                    NavigationLink { AccountDeletionView() } label: {
+                        Label(L10n.string("删除账号"), systemImage: "person.crop.circle.badge.minus")
+                            .foregroundStyle(.red)
+                    }
                     NavigationLink { SupportCenterView() } label: {
                         Label(
                             SupportCopy.text("帮助与反馈", "支援與意見回饋", "Help & Feedback"),

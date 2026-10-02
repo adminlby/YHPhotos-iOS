@@ -120,7 +120,7 @@ struct UserCenterView: View {
                         .background(AppTheme.accent.opacity(0.13), in: Circle())
                     VStack(alignment: .leading, spacing: 4) {
                         Text("账号与安全").font(.headline)
-                        Text("通过 SSO 修改密码、管理登录方式")
+                        Text(L10n.string("管理 SSO 登录或删除 YHPhotos 账号"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

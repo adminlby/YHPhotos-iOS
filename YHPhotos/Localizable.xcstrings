@@ -1909,6 +1909,186 @@
     "删除作品" : {
 
     },
+    "删除账号" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        }
+      }
+    },
+    "在 App 内永久删除 YHPhotos 账号和相关数据" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently delete your YHPhotos account and related data in the app"
+          }
+        }
+      }
+    },
+    "确认永久删除账号？" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently delete your account?"
+          }
+        }
+      }
+    },
+    "删除后无法恢复。YHPhotos 会立即停用账号并退出所有设备，随后在后台永久清除账号和相关内容。SSO 账号不会被删除。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This cannot be undone. YHPhotos will immediately disable the account and sign out all devices, then permanently remove the account and related content in the background. Your SSO account will not be deleted."
+          }
+        }
+      }
+    },
+    "永久删除账号" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently Delete Account"
+          }
+        }
+      }
+    },
+    "正在删除账号…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting account…"
+          }
+        }
+      }
+    },
+    "此操作无法撤销" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action cannot be undone"
+          }
+        }
+      }
+    },
+    "提交后，账号会立即停用并退出所有设备。系统随后自动永久删除，无需前往 SSO 或再次操作。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After you submit, the account is disabled immediately and all devices are signed out. Permanent deletion then completes automatically—no SSO visit or additional action is required."
+          }
+        }
+      }
+    },
+    "将被永久删除" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently deleted"
+          }
+        }
+      }
+    },
+    "YHPhotos 账号与个人资料" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YHPhotos account and profile"
+          }
+        }
+      }
+    },
+    "上传的照片及存储文件" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uploaded photos and stored files"
+          }
+        }
+      }
+    },
+    "评论、消息、小组帖子和工单内容" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comments, messages, group posts, and support content"
+          }
+        }
+      }
+    },
+    "Casdoor SSO 账号及其他产品不受影响" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Casdoor SSO account and other products are not affected"
+          }
+        }
+      }
+    },
+    "SSO 登录与安全" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSO Sign-In & Security"
+          }
+        }
+      }
+    },
+    "登录凭据由统一身份中心管理" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign-in credentials are managed by the identity provider"
+          }
+        }
+      }
+    },
+    "SSO 管理登录凭据" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SSO manages sign-in credentials"
+          }
+        }
+      }
+    },
+    "密码、第三方登录和双重验证由 SSO 管理；删除 YHPhotos 账号可直接在 App 内完成。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwords, linked sign-in methods, and two-factor authentication are managed by SSO. You can delete your YHPhotos account directly in the app."
+          }
+        }
+      }
+    },
+    "管理 SSO 登录或删除 YHPhotos 账号" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage SSO sign-in or delete your YHPhotos account"
+          }
+        }
+      }
+    },
     "删除公告“%@”？" : {
 
     },
