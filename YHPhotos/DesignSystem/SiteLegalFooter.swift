@@ -37,14 +37,15 @@ enum AppBuildInfo {
 /// Shared public legal footer matching the website bottom strip.
 struct SiteLegalFooter: View {
     @Environment(\.openURL) private var openURL
+    @State private var selectedDocument: LegalDocument?
     var compact = false
 
     var body: some View {
         VStack(spacing: compact ? 6 : 8) {
             HStack(spacing: 0) {
-                footerLink(L10n.string("服务协议"), AppBuildInfo.siteOrigin.appending(path: "terms"))
+                legalLink(.terms)
                 separator
-                footerLink(L10n.string("隐私政策"), AppBuildInfo.privacyPolicyURL)
+                legalLink(.privacy)
                 separator
                 footerLink(L10n.string("系统状态"), URL(string: "https://status.yhphotos.top")!)
             }
@@ -70,7 +71,9 @@ struct SiteLegalFooter: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, compact ? 8 : 4)
         .padding(.vertical, compact ? 8 : 12)
-        .accessibilityElement(children: .combine)
+        .sheet(item: $selectedDocument) { document in
+            LegalDocumentView(document: document)
+        }
     }
 
     private var secondaryLine: String {
@@ -86,6 +89,12 @@ struct SiteLegalFooter: View {
 
     private func footerLink(_ title: String, _ url: URL) -> some View {
         Button(title) { openURL(url) }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
+    }
+
+    private func legalLink(_ document: LegalDocument) -> some View {
+        Button(document.title) { selectedDocument = document }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
     }

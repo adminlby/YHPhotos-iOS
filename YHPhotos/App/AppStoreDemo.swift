@@ -32,7 +32,8 @@ enum AppStoreDemo {
         displayName: "SkyFan",
         avatarFilename: nil,
         avatar: nil,
-        role: "user"
+        role: "user",
+        legal: nil
     )
 
     private static func localized(_ simplified: String, _ traditional: String, _ english: String) -> String {

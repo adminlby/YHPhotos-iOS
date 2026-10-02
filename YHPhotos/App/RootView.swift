@@ -6,24 +6,66 @@ struct RootView: View {
 
     var body: some View {
         Group {
+            if !appModel.hasRestoredSession || appModel.sessionRestoreError != nil {
+                launchPlaceholder
+            } else {
 #if DEBUG
-            if AppStoreDemo.isEnabled, isDirectDemoScreen {
-                directDemoRoot
-            } else if horizontalSizeClass == .regular {
-                tabletRoot
-            } else {
-                phoneRoot
-            }
+                if AppStoreDemo.isEnabled, isDirectDemoScreen {
+                    directDemoRoot
+                } else if horizontalSizeClass == .regular {
+                    tabletRoot
+                } else {
+                    phoneRoot
+                }
 #else
-            if horizontalSizeClass == .regular {
-                tabletRoot
-            } else {
-                phoneRoot
-            }
+                if horizontalSizeClass == .regular {
+                    tabletRoot
+                } else {
+                    phoneRoot
+                }
 #endif
+            }
         }
         .sheet(isPresented: $appModel.showingUpload) { UploadView() }
         .sheet(isPresented: $appModel.showingLogin) { LoginView() }
+        .fullScreenCover(
+            isPresented: Binding(
+                get: { appModel.hasRestoredSession && appModel.requiresLegalAcceptance },
+                set: { _ in }
+            )
+        ) {
+            LegalConsentView()
+                .environmentObject(appModel)
+                .interactiveDismissDisabled()
+        }
+    }
+
+    private var launchPlaceholder: some View {
+        ZStack {
+            AppTheme.canvas.ignoresSafeArea()
+            if let errorMessage = appModel.sessionRestoreError {
+                EmptyStateView(
+                    L10n.string("无法验证账号状态"),
+                    systemImage: "exclamationmark.shield.fill",
+                    description: errorMessage
+                ) {
+                    Button(L10n.string("重试")) {
+                        Task { await appModel.restoreSession() }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            } else {
+                VStack(spacing: 14) {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.system(size: 42, weight: .semibold))
+                        .foregroundStyle(AppTheme.accent)
+                    ProgressView()
+                    Text(L10n.string("正在安全加载…"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
     }
 
 #if DEBUG

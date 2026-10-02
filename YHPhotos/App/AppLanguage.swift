@@ -23,7 +23,12 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     }
 
     static var resolved: AppLanguage {
-        let identifier = Locale.preferredLanguages.first ?? Locale.autoupdatingCurrent.identifier
+        // `preferredLocalizations` respects the language selected for this app in
+        // Settings, while `Locale.preferredLanguages` may still describe the
+        // device-wide order on some iOS versions.
+        let identifier = Bundle.main.preferredLocalizations.first
+            ?? Locale.preferredLanguages.first
+            ?? Locale.autoupdatingCurrent.identifier
         let normalized = Locale.canonicalLanguageIdentifier(from: identifier).lowercased()
         if normalized.hasPrefix("zh-hant") || normalized.hasPrefix("zh-hk") ||
             normalized.hasPrefix("zh-mo") || normalized.hasPrefix("zh-tw") {

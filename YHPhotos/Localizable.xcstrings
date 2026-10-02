@@ -406,6 +406,17 @@
         }
       }
     },
+    "%d 件作品" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d photos"
+          }
+        }
+      }
+    },
     "%d 件参赛作品 · %d 位参与者" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -750,6 +761,17 @@
     "AirNav 供图接口" : {
 
     },
+    "API 图片发布" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Photo Publishing"
+          }
+        }
+      }
+    },
     "API 地址配置无效" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -768,6 +790,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "App Push Notifications"
+          }
+        }
+      }
+    },
+    "App 语言" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Language"
           }
         }
       }
@@ -852,6 +885,17 @@
     },
     "FR24 鉴权" : {
 
+    },
+    "Hot 原因 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hot reason *"
+          }
+        }
+      }
     },
     "ID、标题、注册号或上传者" : {
 
@@ -941,6 +985,17 @@
         }
       }
     },
+    "YHPhotos 跟随 iOS 的单独 App 语言设置，更改后重新打开 App 生效。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YHPhotos follows the per-app language in iOS Settings. Reopen the app after changing it."
+          }
+        }
+      }
+    },
     "上一架" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1023,6 +1078,17 @@
     "上传者：%@" : {
 
     },
+    "上传额度" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload Quota"
+          }
+        }
+      }
+    },
     "上次扫描" : {
 
     },
@@ -1062,6 +1128,28 @@
     "不公开列出" : {
 
     },
+    "不发布到小组" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do not publish to a group"
+          }
+        }
+      }
+    },
+    "不当资料" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inappropriate profile"
+          }
+        }
+      }
+    },
     "不成立" : {
 
     },
@@ -1097,8 +1185,30 @@
     "严重度：%lld" : {
 
     },
+    "个人中心" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        }
+      }
+    },
     "个人简介" : {
 
+    },
+    "个人资料" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        }
+      }
     },
     "中心十字分割线" : {
       "extractionState" : "manual",
@@ -1119,6 +1229,17 @@
     },
     "主机" : {
 
+    },
+    "主要文字" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primary text"
+          }
+        }
+      }
     },
     "主题" : {
 
@@ -1141,6 +1262,17 @@
     },
     "举报信息" : {
 
+    },
+    "举报原因" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reason for Report"
+          }
+        }
+      }
     },
     "举报属实 · 保留图片" : {
 
@@ -1166,11 +1298,44 @@
     "事件说明" : {
 
     },
+    "事故" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accident"
+          }
+        }
+      }
+    },
     "二审冲突，需仲裁权限" : {
 
     },
     "二次确认" : {
 
+    },
+    "二次驳回原因" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Second rejection reason"
+          }
+        }
+      }
+    },
+    "交付" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delivery"
+          }
+        }
+      }
     },
     "京ICP备2025139513号" : {
       "extractionState" : "stale",
@@ -1224,6 +1389,17 @@
         }
       }
     },
+    "今日已上传 %d 张 · 优先额度 %d" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d uploaded today · Priority quota %d"
+          }
+        }
+      }
+    },
     "从关于页隐藏" : {
 
     },
@@ -1237,6 +1413,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start a conversation from a photographer's profile."
+          }
+        }
+      }
+    },
+    "从摄影师主页或右上角发起对话。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a conversation from a photographer's profile or the top-right menu."
           }
         }
       }
@@ -1313,7 +1500,14 @@
 
     },
     "优先队列" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priority Queue"
+          }
+        }
+      }
     },
     "优先队列额度" : {
 
@@ -1377,6 +1571,39 @@
     },
     "作品投票排行" : {
 
+    },
+    "作品操作" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo Actions"
+          }
+        }
+      }
+    },
+    "作品类型" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo Type"
+          }
+        }
+      }
+    },
+    "作品详情" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo Details"
+          }
+        }
+      }
     },
     "作品说明" : {
       "extractionState" : "stale",
@@ -1472,6 +1699,17 @@
     "保存白名单" : {
 
     },
+    "保存的搜索" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved searches"
+          }
+        }
+      }
+    },
     "保存站点设置" : {
 
     },
@@ -1499,6 +1737,50 @@
     "信息" : {
 
     },
+    "修改 SSO 密码或恢复凭据" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change your SSO password or recover credentials"
+          }
+        }
+      }
+    },
+    "修改密码" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Password"
+          }
+        }
+      }
+    },
+    "修改统一身份资料" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit your identity profile"
+          }
+        }
+      }
+    },
+    "修正版 #%d 已提交审核" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revision #%d was submitted for review"
+          }
+        }
+      }
+    },
     "修正版审计" : {
 
     },
@@ -1512,6 +1794,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Allow Push Notifications"
+          }
+        }
+      }
+    },
+    "允许通过公开 API 发布" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow publishing through the public API"
+          }
+        }
+      }
+    },
+    "允许通过公开 API 发布我的作品" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow my photos to be published through the public API"
           }
         }
       }
@@ -1541,6 +1845,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All Photos"
+          }
+        }
+      }
+    },
+    "全部分区" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Sections"
+          }
+        }
+      }
+    },
+    "全部已读" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark All as Read"
           }
         }
       }
@@ -1590,6 +1916,17 @@
     },
     "全领域" : {
 
+    },
+    "公务机" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Business Jet"
+          }
+        }
+      }
     },
     "公告" : {
 
@@ -1741,8 +2078,37 @@
     "关闭反馈" : {
 
     },
+    "关闭后，合作方 API 将不再返回你的作品；单张作品的排除设置仍会保留。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When disabled, partner APIs will no longer return your photos. Per-photo exclusions will be preserved."
+          }
+        }
+      }
+    },
     "其他" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        }
+      }
+    },
+    "其他设备" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other device"
+          }
+        }
+      }
     },
     "兼容字段：每日 %@ · 待审 %@" : {
       "localizations" : {
@@ -1788,6 +2154,17 @@
     "再次输入新密码" : {
 
     },
+    "冒充他人" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impersonation"
+          }
+        }
+      }
+    },
     "最低分数门槛" : {
 
     },
@@ -1809,6 +2186,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Most Liked"
+          }
+        }
+      }
+    },
+    "最大 50 MB；HEIC 会在设备上转换为兼容的 JPEG。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum 50 MB. HEIC images are converted to compatible JPEGs on your device."
           }
         }
       }
@@ -1849,6 +2237,17 @@
     "最近活跃" : {
 
     },
+    "最近获得" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most Recently Earned"
+          }
+        }
+      }
+    },
     "最近调用" : {
 
     },
@@ -1859,6 +2258,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Write a message…"
+          }
+        }
+      }
+    },
+    "军机" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Military Aircraft"
+          }
+        }
+      }
+    },
+    "军用飞机" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Military Aircraft"
           }
         }
       }
@@ -1950,7 +2371,14 @@
 
     },
     "删除" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
     },
     "删除作品" : {
 
@@ -2051,6 +2479,17 @@
         }
       }
     },
+    "制造商" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manufacturer"
+          }
+        }
+      }
+    },
     "刷新任务" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2119,6 +2558,17 @@
     "单批上传上限（空/0=不限）" : {
 
     },
+    "单批最多 %d 张" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up to %d photos per batch"
+          }
+        }
+      }
+    },
     "单指拖动 · 双指缩放" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2183,11 +2633,29 @@
         }
       }
     },
+    "历史底图无法读取" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The original image could not be loaded"
+          }
+        }
+      }
+    },
     "历史涂装" : {
 
     },
     "原因" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reason"
+          }
+        }
+      }
     },
     "原图" : {
       "extractionState" : "stale",
@@ -2279,6 +2747,17 @@
     "参赛作品（%lld）" : {
 
     },
+    "友善地说点什么…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write a friendly comment…"
+          }
+        }
+      }
+    },
     "双击 3×" : {
 
     },
@@ -2287,6 +2766,17 @@
     },
     "双流机场供图接口" : {
 
+    },
+    "双重验证" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Two-Factor Authentication"
+          }
+        }
+      }
     },
     "反馈" : {
 
@@ -2302,6 +2792,17 @@
     },
     "发布公告" : {
 
+    },
+    "发布到小组（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publish to a Group (Optional)"
+          }
+        }
+      }
     },
     "发布后将锁定奖品、字段及获奖名单，并从现在开始计算登记期限。确定发布？" : {
 
@@ -2319,6 +2820,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Post requests and fill historical liveries and airport-era imagery"
+          }
+        }
+      }
+    },
+    "发布设置" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publishing Settings"
           }
         }
       }
@@ -2369,6 +2881,28 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "发起人 %1$@ · %2$lld 个投稿"
+          }
+        }
+      }
+    },
+    "发起申诉" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Submit Appeal"
+          }
+        }
+      }
+    },
+    "发起私信" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Message"
           }
         }
       }
@@ -2487,6 +3021,17 @@
     "合集名称或所有者" : {
 
     },
+    "同意并继续" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agree and Continue"
+          }
+        }
+      }
+    },
     "同意接管" : {
 
     },
@@ -2574,6 +3119,28 @@
     "固定奖金（分）" : {
 
     },
+    "国家或地区" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Country or Region"
+          }
+        }
+      }
+    },
+    "图库没有的注册号" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registration not in the database"
+          }
+        }
+      }
+    },
     "图片" : {
 
     },
@@ -2606,6 +3173,17 @@
     "图片接口" : {
 
     },
+    "图片标识" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo Identifier"
+          }
+        }
+      }
+    },
     "图片检查、航空情报、百科资料与社区活动都集中在这里。" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2624,6 +3202,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Image Inspector"
+          }
+        }
+      }
+    },
+    "图片超过 50 MB 上限。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The image exceeds the 50 MB limit."
+          }
+        }
+      }
+    },
+    "图片超过 50MB 上限" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The image exceeds the 50 MB limit"
           }
         }
       }
@@ -2679,6 +3279,17 @@
     "在外余额" : {
 
     },
+    "在系统设置中修改" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change in Settings"
+          }
+        }
+      }
+    },
     "在线审核员" : {
 
     },
@@ -2718,6 +3329,28 @@
         }
       }
     },
+    "地景/机场" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scenery / Airport"
+          }
+        }
+      }
+    },
+    "地面车辆" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ground Vehicle"
+          }
+        }
+      }
+    },
     "场景" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2747,6 +3380,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vertical mirror"
+          }
+        }
+      }
+    },
+    "垃圾广告" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spam"
+          }
+        }
+      }
+    },
+    "城市" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "City"
+          }
+        }
+      }
+    },
+    "城市轨道交通" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urban Rail"
           }
         }
       }
@@ -2819,8 +3485,63 @@
     "复制访问密钥" : {
 
     },
+    "外景巡航" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scenic Flight"
+          }
+        }
+      }
+    },
+    "外观" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        }
+      }
+    },
+    "夜拍图片" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Night Photo"
+          }
+        }
+      }
+    },
+    "夜航" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Night Flight"
+          }
+        }
+      }
+    },
     "天数，留空为永久" : {
 
+    },
+    "天蓝" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sky Blue"
+          }
+        }
+      }
     },
     "失败" : {
 
@@ -2869,6 +3590,17 @@
     "始终显示" : {
 
     },
+    "字体" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font"
+          }
+        }
+      }
+    },
     "字典" : {
 
     },
@@ -2906,12 +3638,34 @@
     "定时任务可能未启动，可先手动运行一次，并检查后端常驻进程。" : {
 
     },
+    "实体图库" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entity Gallery"
+          }
+        }
+      }
+    },
     "实时" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Live"
+          }
+        }
+      }
+    },
+    "实验列车" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimental Train"
           }
         }
       }
@@ -2938,6 +3692,17 @@
     "审核中心" : {
 
     },
+    "审核信息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review Information"
+          }
+        }
+      }
+    },
     "审核历史" : {
 
     },
@@ -2953,16 +3718,100 @@
       }
     },
     "审核标注" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review Annotations"
+          }
+        }
+      }
+    },
+    "审核结果" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review Result"
+          }
+        }
+      }
+    },
+    "审核结果、评论、关注和系统通知会显示在这里。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review results, comments, follows, and system notifications appear here."
+          }
+        }
+      }
     },
     "审核通过" : {
 
     },
+    "审核队列" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review Queue"
+          }
+        }
+      }
+    },
     "审计日志" : {
 
     },
+    "客户端" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Client"
+          }
+        }
+      }
+    },
     "客服" : {
 
+    },
+    "客舱" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cabin"
+          }
+        }
+      }
+    },
+    "客运列车" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passenger Train"
+          }
+        }
+      }
+    },
+    "客运回送" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty Coaching Stock"
+          }
+        }
+      }
     },
     "密码、第三方登录和双重验证由 SSO 管理；删除 YHPhotos 账号可直接在 App 内完成。" : {
       "extractionState" : "stale",
@@ -3158,6 +4007,17 @@
     "工单状态" : {
 
     },
+    "工程车辆" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Engineering Vehicle"
+          }
+        }
+      }
+    },
     "左上" : {
 
     },
@@ -3189,6 +4049,28 @@
     },
     "已到期阶段" : {
 
+    },
+    "已勾选" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected"
+          }
+        }
+      }
+    },
+    "已包含" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Included"
+          }
+        }
+      }
     },
     "已参加" : {
       "extractionState" : "manual",
@@ -3273,6 +4155,17 @@
     "已授予" : {
 
     },
+    "已排除" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluded"
+          }
+        }
+      }
+    },
     "已有绑定不会被覆盖" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3289,6 +4182,17 @@
     },
     "已核实并处理" : {
 
+    },
+    "已注销用户" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleted User"
+          }
+        }
+      }
     },
     "已确认" : {
 
@@ -3349,8 +4253,26 @@
     "帖子审核" : {
 
     },
+    "帮助与反馈" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help & Feedback"
+          }
+        }
+      }
+    },
     "常用账号操作" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Common Account Actions"
+          }
+        }
+      }
     },
     "平台" : {
       "extractionState" : "stale",
@@ -3359,6 +4281,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Platform"
+          }
+        }
+      }
+    },
+    "平台 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Platform *"
           }
         }
       }
@@ -3413,6 +4346,17 @@
     "强制解绑并吊销小程序会话" : {
 
     },
+    "强调色示例" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accent color example"
+          }
+        }
+      }
+    },
     "归属" : {
 
     },
@@ -3421,6 +4365,17 @@
     },
     "归档后仍会在首页往期精选区域展示。" : {
 
+    },
+    "当前" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current"
+          }
+        }
+      }
     },
     "当前 FR24 凭证" : {
 
@@ -3443,14 +4398,47 @@
     "当前权限只能查看你自己的后台操作。" : {
 
     },
+    "当前没有可用的优先审核额度。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No priority review quota is currently available."
+          }
+        }
+      }
+    },
     "当前没有在线审核员" : {
 
+    },
+    "当前版本" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "current version"
+          }
+        }
+      }
     },
     "当前理由：%@" : {
 
     },
     "当前精选（%lld）" : {
 
+    },
+    "当前统计" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current statistics"
+          }
+        }
+      }
     },
     "当前账号没有原图检查权限" : {
 
@@ -3552,6 +4540,17 @@
     "徽章管理" : {
 
     },
+    "徽章详情" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Badge Details"
+          }
+        }
+      }
+    },
     "心跳" : {
 
     },
@@ -3610,6 +4609,17 @@
     "我已保存" : {
 
     },
+    "我已阅读并同意服务协议与隐私政策" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I have read and agree to the Terms of Service and Privacy Policy"
+          }
+        }
+      }
+    },
     "我的" : {
       "localizations" : {
         "en" : {
@@ -3666,7 +4676,14 @@
 
     },
     "打开 SSO 账号中心" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open SSO Account Center"
+          }
+        }
+      }
     },
     "打开原生检查工具" : {
 
@@ -3982,6 +4999,17 @@
     "描述" : {
 
     },
+    "提交" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Submit"
+          }
+        }
+      }
+    },
     "提交：%@ · 审核：%@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3997,6 +5025,28 @@
     },
     "提交人：%@" : {
 
+    },
+    "提交修正版" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Submit Revision"
+          }
+        }
+      }
+    },
+    "提交前检查" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pre-Submission Check"
+          }
+        }
+      }
     },
     "提交后，账号会立即停用并退出所有设备。系统随后自动永久删除，无需前往 SSO 或再次操作。" : {
       "extractionState" : "stale",
@@ -4037,6 +5087,17 @@
         }
       }
     },
+    "插件 / 机模（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add-on / Aircraft (Optional)"
+          }
+        }
+      }
+    },
     "搜索" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4062,6 +5123,17 @@
     "搜索后台功能" : {
 
     },
+    "搜索场景" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Scenery"
+          }
+        }
+      }
+    },
     "搜索小组名或组长" : {
 
     },
@@ -4077,17 +5149,149 @@
     "搜索敏感词" : {
 
     },
+    "搜索机场" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Airports"
+          }
+        }
+      }
+    },
+    "搜索机型" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Aircraft Types"
+          }
+        }
+      }
+    },
+    "搜索机模" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Aircraft Add-ons"
+          }
+        }
+      }
+    },
     "搜索权限点" : {
 
     },
     "搜索标签" : {
 
     },
+    "搜索模拟平台" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Simulation Platforms"
+          }
+        }
+      }
+    },
+    "搜索注册号" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Registrations"
+          }
+        }
+      }
+    },
+    "搜索涂装" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Liveries"
+          }
+        }
+      }
+    },
+    "搜索航空公司" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Airlines"
+          }
+        }
+      }
+    },
+    "搜索订阅" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Subscriptions"
+          }
+        }
+      }
+    },
     "搜索说明或操作人" : {
 
     },
     "搜索资讯标题" : {
 
+    },
+    "搜索路局" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Railway Bureaus"
+          }
+        }
+      }
+    },
+    "搜索车型" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Train Models"
+          }
+        }
+      }
+    },
+    "搜索车次" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Train Numbers"
+          }
+        }
+      }
+    },
+    "搜索车站" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Stations"
+          }
+        }
+      }
     },
     "摄影师" : {
       "extractionState" : "stale",
@@ -4102,6 +5306,39 @@
     },
     "摘要" : {
 
+    },
+    "撤回后作品会恢复为未通过状态。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After withdrawal, the photo will return to Rejected status."
+          }
+        }
+      }
+    },
+    "撤回申诉" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Withdraw Appeal"
+          }
+        }
+      }
+    },
+    "撤回申诉？" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Withdraw this appeal?"
+          }
+        }
+      }
     },
     "撤销" : {
 
@@ -4187,6 +5424,28 @@
     "文字" : {
 
     },
+    "文字水印" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text Watermark"
+          }
+        }
+      }
+    },
+    "文字颜色" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text Color"
+          }
+        }
+      }
+    },
     "新交付" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4200,6 +5459,17 @@
     },
     "新反馈" : {
 
+    },
+    "新增关注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Follower"
+          }
+        }
+      }
     },
     "新增图片" : {
 
@@ -4237,8 +5507,30 @@
     "新注册号" : {
 
     },
+    "新私信" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Message"
+          }
+        }
+      }
+    },
     "无水印原图 · 仅审核可见" : {
 
+    },
+    "无法加载法律文档" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to Load Legal Document"
+          }
+        }
+      }
     },
     "无法建立后台登录会话" : {
       "extractionState" : "manual",
@@ -4262,6 +5554,28 @@
         }
       }
     },
+    "无法读取所选图片，请换一张重试。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The selected image could not be read. Choose another image and try again."
+          }
+        }
+      }
+    },
+    "无法验证账号状态" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to Verify Account Status"
+          }
+        }
+      }
+    },
     "日期" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4279,6 +5593,17 @@
     "时长（天，0 表示永久）" : {
 
     },
+    "时间未知" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown time"
+          }
+        }
+      }
+    },
     "时间轴仍可浏览全天；切换进港或离港筛选查看对应结果。" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4286,6 +5611,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The timeline still covers the full day. Switch the arrival or departure filter to see matching results."
+          }
+        }
+      }
+    },
+    "昵称、用户名或邮箱" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display name, username, or email"
           }
         }
       }
@@ -4310,6 +5646,17 @@
     "显示条件" : {
 
     },
+    "显示模式" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display Mode"
+          }
+        }
+      }
+    },
     "普通" : {
 
     },
@@ -4319,11 +5666,55 @@
     "普通接口" : {
 
     },
+    "普通涂装" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard Livery"
+          }
+        }
+      }
+    },
+    "普通队列" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard Queue"
+          }
+        }
+      }
+    },
+    "普速检测列车" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conventional Inspection Train"
+          }
+        }
+      }
+    },
     "暂停" : {
 
     },
     "暂停（不能互动/上传）" : {
 
+    },
+    "暂无内容" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No content yet"
+          }
+        }
+      }
     },
     "暂无参赛作品" : {
 
@@ -4365,6 +5756,28 @@
     "暂无授予记录" : {
 
     },
+    "暂无搜索订阅" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No search subscriptions"
+          }
+        }
+      }
+    },
+    "暂无收集记录" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No collection records"
+          }
+        }
+      }
+    },
     "暂无条目" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4392,6 +5805,17 @@
     },
     "暂无申请" : {
 
+    },
+    "暂无相关作品" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No related photos"
+          }
+        }
+      }
     },
     "暂无记录" : {
 
@@ -4471,6 +5895,17 @@
     "有效图片" : {
 
     },
+    "有标注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annotated"
+          }
+        }
+      }
+    },
     "服务协议" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4510,6 +5945,17 @@
         }
       }
     },
+    "服务条款已更新" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Service Updated"
+          }
+        }
+      }
+    },
     "服务端会加处理锁，避免多人重复处置。" : {
 
     },
@@ -4521,6 +5967,28 @@
     },
     "未分组" : {
 
+    },
+    "未勾选" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not selected"
+          }
+        }
+      }
+    },
+    "未命名搜索" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untitled search"
+          }
+        }
+      }
     },
     "未封禁" : {
 
@@ -4535,6 +6003,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unknown"
+          }
+        }
+      }
+    },
+    "未知设备" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown device"
           }
         }
       }
@@ -4589,6 +6068,17 @@
         }
       }
     },
+    "机场 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Airport *"
+          }
+        }
+      }
+    },
     "机场 ID" : {
 
     },
@@ -4619,6 +6109,17 @@
         }
       }
     },
+    "机型 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aircraft Type *"
+          }
+        }
+      }
+    },
     "机型、注册号、机场、车站" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4637,6 +6138,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aircraft Model"
+          }
+        }
+      }
+    },
+    "机翼" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wing"
           }
         }
       }
@@ -4698,6 +6210,17 @@
     "条件来源必须位于当前字段之前；未选择奖励组表示所有奖励组适用。" : {
 
     },
+    "来发表第一条评论吧。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Be the first to leave a comment."
+          }
+        }
+      }
+    },
     "来源" : {
 
     },
@@ -4718,6 +6241,17 @@
         }
       }
     },
+    "查找摄影师" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find Photographers"
+          }
+        }
+      }
+    },
     "查看" : {
 
     },
@@ -4728,6 +6262,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View today"
+          }
+        }
+      }
+    },
+    "查看和管理 Apple 等登录方式" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View and manage Apple and other sign-in methods"
           }
         }
       }
@@ -4745,6 +6290,17 @@
     },
     "查看当前权限" : {
 
+    },
+    "查看搜索结果" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Search Results"
+          }
+        }
+      }
     },
     "查看私有图片凭证" : {
 
@@ -4805,8 +6361,30 @@
         }
       }
     },
+    "标签，以逗号分隔（最多 10 个）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tags, separated by commas (up to 10)"
+          }
+        }
+      }
+    },
     "标签名称" : {
 
+    },
+    "标记为 Hot 候选" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark as Hot Candidate"
+          }
+        }
+      }
     },
     "标记已读" : {
 
@@ -4819,6 +6397,17 @@
     },
     "标识须为 3–50 位小写字母、数字或下划线，并以字母开头。创建后可配置权限并分配给用户。" : {
 
+    },
+    "标识颜色" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifier Color"
+          }
+        }
+      }
     },
     "标题" : {
 
@@ -4874,6 +6463,39 @@
         }
       }
     },
+    "模拟飞行资料" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight Simulation Details"
+          }
+        }
+      }
+    },
+    "橙色" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        }
+      }
+    },
+    "次要文字会自动适配浅色和深色背景。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secondary text automatically adapts to light and dark backgrounds."
+          }
+        }
+      }
+    },
     "正在上传…" : {
 
     },
@@ -4890,6 +6512,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deleting account…"
+          }
+        }
+      }
+    },
+    "正在加载…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading…"
           }
         }
       }
@@ -4923,7 +6556,14 @@
 
     },
     "正在安全加载…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading securely…"
+          }
+        }
+      }
     },
     "正在安全加载原图…" : {
 
@@ -4935,6 +6575,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restoring device security verification…"
+          }
+        }
+      }
+    },
+    "正在查看" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Under Review"
           }
         }
       }
@@ -5017,11 +6668,33 @@
     "每行一个选项" : {
 
     },
+    "水印" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watermark"
+          }
+        }
+      }
+    },
     "水印展示图" : {
 
     },
     "水印文字" : {
 
+    },
+    "水印类型" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watermark Type"
+          }
+        }
+      }
     },
     "水平检查" : {
       "extractionState" : "manual",
@@ -5068,6 +6741,17 @@
     "没有可用状态服务" : {
 
     },
+    "没有已拉黑的用户" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No blocked users"
+          }
+        }
+      }
+    },
     "没有进行中的仲裁" : {
 
     },
@@ -5077,6 +6761,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registration"
+          }
+        }
+      }
+    },
+    "注册号 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registration *"
           }
         }
       }
@@ -5133,6 +6828,17 @@
         }
       }
     },
+    "浅色" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
+          }
+        }
+      }
+    },
     "浏览" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5155,12 +6861,56 @@
         }
       }
     },
+    "涂装（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livery (Optional)"
+          }
+        }
+      }
+    },
+    "涂装变更" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livery Change"
+          }
+        }
+      }
+    },
     "消息" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Messages"
+          }
+        }
+      }
+    },
+    "消息类型" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message Type"
+          }
+        }
+      }
+    },
+    "深色" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
           }
         }
       }
@@ -5264,6 +7014,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tap to view flights around this time"
+          }
+        }
+      }
+    },
+    "点赞" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Likes"
           }
         }
       }
@@ -5435,7 +7196,14 @@
       }
     },
     "申诉" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appeal"
+          }
+        }
+      }
     },
     "申诉 #%lld" : {
 
@@ -5454,11 +7222,62 @@
     "申诉人" : {
 
     },
+    "申诉回复" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appeal Response"
+          }
+        }
+      }
+    },
     "申诉处理" : {
 
     },
+    "申诉已提交" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appeal Submitted"
+          }
+        }
+      }
+    },
+    "申诉已撤回" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appeal Withdrawn"
+          }
+        }
+      }
+    },
+    "申诉标注" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appeal Annotations"
+          }
+        }
+      }
+    },
     "申诉理由" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appeal Reason"
+          }
+        }
+      }
     },
     "申请" : {
 
@@ -5535,6 +7354,17 @@
         }
       }
     },
+    "登录后发表评论" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to comment"
+          }
+        }
+      }
+    },
     "登录后可查询好货预报。" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5542,6 +7372,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sign in to use spotting forecast."
+          }
+        }
+      }
+    },
+    "登录后查看消息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to view messages"
           }
         }
       }
@@ -5595,6 +7436,17 @@
     "登录结果" : {
 
     },
+    "登录设备" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed-In Devices"
+          }
+        }
+      }
+    },
     "登记与发放" : {
 
     },
@@ -5643,6 +7495,17 @@
         }
       }
     },
+    "白色" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "White"
+          }
+        }
+      }
+    },
     "百科" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5650,6 +7513,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encyclopedia"
+          }
+        }
+      }
+    },
+    "盗图" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stolen photo"
           }
         }
       }
@@ -5677,6 +7551,17 @@
     "目标类型" : {
 
     },
+    "直升机" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helicopter"
+          }
+        }
+      }
+    },
     "直接移除，不归档" : {
 
     },
@@ -5698,6 +7583,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Histogram uses weighted luminance from the uncompressed analysis original; not available together with dust enhance."
+          }
+        }
+      }
+    },
+    "相关作品" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Related Photos"
           }
         }
       }
@@ -5825,6 +7721,17 @@
         }
       }
     },
+    "社区通讯" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Community Newsletter"
+          }
+        }
+      }
+    },
     "禁言" : {
 
     },
@@ -5848,6 +7755,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Message"
+          }
+        }
+      }
+    },
+    "私信与站内消息会集中显示在这里。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direct messages and in-app notifications appear here."
           }
         }
       }
@@ -5933,8 +7851,41 @@
     "立即处理一次" : {
 
     },
+    "站内消息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In-App Messages"
+          }
+        }
+      }
+    },
+    "站内通知" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In-App Notifications"
+          }
+        }
+      }
+    },
     "站点设置" : {
 
+    },
+    "第三方账号" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linked Accounts"
+          }
+        }
+      }
     },
     "等于" : {
 
@@ -6033,8 +7984,30 @@
     "管理类别" : {
 
     },
+    "管理验证器与恢复方式" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage authenticators and recovery methods"
+          }
+        }
+      }
+    },
     "箭头" : {
 
+    },
+    "类别" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        }
+      }
     },
     "类型" : {
 
@@ -6062,6 +8035,17 @@
     },
     "精选管理" : {
 
+    },
+    "系统" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        }
+      }
     },
     "系统与安全" : {
       "extractionState" : "stale",
@@ -6125,6 +8109,28 @@
     "累计获得 / 使用" : {
 
     },
+    "线路" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Line"
+          }
+        }
+      }
+    },
+    "线路 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Line *"
+          }
+        }
+      }
+    },
     "组长 %@" : {
 
     },
@@ -6171,6 +8177,28 @@
     "给上传者的留言" : {
 
     },
+    "给审核员的留言" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message to reviewers"
+          }
+        }
+      }
+    },
+    "给审核员的留言（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message to Reviewers (Optional)"
+          }
+        }
+      }
+    },
     "给用户的回复" : {
 
     },
@@ -6179,6 +8207,28 @@
     },
     "继承" : {
 
+    },
+    "继承退役飞机的注册号" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reuse a retired aircraft registration"
+          }
+        }
+      }
+    },
+    "继续使用 YHPhotos 前，请阅读并同意当前版本（%@）的服务协议与隐私政策。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Before continuing with YHPhotos, please read and accept the Terms of Service and Privacy Policy for version %@."
+          }
+        }
+      }
     },
     "维护" : {
 
@@ -6353,6 +8403,17 @@
         }
       }
     },
+    "至少选择一项，可多选" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select at least one option; multiple selections are allowed"
+          }
+        }
+      }
+    },
     "航司" : {
 
     },
@@ -6370,6 +8431,17 @@
         }
       }
     },
+    "航母" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aircraft Carrier"
+          }
+        }
+      }
+    },
     "航班" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6377,6 +8449,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flight"
+          }
+        }
+      }
+    },
+    "航班号（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight Number (Optional)"
           }
         }
       }
@@ -6413,6 +8496,17 @@
         }
       }
     },
+    "航空公司 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Airline *"
+          }
+        }
+      }
+    },
     "航空公司（可选）" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6439,7 +8533,14 @@
 
     },
     "航空资料" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aviation Details"
+          }
+        }
+      }
     },
     "色调跨度" : {
       "extractionState" : "manual",
@@ -6448,6 +8549,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tone span"
+          }
+        }
+      }
+    },
+    "英文名" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English Name"
           }
         }
       }
@@ -6493,6 +8605,17 @@
         }
       }
     },
+    "获得次数" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Times Earned"
+          }
+        }
+      }
+    },
     "获赞" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6504,6 +8627,17 @@
         }
       }
     },
+    "虚假信息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "False information"
+          }
+        }
+      }
+    },
     "行数" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6511,6 +8645,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rows"
+          }
+        }
+      }
+    },
+    "补充说明（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Additional details (optional)"
           }
         }
       }
@@ -6571,6 +8716,17 @@
     "解锁并退回待处理" : {
 
     },
+    "解除" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unblock"
+          }
+        }
+      }
+    },
     "解除封禁" : {
 
     },
@@ -6609,6 +8765,17 @@
         }
       }
     },
+    "设置" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
     "设置到期时间" : {
 
     },
@@ -6631,7 +8798,14 @@
 
     },
     "评论" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comments"
+          }
+        }
+      }
     },
     "评论、消息、小组帖子和工单内容" : {
       "extractionState" : "stale",
@@ -6640,6 +8814,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comments, messages, group posts, and support content"
+          }
+        }
+      }
+    },
+    "评论与回复" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comments & Replies"
           }
         }
       }
@@ -6654,6 +8839,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Try another day, or enable both arrivals and departures."
+          }
+        }
+      }
+    },
+    "试运行列车" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trial Train"
           }
         }
       }
@@ -6690,6 +8886,28 @@
     "请先选择理由" : {
 
     },
+    "请具体说明审核结论需要重新考虑的原因，至少 10 个字符。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explain why the review decision should be reconsidered, using at least 10 characters."
+          }
+        }
+      }
+    },
+    "请填写 Hot 原因" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a Hot reason"
+          }
+        }
+      }
+    },
     "请填写驳回说明，用户会收到通知。" : {
 
     },
@@ -6704,11 +8922,40 @@
         }
       }
     },
+    "请确认图片清晰、拍摄日期准确、主体资料完整。联想列表中的官方条目会同时关联实体图库。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make sure the image is clear, the capture date is accurate, and the subject details are complete. Selecting an official suggestion also links the entity gallery."
+          }
+        }
+      }
+    },
     "请选择" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select"
+          }
+        }
+      }
     },
     "调度状态" : {
 
+    },
+    "调机" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Positioning Flight"
+          }
+        }
+      }
     },
     "调用日志" : {
 
@@ -6720,7 +8967,14 @@
 
     },
     "账号" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        }
+      }
     },
     "账号与安全" : {
       "localizations" : {
@@ -6749,6 +9003,39 @@
     },
     "账户类型" : {
 
+    },
+    "货机" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargo Aircraft"
+          }
+        }
+      }
+    },
+    "货运列车" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freight Train"
+          }
+        }
+      }
+    },
+    "货运回送" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty Freight Stock"
+          }
+        }
+      }
     },
     "资料" : {
 
@@ -6862,6 +9149,28 @@
         }
       }
     },
+    "路局 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Railway Bureau *"
+          }
+        }
+      }
+    },
+    "路用列车" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Departmental Train"
+          }
+        }
+      }
+    },
     "身份" : {
 
     },
@@ -6872,6 +9181,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vehicle / Trainset Number"
+          }
+        }
+      }
+    },
+    "车号 / 编组号 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vehicle / Set Number *"
           }
         }
       }
@@ -6887,6 +9207,17 @@
         }
       }
     },
+    "车型 *" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Train Model *"
+          }
+        }
+      }
+    },
     "车次" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6898,6 +9229,17 @@
         }
       }
     },
+    "车次（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Train Number (Optional)"
+          }
+        }
+      }
+    },
     "车站" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6905,6 +9247,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Station"
+          }
+        }
+      }
+    },
+    "车站（可选）" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Station (Optional)"
           }
         }
       }
@@ -6950,6 +9303,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Guides"
+          }
+        }
+      }
+    },
+    "输入昵称、用户名或邮箱的至少两个字符。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter at least two characters of a display name, username, or email."
           }
         }
       }
@@ -7030,6 +9394,28 @@
     "运营人" : {
 
     },
+    "运营人变更" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator Change"
+          }
+        }
+      }
+    },
+    "运营方" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator"
+          }
+        }
+      }
+    },
     "运行状态" : {
 
     },
@@ -7098,6 +9484,28 @@
         }
       }
     },
+    "还没有站内消息" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No in-app messages yet"
+          }
+        }
+      }
+    },
+    "还没有评论" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No comments yet"
+          }
+        }
+      }
+    },
     "这一天没有场景" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7143,8 +9551,30 @@
     "进行中的仲裁（%lld）" : {
 
     },
+    "进近落地" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Approach and Landing"
+          }
+        }
+      }
+    },
     "违反规定" : {
 
+    },
+    "违规内容" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prohibited content"
+          }
+        }
+      }
     },
     "违规分" : {
 
@@ -7164,6 +9594,17 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "连续进度 %1$lld/%2$lld · 累计获得 %3$lld · 使用 %4$lld"
+          }
+        }
+      }
+    },
+    "退出其他设备" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign Out Other Devices"
           }
         }
       }
@@ -7206,6 +9647,17 @@
     },
     "选填" : {
 
+    },
+    "选择 JPG、PNG、GIF 或 HEIC 作品" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a JPG, PNG, GIF, or HEIC image"
+          }
+        }
+      }
     },
     "选择 PDF" : {
 
@@ -7282,6 +9734,17 @@
     "逗号分隔，清空即全部移除" : {
 
     },
+    "通知偏好" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification Preferences"
+          }
+        }
+      }
+    },
     "通过" : {
 
     },
@@ -7327,6 +9790,17 @@
     },
     "邮件指令" : {
 
+    },
+    "邮件通知" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email Notifications"
+          }
+        }
+      }
     },
     "邮箱" : {
 
@@ -7417,6 +9891,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Railway"
+          }
+        }
+      }
+    },
+    "铁路资料" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Railway Details"
           }
         }
       }
@@ -7576,6 +10061,17 @@
     "颜色（如 #FFFFFF）" : {
 
     },
+    "颜色预览" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color Preview"
+          }
+        }
+      }
+    },
     "额度申请 #%lld" : {
 
     },
@@ -7584,6 +10080,28 @@
     },
     "风控安全" : {
 
+    },
+    "风格化图片" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stylized Image"
+          }
+        }
+      }
+    },
+    "风格图" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stylized Artwork"
+          }
+        }
+      }
     },
     "风险与阶段" : {
 
@@ -7616,8 +10134,30 @@
         }
       }
     },
+    "首飞" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First Flight"
+          }
+        }
+      }
+    },
     "驳回" : {
 
+    },
+    "驳回原因" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rejection Reason"
+          }
+        }
+      }
     },
     "驳回理由" : {
 
@@ -7631,8 +10171,41 @@
     "驳回说明" : {
 
     },
+    "驾驶舱" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight Deck"
+          }
+        }
+      }
+    },
+    "驾驶舱或客舱" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flight Deck or Cabin"
+          }
+        }
+      }
+    },
     "验证码" : {
 
+    },
+    "骚扰辱骂" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Harassment or abuse"
+          }
+        }
+      }
     },
     "高德地图" : {
       "extractionState" : "stale",
@@ -7641,6 +10214,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Amap"
+          }
+        }
+      }
+    },
+    "高速综合检测车" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High-Speed Inspection Train"
           }
         }
       }
@@ -7667,6 +10251,17 @@
         }
       }
     },
+    "黑名单" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blocked Users"
+          }
+        }
+      }
+    },
     "黑点 0.5%" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7685,6 +10280,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Black danger 0–2"
+          }
+        }
+      }
+    },
+    "黑色" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Black"
           }
         }
       }

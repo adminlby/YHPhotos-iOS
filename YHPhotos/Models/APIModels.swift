@@ -216,6 +216,36 @@ struct MyPhoto: Codable, Identifiable, Sendable {
     let approvedAt: String?
 }
 
+struct LegalAcceptanceStatus: Codable, Sendable {
+    let required: Bool
+    let currentVersion: String?
+    let acceptedVersion: String?
+
+    private enum CodingKeys: String, CodingKey {
+        case required
+        case currentVersion
+        case acceptedVersion
+        case currentVersionSnake = "current_version"
+        case acceptedVersionSnake = "accepted_version"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        required = try container.decodeIfPresent(Bool.self, forKey: .required) ?? false
+        currentVersion = try container.decodeIfPresent(String.self, forKey: .currentVersion)
+            ?? container.decodeIfPresent(String.self, forKey: .currentVersionSnake)
+        acceptedVersion = try container.decodeIfPresent(String.self, forKey: .acceptedVersion)
+            ?? container.decodeIfPresent(String.self, forKey: .acceptedVersionSnake)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(required, forKey: .required)
+        try container.encodeIfPresent(currentVersion, forKey: .currentVersion)
+        try container.encodeIfPresent(acceptedVersion, forKey: .acceptedVersion)
+    }
+}
+
 struct SessionUser: Codable, Identifiable, Sendable {
     let id: Int
     let username: String
@@ -223,9 +253,10 @@ struct SessionUser: Codable, Identifiable, Sendable {
     let avatarFilename: String?
     let avatar: String?
     let role: String
+    let legal: LegalAcceptanceStatus?
 
     enum CodingKeys: String, CodingKey {
-        case id, username, role, avatar
+        case id, username, role, avatar, legal
         case displayName = "display_name"
         case avatarFilename = "avatar_filename"
     }

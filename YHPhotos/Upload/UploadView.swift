@@ -520,7 +520,7 @@ struct UploadView: View {
     }
 
     private func displayName(for item: UploadPhotoType) -> String {
-        Locale.current.language.languageCode?.identifier == "en" && !item.labelEn.isEmpty ? item.labelEn : item.labelZh
+        AppLanguage.resolved == .english && !item.labelEn.isEmpty ? item.labelEn : item.labelZh
     }
 
     private var effectiveHotReason: String {

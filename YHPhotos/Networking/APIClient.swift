@@ -380,6 +380,10 @@ extension APIClient {
     }
 
     struct SSOExchangeBody: Encodable, Sendable { let code: String }
+    struct LegalAcceptanceBody: Encodable, Sendable {
+        let version: String
+        let accept_terms: Bool
+    }
     struct PushDeviceBody: Encodable, Sendable {
         let deviceToken: String
         let environment: String
@@ -404,6 +408,13 @@ extension APIClient {
 
     func exchangeSSO(code: String) async throws -> AppSSOResponse {
         try await send("api/auth/app/sso/exchange", body: SSOExchangeBody(code: code))
+    }
+
+    func acceptLegalTerms(version: String) async throws -> SessionEnvelope {
+        try await send(
+            "api/auth/legal/accept",
+            body: LegalAcceptanceBody(version: version, accept_terms: true)
+        )
     }
 
     func registerPushDevice(token: String, environment: String, bundleID: String) async throws {

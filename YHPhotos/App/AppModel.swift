@@ -37,6 +37,8 @@ final class AppModel: ObservableObject {
     @Published var showingUpload = false
     @Published var showingLogin = false
     @Published var unreadMessages = 0
+    @Published private(set) var hasRestoredSession = false
+    @Published private(set) var sessionRestoreError: String?
 
     private let api: APIClient
     private let ssoWebAuthentication = SSOWebAuthentication()
@@ -77,6 +79,9 @@ final class AppModel: ObservableObject {
     }
 
     func restoreSession() async {
+        hasRestoredSession = false
+        sessionRestoreError = nil
+        defer { hasRestoredSession = true }
 #if DEBUG
         if AppStoreDemo.isEnabled {
             sessionUser = AppStoreDemo.sessionUser
@@ -93,8 +98,32 @@ final class AppModel: ObservableObject {
         } catch let error as APIClientError {
             if case let .server(_, _, status) = error, status == 401 {
                 clearSession()
+            } else if sessionUser != nil {
+                // A cached authenticated session must not bypass a newly
+                // required legal version when the authoritative check fails.
+                sessionRestoreError = error.localizedDescription
             }
-        } catch { }
+        } catch {
+            if sessionUser != nil {
+                sessionRestoreError = error.localizedDescription
+            }
+        }
+    }
+
+    var requiresLegalAcceptance: Bool {
+        sessionUser?.legal?.required == true
+    }
+
+    var requiredLegalVersion: String? {
+        sessionUser?.legal?.currentVersion
+    }
+
+    func acceptRequiredLegalTerms() async throws {
+        guard let version = requiredLegalVersion, !version.isEmpty else {
+            throw APIClientError.invalidResponse
+        }
+        let envelope = try await api.acceptLegalTerms(version: version)
+        setSession(envelope.user)
     }
 
     func loginWithSSO() async throws {

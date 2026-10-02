@@ -4,12 +4,15 @@ import UniformTypeIdentifiers
 
 enum SupportCopy {
     static func text(_ simplified: String, _ traditional: String, _ english: String) -> String {
-        let language = (Locale.preferredLanguages.first ?? "en").lowercased()
-        if language.hasPrefix("zh-hant") || language.hasPrefix("zh-tw") || language.hasPrefix("zh-hk") {
-            return traditional
+        // Keep support screens on the same language selected for the app. The
+        // Traditional Chinese copy remains available for a future zh-Hant app
+        // localization instead of overriding an English per-app selection.
+        switch AppLanguage.resolved {
+        case .simplifiedChinese:
+            return simplified
+        case .english, .system:
+            return english
         }
-        if language.hasPrefix("zh") { return simplified }
-        return english
     }
 }
 
