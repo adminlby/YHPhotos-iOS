@@ -102,15 +102,19 @@ struct PublicProfileView: View {
 
             VStack(spacing: 5) {
                 HStack(spacing: 7) {
-                    Text(value.displayName).font(.title2.bold())
+                    Text(value.displayName).font(.title2.bold()).foregroundStyle(AppTheme.primaryText)
                     if value.role != "user" {
                         Image(systemName: "checkmark.seal.fill").foregroundStyle(AppTheme.accent)
                     }
                 }
                 Text("@\(value.username) · \(roleTitle(value.role))")
-                    .font(.subheadline).foregroundStyle(.secondary)
+                    .font(.subheadline).foregroundStyle(AppTheme.secondaryText)
                 if let bio = value.bio, !bio.isEmpty {
-                    Text(bio).font(.subheadline).multilineTextAlignment(.center).padding(.horizontal, 28)
+                    Text(bio)
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.primaryText)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 28)
                 }
             }
 
@@ -192,9 +196,12 @@ struct PublicProfileView: View {
                             GlassPanel(cornerRadius: 18) {
                                 VStack(spacing: 8) {
                                     BadgeIconView(icon: badge.icon, size: 26)
-                                    Text(badge.name).font(.caption.weight(.semibold)).lineLimit(1)
+                                    Text(badge.name)
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(AppTheme.primaryText)
+                                        .lineLimit(1)
                                     if let count = badge.count, count > 1 {
-                                        Text("×\(count)").font(.caption2).foregroundStyle(.secondary)
+                                        Text("×\(count)").font(.caption2).foregroundStyle(AppTheme.secondaryText)
                                     }
                                 }
                                 .frame(width: 92, height: 90)
@@ -239,14 +246,18 @@ struct PublicProfileView: View {
     }
 
     private func sectionTitle(_ title: String, detail: String) -> some View {
-        HStack { Text(title).font(.title3.bold()); Spacer(); Text(detail).font(.subheadline).foregroundStyle(.secondary) }
+        HStack {
+            Text(title).font(.title3.bold()).foregroundStyle(AppTheme.primaryText)
+            Spacer()
+            Text(detail).font(.subheadline).foregroundStyle(AppTheme.secondaryText)
+        }
             .padding(.horizontal, 18)
     }
 
     private func stat(_ value: Int, _ title: String) -> some View {
         VStack(spacing: 4) {
-            Text(value.compactCount).font(.headline).monospacedDigit()
-            Text(title).font(.caption).foregroundStyle(.secondary)
+            Text(value.compactCount).font(.headline).foregroundStyle(AppTheme.primaryText).monospacedDigit()
+            Text(title).font(.caption).foregroundStyle(AppTheme.secondaryText)
         }
         .frame(maxWidth: .infinity)
     }
@@ -258,8 +269,8 @@ struct PublicProfileView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Image(systemName: item.kind.contains("airport") ? "airport.extreme.tower" : "scope")
                     .foregroundStyle(color)
-                Text(item.label).font(.caption).foregroundStyle(.secondary)
-                Text(item.got.formatted()).font(.title3.bold()).monospacedDigit()
+                Text(item.label).font(.caption).foregroundStyle(AppTheme.secondaryText)
+                Text(item.got.formatted()).font(.title3.bold()).foregroundStyle(AppTheme.primaryText).monospacedDigit()
             }
             .frame(width: 104, alignment: .leading)
             .padding(14)

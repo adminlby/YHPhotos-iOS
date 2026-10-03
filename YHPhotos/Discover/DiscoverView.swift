@@ -98,8 +98,9 @@ struct DiscoverView: View {
                 }
             }
             .refreshable {
-                await load()
-                await appModel.refreshAdminAccess()
+                async let contentRefresh: Void = load()
+                async let adminRefresh: Void = appModel.refreshAdminAccess()
+                _ = await (contentRefresh, adminRefresh)
             }
             .task(id: filter) { await load() }
             .task(id: appModel.sessionUser?.id) { await appModel.refreshAdminAccess() }

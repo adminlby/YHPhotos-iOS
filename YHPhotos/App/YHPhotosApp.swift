@@ -11,7 +11,6 @@ struct YHPhotosApp: App {
             RootView()
                 .environmentObject(appModel)
                 .tint(Color("AccentColor"))
-                .appAdaptiveForeground()
                 .preferredColorScheme((AppAppearance(rawValue: appAppearance) ?? .system).colorScheme)
                 .task { await appModel.restoreSession() }
         }

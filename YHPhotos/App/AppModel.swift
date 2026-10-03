@@ -188,8 +188,14 @@ final class AppModel: ObservableObject {
         }
         do {
             adminIdentity = try await api.get("api/admin/me")
+        } catch let error as APIClientError {
+            // A transient refresh failure must not make the admin entry vanish.
+            // Clear it only when the server explicitly rejects the permission.
+            if case let .server(_, _, status) = error, status == 401 || status == 403 {
+                adminIdentity = nil
+            }
         } catch {
-            adminIdentity = nil
+            // Preserve the last verified identity while temporarily offline.
         }
     }
 

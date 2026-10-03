@@ -17,8 +17,7 @@ extension View {
             glassEffect(interactive ? .regular.interactive() : .regular, in: shape)
         } else {
             // Clip fills/gradients to the rounded shape, then apply material.
-            appAdaptiveForeground()
-                .clipShape(shape)
+            clipShape(shape)
                 .background(.ultraThinMaterial, in: shape)
                 .overlay(shape.stroke(Color.primary.opacity(0.1), lineWidth: 0.75))
                 .shadow(color: .black.opacity(0.12), radius: 18, y: 8)
@@ -26,14 +25,7 @@ extension View {
     }
 
     func appScreenBackground() -> some View {
-        appAdaptiveForeground()
-            .background(AppTheme.canvas.ignoresSafeArea())
-    }
-
-    /// Pins the three hierarchical foreground levels to adaptive system label
-    /// colors instead of inheriting a container's foreground style.
-    func appAdaptiveForeground() -> some View {
-        foregroundStyle(AppTheme.primaryText, AppTheme.secondaryText, AppTheme.tertiaryText)
+        background(AppTheme.canvas.ignoresSafeArea())
     }
 }
 

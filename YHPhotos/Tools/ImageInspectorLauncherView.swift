@@ -48,10 +48,12 @@ struct ImageInspectorLauncherView: View {
                                     Image(systemName: "viewfinder")
                                         .font(.system(size: 36, weight: .semibold))
                                         .foregroundStyle(AppTheme.accent)
-                                    Text(L10n.string("选择图片开始检查")).font(.headline)
+                                    Text(L10n.string("选择图片开始检查"))
+                                        .font(.headline)
+                                        .foregroundStyle(AppTheme.primaryText)
                                     Text(L10n.string("最大 50 MB；HEIC 会在设备上转换为兼容的 JPEG。"))
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(AppTheme.secondaryText)
                                         .multilineTextAlignment(.center)
                                 }
                                 .frame(maxWidth: .infinity)
@@ -65,11 +67,14 @@ struct ImageInspectorLauncherView: View {
 
                 GlassPanel(cornerRadius: 22) {
                     VStack(alignment: .leading, spacing: 10) {
-                        Label(L10n.string("能检查什么"), systemImage: "sparkles")
-                            .font(.headline)
+                        HStack(spacing: 7) {
+                            Image(systemName: "sparkles").foregroundStyle(AppTheme.accent)
+                            Text(L10n.string("能检查什么")).foregroundStyle(AppTheme.primaryText)
+                        }
+                        .font(.headline)
                         Text(L10n.string("居中参考线、水平宫格、曝光直方图与灰尘增强，与上传页内的检查工具相同。"))
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AppTheme.secondaryText)
                         if imageData != nil {
                             Button {
                                 showingInspector = true

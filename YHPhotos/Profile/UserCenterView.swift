@@ -64,10 +64,10 @@ struct UserCenterView: View {
         HStack(spacing: 15) {
             AvatarView(urlString: value.profile.avatar, name: value.profile.displayName, size: 70)
             VStack(alignment: .leading, spacing: 5) {
-                Text(value.profile.displayName).font(.title2.bold())
-                Text("@\(value.profile.username)").font(.subheadline).foregroundStyle(.secondary)
+                Text(value.profile.displayName).font(.title2.bold()).foregroundStyle(AppTheme.primaryText)
+                Text("@\(value.profile.username)").font(.subheadline).foregroundStyle(AppTheme.secondaryText)
                 if let email = value.profile.email, !email.isEmpty {
-                    Text(email).font(.caption).foregroundStyle(.secondary)
+                    Text(email).font(.caption).foregroundStyle(AppTheme.secondaryText)
                 }
             }
             Spacer()
@@ -83,7 +83,11 @@ struct UserCenterView: View {
     private func dashboard(_ value: MeOverview) -> some View {
         GlassPanel(cornerRadius: 24) {
             VStack(spacing: 16) {
-                HStack { Text("创作数据").font(.headline); Spacer(); Text("全部作品").font(.caption).foregroundStyle(.secondary) }
+                HStack {
+                    Text("创作数据").font(.headline).foregroundStyle(AppTheme.primaryText)
+                    Spacer()
+                    Text("全部作品").font(.caption).foregroundStyle(AppTheme.secondaryText)
+                }
                 HStack(spacing: 0) {
                     metric(value.counts.approved, L10n.string("已通过"), .green)
                     metric(value.counts.pending, L10n.string("审核中"), .orange)
@@ -119,10 +123,10 @@ struct UserCenterView: View {
                         .frame(width: 46, height: 46)
                         .background(AppTheme.accent.opacity(0.13), in: Circle())
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("账号与安全").font(.headline)
+                        Text("账号与安全").font(.headline).foregroundStyle(AppTheme.primaryText)
                         Text(L10n.string("管理 SSO 登录或删除 YHPhotos 账号"))
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AppTheme.secondaryText)
                     }
                     Spacer()
                     Image(systemName: "chevron.right")
@@ -149,9 +153,10 @@ struct UserCenterView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(SupportCopy.text("帮助与反馈", "支援與意見回饋", "Help & Feedback"))
                             .font(.headline)
+                            .foregroundStyle(AppTheme.primaryText)
                         Text(SupportCopy.text("联系客服、跟进工单或提交产品建议", "聯絡客服、跟進支援單或提交產品建議", "Contact support, track tickets, or share product ideas"))
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AppTheme.secondaryText)
                     }
                     Spacer()
                     Image(systemName: "chevron.right")
@@ -167,9 +172,9 @@ struct UserCenterView: View {
     private var workSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text("我的作品").font(.title3.bold())
+                Text("我的作品").font(.title3.bold()).foregroundStyle(AppTheme.primaryText)
                 Spacer()
-                Text(L10n.format("%d 项", photos.count)).font(.subheadline).foregroundStyle(.secondary)
+                Text(L10n.format("%d 项", photos.count)).font(.subheadline).foregroundStyle(AppTheme.secondaryText)
             }
             Picker("状态", selection: $status) {
                 Text("全部").tag("all")
@@ -185,7 +190,7 @@ struct UserCenterView: View {
                             RemoteImage(url: MediaURL.resolve(photo.thumb ?? photo.image))
                                 .frame(width: 104, height: 76).clipShape(RoundedRectangle(cornerRadius: 13))
                             VStack(alignment: .leading, spacing: 7) {
-                                Text(photo.title).font(.headline).lineLimit(1)
+                                Text(photo.title).font(.headline).foregroundStyle(AppTheme.primaryText).lineLimit(1)
                                 Label(statusTitle(photo.status), systemImage: statusIcon(photo.status))
                                     .font(.caption).foregroundStyle(statusColor(photo.status))
                                 HStack(spacing: 12) {
@@ -193,7 +198,7 @@ struct UserCenterView: View {
                                     Label(photo.likes.compactCount, systemImage: "heart")
                                     if photo.hasReviewAnnotations == true { Label(L10n.string("有标注"), systemImage: "pencil.and.outline") }
                                 }
-                                .font(.caption).foregroundStyle(.secondary)
+                                .font(.caption).foregroundStyle(AppTheme.secondaryText)
                             }
                             Spacer()
                             Image(systemName: "chevron.right").foregroundStyle(.tertiary)
@@ -210,13 +215,16 @@ struct UserCenterView: View {
     private func metric(_ value: Int, _ title: String, _ color: Color) -> some View {
         VStack(spacing: 5) {
             Text(value.compactCount).font(.headline).foregroundStyle(color).monospacedDigit()
-            Text(title).font(.caption2).foregroundStyle(.secondary)
+            Text(title).font(.caption2).foregroundStyle(AppTheme.secondaryText)
         }.frame(maxWidth: .infinity)
     }
 
     private func quick(_ kind: ProfileLibraryKind, _ icon: String, _ color: Color) -> some View {
         NavigationLink { ProfileLibraryView(kind: kind) } label: {
-            VStack(spacing: 8) { Image(systemName: icon).font(.title2).foregroundStyle(color); Text(kind.title).font(.caption).foregroundStyle(.primary) }
+            VStack(spacing: 8) {
+                Image(systemName: icon).font(.title2).foregroundStyle(color)
+                Text(kind.title).font(.caption).foregroundStyle(AppTheme.primaryText)
+            }
                 .frame(maxWidth: .infinity)
         }.buttonStyle(.plain)
     }
@@ -232,12 +240,18 @@ struct UserCenterView: View {
     @MainActor
     private func load() async {
         isLoading = true
+        defer { isLoading = false }
         do {
-            overview = try await APIClient.shared.get("api/me/overview")
-            await loadPhotos()
+            async let overviewRequest: MeOverview = APIClient.shared.get("api/me/overview")
+            async let photosRequest: [MyPhoto] = APIClient.shared.get(
+                "api/me/photos",
+                query: [URLQueryItem(name: "status", value: status), URLQueryItem(name: "limit", value: "30")]
+            )
+            let (loadedOverview, loadedPhotos) = try await (overviewRequest, photosRequest)
+            overview = loadedOverview
+            photos = loadedPhotos
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
-        isLoading = false
     }
 
     @MainActor

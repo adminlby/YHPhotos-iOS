@@ -38,7 +38,9 @@ actor APIClient {
         configuration.httpShouldSetCookies = true
         configuration.httpCookieAcceptPolicy = .always
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        configuration.waitsForConnectivity = true
+        // Interactive loads (including pull-to-refresh) must finish instead of
+        // holding SwiftUI's refresh control open while connectivity is absent.
+        configuration.waitsForConnectivity = false
         configuration.timeoutIntervalForRequest = 30
         self.session = URLSession(configuration: configuration)
     }
