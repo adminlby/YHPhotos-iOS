@@ -55,15 +55,7 @@ struct RootView: View {
                     .buttonStyle(.borderedProminent)
                 }
             } else {
-                VStack(spacing: 14) {
-                    Image(systemName: "photo.on.rectangle.angled")
-                        .font(.system(size: 42, weight: .semibold))
-                        .foregroundStyle(AppTheme.accent)
-                    ProgressView()
-                    Text(L10n.string("正在安全加载…"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                SecureLaunchAnimation()
             }
         }
     }
@@ -137,6 +129,67 @@ struct RootView: View {
         case .upload: DiscoverView()
         case .messages: MessagesView()
         case .profile: UserCenterView()
+        }
+    }
+}
+
+private struct SecureLaunchAnimation: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var rotating = false
+    @State private var pulsing = false
+
+    var body: some View {
+        VStack(spacing: 22) {
+            ZStack {
+                Circle()
+                    .fill(AppTheme.accent.opacity(pulsing ? 0.14 : 0.07))
+                    .frame(width: 104, height: 104)
+                    .scaleEffect(pulsing ? 1.08 : 0.94)
+
+                Circle()
+                    .trim(from: 0.08, to: 0.82)
+                    .stroke(
+                        AngularGradient(
+                            colors: [AppTheme.accent.opacity(0.08), AppTheme.accent, .cyan, AppTheme.accent.opacity(0.08)],
+                            center: .center
+                        ),
+                        style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                    )
+                    .frame(width: 88, height: 88)
+                    .rotationEffect(.degrees(rotating ? 360 : 0))
+
+                Image(systemName: "photo.on.rectangle.angled")
+                    .font(.system(size: 38, weight: .semibold))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(AppTheme.accent)
+                    .scaleEffect(pulsing ? 1.03 : 0.97)
+
+                Image(systemName: "checkmark.shield.fill")
+                    .font(.system(size: 18, weight: .semibold))
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white, .green)
+                    .padding(6)
+                    .background(.thinMaterial, in: Circle())
+                    .offset(x: 38, y: 38)
+            }
+            .accessibilityHidden(true)
+
+            VStack(spacing: 7) {
+                Text(L10n.string("正在安全加载…"))
+                    .font(.subheadline.weight(.semibold))
+                Text(L10n.string("正在验证会话并准备你的图库"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                rotating = true
+            }
+            withAnimation(.easeInOut(duration: 1.15).repeatForever(autoreverses: true)) {
+                pulsing = true
+            }
         }
     }
 }

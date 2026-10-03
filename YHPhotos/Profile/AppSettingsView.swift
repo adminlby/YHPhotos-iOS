@@ -427,7 +427,11 @@ private struct NotificationPreferencesView: View {
         .navigationTitle(L10n.string("通知偏好"))
         .navigationBarTitleDisplayMode(.inline)
         .overlay(alignment: .top) { if isSaving { ProgressView().padding(8) } }
-        .task { await load(); await pushManager.refreshAuthorizationStatus() }
+        .task {
+            await load()
+            await pushManager.refreshAuthorizationStatus()
+            await requestPushAuthorizationIfNeeded()
+        }
     }
 
     @ViewBuilder private var pushAuthorizationFooter: some View {
@@ -437,7 +441,7 @@ private struct NotificationPreferencesView: View {
                 if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
             }
         case .notDetermined:
-            Button(L10n.string("允许系统推送通知")) { Task { _ = await pushManager.requestAuthorizationAndRegister() } }
+            Text(L10n.string("开启 App 推送后将自动请求系统通知权限。"))
         default:
             Text(L10n.string("推送内容会遵循上述开关和系统锁屏预览设置。"))
         }
@@ -451,7 +455,7 @@ private struct NotificationPreferencesView: View {
             set: { value in
                 preferences?[key] = value
                 Task {
-                    if value, key.hasPrefix("push_") { _ = await pushManager.requestAuthorizationAndRegister() }
+                    if value, key.hasPrefix("push_") { await requestPushAuthorizationIfNeeded() }
                     await save([key: value])
                 }
             }
@@ -466,7 +470,7 @@ private struct NotificationPreferencesView: View {
                 for key in keys { preferences?[key] = value }
                 Task {
                     if value, keys.contains(where: { $0.hasPrefix("push_") }) {
-                        _ = await pushManager.requestAuthorizationAndRegister()
+                        await requestPushAuthorizationIfNeeded()
                     }
                     await save(updates)
                 }
@@ -477,6 +481,11 @@ private struct NotificationPreferencesView: View {
     @MainActor private func load() async {
         do { preferences = try await APIClient.shared.get("api/me/notification-preferences") }
         catch { errorMessage = error.localizedDescription }
+    }
+    @MainActor private func requestPushAuthorizationIfNeeded() async {
+        guard pushManager.authorizationStatus == .notDetermined,
+              preferences?.contains(where: { $0.key.hasPrefix("push_") && $0.value }) == true else { return }
+        _ = await pushManager.requestAuthorizationAndRegister()
     }
     @MainActor private func save(_ updates: [String: Bool]) async {
         struct Body: Encodable, Sendable { let prefs: [String: Bool] }

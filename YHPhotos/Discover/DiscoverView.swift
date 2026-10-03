@@ -1,5 +1,30 @@
 import SwiftUI
 
+private struct DiscoverNewsResponse: Decodable, Sendable {
+    let items: [DiscoverNewsItem]
+
+    private enum CodingKeys: String, CodingKey { case items }
+
+    init(from decoder: Decoder) throws {
+        if let direct = try? decoder.singleValueContainer().decode([DiscoverNewsItem].self) {
+            items = direct
+        } else {
+            items = try decoder.container(keyedBy: CodingKeys.self).decode([DiscoverNewsItem].self, forKey: .items)
+        }
+    }
+}
+
+private struct DiscoverNewsItem: Decodable, Identifiable, Sendable {
+    let id: Int
+    let title: String
+    let summary: String?
+    let source: String?
+    let url: String?
+    let cover: String?
+    let publishedAt: String?
+    let createdAt: String?
+}
+
 private enum DiscoverFilter: String, CaseIterable, Identifiable {
     case featured
     case aviation
@@ -30,6 +55,8 @@ struct DiscoverView: View {
     @State private var filter: DiscoverFilter = .featured
     @State private var featured: [Photo] = []
     @State private var photos: [Photo] = []
+    @State private var news: [DiscoverNewsItem] = []
+    @State private var isNewsLoading = false
     @State private var stats: CommunityStats?
     @State private var isLoading = true
     @State private var errorMessage: String?
@@ -136,6 +163,47 @@ struct DiscoverView: View {
                     .buttonStyle(.plain)
             }
         }
+
+        newsSection
+    }
+
+    private var newsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label(L10n.string("资讯"), systemImage: "newspaper.fill")
+                    .font(.title2.bold())
+                Spacer()
+                Text(L10n.string("社区动态与行业消息"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            if isNewsLoading && news.isEmpty {
+                HStack(spacing: 10) {
+                    ProgressView()
+                    Text(L10n.string("正在加载资讯…"))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, minHeight: 110)
+                .background(AppTheme.elevated, in: RoundedRectangle(cornerRadius: 18))
+            } else if news.isEmpty {
+                Label(L10n.string("暂时没有新资讯"), systemImage: "newspaper")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, minHeight: 90)
+                    .background(AppTheme.elevated, in: RoundedRectangle(cornerRadius: 18))
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 12) {
+                        ForEach(news) { item in
+                            DiscoverNewsCard(item: item)
+                        }
+                    }
+                    .padding(.horizontal, 1)
+                }
+            }
+        }
     }
 
     private func reload() { Task { await load() } }
@@ -143,6 +211,7 @@ struct DiscoverView: View {
     @MainActor
     private func load() async {
         isLoading = true
+        isNewsLoading = filter == .featured
         errorMessage = nil
         do {
             let domainQuery = filter.domain.map { [URLQueryItem(name: "domain", value: $0.rawValue)] } ?? []
@@ -156,20 +225,107 @@ struct DiscoverView: View {
             )
             if filter == .featured {
                 async let nextStats: CommunityStats = APIClient.shared.get("api/stats")
-                let values = try await (nextFeatured, nextPhotos, nextStats)
+                async let nextNews = fetchNews()
+                let values = try await (nextFeatured, nextPhotos, nextStats, nextNews)
                 featured = values.0
                 photos = values.1
                 stats = values.2
+                news = values.3
             } else {
                 let values = try await (nextFeatured, nextPhotos)
                 featured = values.0
                 photos = values.1
                 stats = nil
+                news = []
             }
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoading = false
+        isNewsLoading = false
+    }
+
+    private func fetchNews() async -> [DiscoverNewsItem] {
+        let response: DiscoverNewsResponse? = try? await APIClient.shared.get(
+            "api/news",
+            query: [URLQueryItem(name: "limit", value: "8")]
+        )
+        return response?.items ?? []
+    }
+}
+
+private struct DiscoverNewsCard: View {
+    let item: DiscoverNewsItem
+
+    var body: some View {
+        Group {
+            if let destination = item.url.flatMap(URL.init(string:)) {
+                Link(destination: destination) { cardContent }
+            } else {
+                cardContent
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var cardContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [AppTheme.accent.opacity(0.28), Color.cyan.opacity(0.12)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                if let coverURL = MediaURL.resolve(item.cover) {
+                    AsyncImage(url: coverURL) { phase in
+                        if case .success(let image) = phase {
+                            image.resizable().scaledToFill()
+                        } else {
+                            Image(systemName: "newspaper.fill").font(.largeTitle).foregroundStyle(AppTheme.accent)
+                        }
+                    }
+                } else {
+                    Image(systemName: "newspaper.fill").font(.largeTitle).foregroundStyle(AppTheme.accent)
+                }
+            }
+            .frame(height: 124)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+
+            Text(item.title)
+                .font(.headline)
+                .foregroundStyle(.primary)
+                .lineLimit(2)
+            if let summary = item.summary, !summary.isEmpty {
+                Text(summary)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            HStack(spacing: 6) {
+                if let source = item.source, !source.isEmpty { Text(source).lineLimit(1) }
+                if item.source?.isEmpty == false, item.displayDate != nil { Text("·") }
+                if let date = item.displayDate { Text(date) }
+                Spacer(minLength: 0)
+                if item.url != nil { Image(systemName: "arrow.up.right") }
+            }
+            .font(.caption2)
+            .foregroundStyle(.tertiary)
+        }
+        .padding(12)
+        .frame(width: 278, alignment: .leading)
+        .background(AppTheme.elevated, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(AppTheme.divider, lineWidth: 0.6))
+    }
+}
+
+private extension DiscoverNewsItem {
+    var displayDate: String? {
+        let value = publishedAt ?? createdAt
+        guard let value, !value.isEmpty else { return nil }
+        return String(value.prefix(10))
     }
 }
 

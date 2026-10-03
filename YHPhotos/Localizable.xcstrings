@@ -39,6 +39,9 @@
         }
       }
     },
+    "·" : {
+
+    },
     "· %@" : {
 
     },
@@ -761,6 +764,28 @@
     "AirNav 供图接口" : {
 
     },
+    "API 发布" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Publishing"
+          }
+        }
+      }
+    },
+    "API 发布设置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Publishing Settings"
+          }
+        }
+      }
+    },
     "API 图片发布" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -885,6 +910,17 @@
     },
     "FR24 鉴权" : {
 
+    },
+    "Hot 候选" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hot Candidate"
+          }
+        }
+      }
     },
     "Hot 原因 *" : {
       "extractionState" : "stale",
@@ -1032,6 +1068,28 @@
         }
       }
     },
+    "一次选择多张作品，并逐张完成检查与资料填写。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select multiple works at once, then inspect and complete details for each one."
+          }
+        }
+      }
+    },
+    "上一张" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous"
+          }
+        }
+      }
+    },
     "上一架" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1039,6 +1097,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Previous"
+          }
+        }
+      }
+    },
+    "上一步" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
           }
         }
       }
@@ -1062,6 +1131,17 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "上传 %1$lld · 通过 %2$lld · 驳回 %3$lld · 待审 %4$lld"
+          }
+        }
+      }
+    },
+    "上传一张作品，逐项完成检查与资料填写。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload one work and complete each inspection and detail step."
           }
         }
       }
@@ -1152,6 +1232,17 @@
     "上移" : {
 
     },
+    "下一张" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
     "下一架" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1159,6 +1250,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next"
+          }
+        }
+      }
+    },
+    "下一步" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
           }
         }
       }
@@ -1171,6 +1273,17 @@
     },
     "下线此会话" : {
 
+    },
+    "不允许" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not allowed"
+          }
+        }
+      }
     },
     "不公开列出" : {
 
@@ -1199,6 +1312,17 @@
     },
     "不成立" : {
 
+    },
+    "不符合，退出" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doesn't qualify, exit"
+          }
+        }
+      }
     },
     "不透明度：%lld%%" : {
 
@@ -1467,6 +1591,17 @@
     "仅内部可见" : {
 
     },
+    "仅在 YHPhotos 站内展示" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show only on YHPhotos"
+          }
+        }
+      }
+    },
     "今天 · %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1657,6 +1792,17 @@
     "作品 / 通过 / 驳回" : {
 
     },
+    "作品 %d" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Work %d"
+          }
+        }
+      }
+    },
     "作品信息" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1670,6 +1816,17 @@
     },
     "作品最多" : {
 
+    },
+    "作品将提交审核" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The work will be submitted for review"
+          }
+        }
+      }
     },
     "作品投票" : {
       "extractionState" : "manual",
@@ -1692,6 +1849,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Photo Actions"
+          }
+        }
+      }
+    },
+    "作品清单" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Works"
           }
         }
       }
@@ -1955,6 +2123,17 @@
     "停用" : {
 
     },
+    "允许" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allowed"
+          }
+        }
+      }
+    },
     "允许系统推送通知" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2112,6 +2291,17 @@
         }
       }
     },
+    "公开 API" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Public API"
+          }
+        }
+      }
+    },
     "公开 API 前缀为 /api/public，请求须携带 X-Api-Key 与 X-Api-Secret。Secret 只在签发或重签时显示一次。" : {
 
     },
@@ -2120,6 +2310,17 @@
     },
     "公开数据" : {
 
+    },
+    "共 %d 张作品将提交审核" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d works will be submitted for review"
+          }
+        }
+      }
     },
     "共 %d 架" : {
       "extractionState" : "manual",
@@ -2742,6 +2943,17 @@
         }
       }
     },
+    "单张上传" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Single Upload"
+          }
+        }
+      }
+    },
     "单批 %lld" : {
 
     },
@@ -2979,6 +3191,17 @@
     },
     "发布" : {
 
+    },
+    "发布与审核" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publishing & Review"
+          }
+        }
+      }
     },
     "发布公告" : {
 
@@ -3382,6 +3605,17 @@
     "图片举报 #%lld" : {
 
     },
+    "图片均已通过你的标准确认，必填资料完整。提交后仍需由审核员审核。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have confirmed that every image meets the standards and all required details are complete. A moderator will still review them after submission."
+          }
+        }
+      }
+    },
     "图片工具" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3403,6 +3637,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Photo Identifier"
+          }
+        }
+      }
+    },
+    "图片检查" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Inspection"
           }
         }
       }
@@ -4027,8 +4272,30 @@
         }
       }
     },
+    "审核设置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review Settings"
+          }
+        }
+      }
+    },
     "审核通过" : {
 
+    },
+    "审核通过后允许 API 返回作品" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow APIs to return the work after approval"
+          }
+        }
+      }
     },
     "审核队列" : {
       "extractionState" : "stale",
@@ -4166,6 +4433,17 @@
     },
     "封面图" : {
 
+    },
+    "将使用 Apple Vision 在设备上读取图片，只提取可能的飞机注册号。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Vision reads the image on device and extracts only likely aircraft registrations."
+          }
+        }
+      }
     },
     "将授予" : {
 
@@ -4587,6 +4865,17 @@
         }
       }
     },
+    "已提交 %d 张；其余作品提交失败：%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d submitted; the remaining works failed: %@"
+          }
+        }
+      }
+    },
     "已有绑定不会被覆盖" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4618,6 +4907,17 @@
     "已确认" : {
 
     },
+    "已确认 %d 张" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d confirmed"
+          }
+        }
+      }
+    },
     "已结束" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4629,17 +4929,50 @@
         }
       }
     },
+    "已自动找到注册号 %@ 及相应信息。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registration %@ and its matching details were found automatically."
+          }
+        }
+      }
+    },
     "已被取代" : {
 
     },
     "已解决" : {
 
     },
+    "已识别注册号 %@，请手动补充其余资料。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registration %@ was recognized. Please complete the remaining details manually."
+          }
+        }
+      }
+    },
     "已读" : {
 
     },
     "已选择" : {
 
+    },
+    "已选择 %d 张" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d selected"
+          }
+        }
+      }
     },
     "已通过" : {
       "localizations" : {
@@ -4736,6 +5069,28 @@
     },
     "建议值" : {
 
+    },
+    "开启 App 推送后将自动请求系统通知权限。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turning on App Push will automatically request system notification permission."
+          }
+        }
+      }
+    },
+    "开启后，作品审核通过时可由已获授权的合作应用和公开接口展示；关闭不会影响 YHPhotos 站内展示。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, approved works may appear in authorized partner apps and public APIs. Turning it off does not affect display within YHPhotos."
+          }
+        }
+      }
     },
     "开始对话" : {
       "extractionState" : "stale",
@@ -4857,6 +5212,17 @@
     },
     "当前理由：%@" : {
 
+    },
+    "当前第 %d 张，共 %d 张" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image %d of %d"
+          }
+        }
+      }
     },
     "当前精选（%lld）" : {
 
@@ -5167,6 +5533,17 @@
         }
       }
     },
+    "打开独立图片检查工具" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Image Inspection Tool"
+          }
+        }
+      }
+    },
     "扣分" : {
 
     },
@@ -5175,6 +5552,28 @@
     },
     "批准张数" : {
 
+    },
+    "批量上传" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batch Upload"
+          }
+        }
+      }
+    },
+    "批量上传时，同一套水印位置与样式会应用到本批全部图片。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For batch uploads, the same watermark style and position apply to every image."
+          }
+        }
+      }
     },
     "批量导入 · %@" : {
 
@@ -5836,6 +6235,17 @@
     "操作人用户 ID" : {
 
     },
+    "支持 JPG、PNG、GIF 或 HEIC；每张最大 50 MB。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supports JPG, PNG, GIF, and HEIC; up to 50 MB per image."
+          }
+        }
+      }
+    },
     "支持鉴权原图、双指缩放、单独全屏查看、水平与居中辅助、放大镜、直方图和灰尘增强。" : {
 
     },
@@ -6335,6 +6745,17 @@
         }
       }
     },
+    "暂时没有新资讯" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No new stories right now"
+          }
+        }
+      }
+    },
     "曝光直方图" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6389,6 +6810,17 @@
     },
     "月赛" : {
 
+    },
+    "有 %d 张图片无法读取或超过 50 MB，已跳过。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d images could not be read or exceeded 50 MB and were skipped."
+          }
+        }
+      }
     },
     "有效图片" : {
 
@@ -6535,6 +6967,17 @@
     },
     "未结" : {
 
+    },
+    "未能识别清晰的注册号，请手动填写。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No clear registration was recognized. Please enter it manually."
+          }
+        }
+      }
     },
     "未认领" : {
 
@@ -7073,6 +7516,17 @@
     "正在加载用户…" : {
 
     },
+    "正在加载资讯…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading stories…"
+          }
+        }
+      }
+    },
     "正在发生" : {
       "localizations" : {
         "en" : {
@@ -7110,6 +7564,17 @@
         }
       }
     },
+    "正在提交 %d / %d" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Submitting %d of %d"
+          }
+        }
+      }
+    },
     "正在查看" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7132,8 +7597,41 @@
         }
       }
     },
+    "正在设备上识别飞机注册号…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognizing the aircraft registration on device…"
+          }
+        }
+      }
+    },
+    "正在读取所选图片…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading selected images…"
+          }
+        }
+      }
+    },
     "正在载入检查工具…" : {
 
+    },
+    "正在验证会话并准备你的图库" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifying your session and preparing your gallery"
+          }
+        }
+      }
     },
     "正常" : {
 
@@ -7249,6 +7747,17 @@
         }
       }
     },
+    "水印设置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watermark Settings"
+          }
+        }
+      }
+    },
     "水平检查" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7348,6 +7857,28 @@
     },
     "注册号记录 ID" : {
 
+    },
+    "注册号识别" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registration Recognition"
+          }
+        }
+      }
+    },
+    "注册号识别失败，请手动填写。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registration recognition failed. Please enter it manually."
+          }
+        }
+      }
     },
     "注册用户" : {
 
@@ -8294,6 +8825,17 @@
         }
       }
     },
+    "社区动态与行业消息" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Community updates and industry news"
+          }
+        }
+      }
+    },
     "社区安全" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8516,6 +9058,28 @@
     },
     "站点设置" : {
 
+    },
+    "符合标准，继续" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meets standards, continue"
+          }
+        }
+      }
+    },
+    "第 %d 步，共 %d 步" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step %d of %d"
+          }
+        }
+      }
     },
     "第三方账号" : {
       "extractionState" : "stale",
@@ -8817,6 +9381,17 @@
     },
     "给上传者的留言" : {
 
+    },
+    "给审核员的备注" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes for Moderators"
+          }
+        }
+      }
     },
     "给审核员的留言" : {
       "extractionState" : "stale",
@@ -9593,6 +10168,17 @@
         }
       }
     },
+    "请在检查工具中查看居中、水平、曝光和灰尘情况。选择“不符合”会退出本次上传；选择“符合标准”才可继续。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the inspection tool to check centering, horizon, exposure, and dust. Choosing “Doesn't qualify” exits this upload; choose “Meets standards” to continue."
+          }
+        }
+      }
+    },
     "请填写 Hot 原因" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9736,6 +10322,17 @@
     "资料" : {
 
     },
+    "资料完整" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details complete"
+          }
+        }
+      }
+    },
     "资料工具" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9743,6 +10340,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resources"
+          }
+        }
+      }
+    },
+    "资料待补充" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details incomplete"
           }
         }
       }
@@ -10213,6 +10821,39 @@
         }
       }
     },
+    "这张图片已确认符合标准" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This image is confirmed to meet the standards"
+          }
+        }
+      }
+    },
+    "这张图片是否符合上传标准？" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Does this image meet the upload standards?"
+          }
+        }
+      }
+    },
+    "这次要上传一张，还是一批作品？" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you uploading one work or a batch?"
+          }
+        }
+      }
+    },
     "这段会话已停止发送消息。你可以在设置的社区安全页面解除屏蔽。" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10383,6 +11024,17 @@
         }
       }
     },
+    "选择一张图片" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select One Image"
+          }
+        }
+      }
+    },
     "选择作品" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10397,6 +11049,17 @@
     "选择图标" : {
 
     },
+    "选择图片" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Images"
+          }
+        }
+      }
+    },
     "选择图片开始检查" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10404,6 +11067,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose an image to inspect"
+          }
+        }
+      }
+    },
+    "选择多张图片" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Multiple Images"
           }
         }
       }
@@ -10422,6 +11096,17 @@
     },
     "选择标志图片" : {
 
+    },
+    "选择模式" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose Upload Mode"
+          }
+        }
+      }
     },
     "选择用户" : {
 
@@ -10552,6 +11237,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reload"
+          }
+        }
+      }
+    },
+    "重新检查" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspect Again"
+          }
+        }
+      }
+    },
+    "重新识别注册号" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognize Registration Again"
           }
         }
       }

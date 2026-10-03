@@ -49,6 +49,13 @@ struct ImageInspectorView: View {
 
     let image: UIImage
     let byteCount: Int
+    let onComplianceDecision: ((Bool) -> Void)?
+
+    init(image: UIImage, byteCount: Int, onComplianceDecision: ((Bool) -> Void)? = nil) {
+        self.image = image
+        self.byteCount = byteCount
+        self.onComplianceDecision = onComplianceDecision
+    }
 
     @Environment(\.dismiss) private var dismiss
     @State private var mode: Mode = .normal
@@ -102,6 +109,7 @@ struct ImageInspectorView: View {
                         HistogramPanel(histograms: analysis.histograms)
                     }
                     helpFooter
+                    if onComplianceDecision != nil { complianceDecisionBar }
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
@@ -383,6 +391,33 @@ struct ImageInspectorView: View {
         }
     }
 
+    private var complianceDecisionBar: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(L10n.string("这张图片是否符合上传标准？"))
+                .font(.headline)
+            HStack(spacing: 10) {
+                Button(role: .destructive) {
+                    onComplianceDecision?(false)
+                    dismiss()
+                } label: {
+                    Label(L10n.string("不符合，退出"), systemImage: "xmark.circle.fill")
+                        .frame(maxWidth: .infinity, minHeight: 42)
+                }
+                .buttonStyle(.bordered)
+                Button {
+                    onComplianceDecision?(true)
+                    dismiss()
+                } label: {
+                    Label(L10n.string("符合标准，继续"), systemImage: "checkmark.circle.fill")
+                        .frame(maxWidth: .infinity, minHeight: 42)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .padding(14)
+        .background(AppTheme.elevated, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
     // MARK: - Drawing (same geometry as website)
 
     private func drawCenteringGuides(context: inout GraphicsContext, size: CGSize) {
@@ -417,8 +452,9 @@ struct ImageInspectorView: View {
     }
 
     private func drawHorizonGrid(context: inout GraphicsContext, size: CGSize) {
-        // 按实际显示宽度补偿线宽，避免大图缩放到窄屏后分割线被采样掉。
-        let lineWidth = max(Self.guideWidth, 1.5 * CGFloat(renderSize.width) / max(size.width, 1))
+        // Canvas 已经使用屏幕显示尺寸绘制，无需按原图像素比例放大线宽。
+        // 与居中检查共用同一线宽，避免手机上的水平线异常粗。
+        let lineWidth = Self.guideWidth
         if showGrid {
             var path = Path()
             if gridColumns > 1 {
@@ -675,13 +711,13 @@ private struct HistogramPanel: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
             HStack {
-                Text(L10n.string("0 · 黑")).font(.caption2).foregroundStyle(.secondary)
+                Text(L10n.string("0 · 黑")).font(.caption2).foregroundStyle(Color.white.opacity(0.68))
                 Spacer()
                 Text(L10n.string("粉线：每个亮度级的平均像素数"))
                     .font(.caption2)
                     .foregroundStyle(Color(red: 0.957, green: 0.447, blue: 0.714))
                 Spacer()
-                Text(L10n.string("白 · 255")).font(.caption2).foregroundStyle(.secondary)
+                Text(L10n.string("白 · 255")).font(.caption2).foregroundStyle(Color.white.opacity(0.68))
             }
 
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
@@ -694,8 +730,9 @@ private struct HistogramPanel: View {
 
             Text(L10n.string("纵轴上限固定为平均 bin 像素数的 4.55 倍，超过上限的峰值会被顶平；色调跨度是 8-bit 百分位跨度，不是 EV 动态范围。"))
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.white.opacity(0.68))
         }
+        .foregroundStyle(Color.white.opacity(0.92))
         .padding(10)
         .background(Color(red: 0.008, green: 0.024, blue: 0.090).opacity(0.92), in: RoundedRectangle(cornerRadius: 14))
         .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.primary.opacity(0.08), lineWidth: 1))
@@ -703,8 +740,8 @@ private struct HistogramPanel: View {
 
     private func metricCell(_ label: String, _ value: String) -> some View {
         VStack(spacing: 4) {
-            Text(label).font(.caption2).foregroundStyle(.secondary).multilineTextAlignment(.center)
-            Text(value).font(.subheadline.weight(.semibold).monospacedDigit())
+            Text(label).font(.caption2).foregroundStyle(Color.white.opacity(0.68)).multilineTextAlignment(.center)
+            Text(value).font(.subheadline.weight(.semibold).monospacedDigit()).foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
