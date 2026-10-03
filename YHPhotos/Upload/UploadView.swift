@@ -335,19 +335,31 @@ struct UploadView: View {
 
     private var selectedImagesGrid: some View {
         uploadSection(L10n.format("已选择 %d 张", assets.count), icon: "photo.stack") {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 10)], spacing: 10) {
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 76, maximum: 110), spacing: 10, alignment: .top)],
+                alignment: .leading,
+                spacing: 10
+            ) {
                 ForEach(Array(assets.enumerated()), id: \.element.id) { index, asset in
                     ZStack(alignment: .topTrailing) {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(AppTheme.elevated)
                         if let image = UIImage(data: asset.data) {
-                            Image(uiImage: image).resizable().scaledToFill()
-                                .frame(height: 92).frame(maxWidth: .infinity).clipped()
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .clipped()
                         }
                         Text("\(index + 1)").font(.caption2.bold()).foregroundStyle(.white)
                             .padding(6).background(.black.opacity(0.65), in: Circle()).padding(6)
                     }
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -853,7 +865,12 @@ struct UploadView: View {
 
     private func uploadSection<Content: View>(_ title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
         GlassPanel(cornerRadius: 22) {
-            VStack(alignment: .leading, spacing: 14) { Label(title, systemImage: icon).font(.headline); content() }.padding(18)
+            VStack(alignment: .leading, spacing: 14) {
+                Label(title, systemImage: icon).font(.headline)
+                content()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(18)
         }
     }
 

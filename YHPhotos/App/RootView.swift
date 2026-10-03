@@ -1,8 +1,11 @@
 import SwiftUI
+import UIKit
 
 struct RootView: View {
     @EnvironmentObject private var appModel: AppModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.openURL) private var openURL
+    @StateObject private var pushManager = PushNotificationManager.shared
 
     var body: some View {
         Group {
@@ -37,6 +40,27 @@ struct RootView: View {
             LegalConsentView()
                 .environmentObject(appModel)
                 .interactiveDismissDisabled()
+        }
+        .alert(
+            L10n.string("系统通知已关闭，前往设置开启"),
+            isPresented: Binding(
+                get: {
+                    appModel.hasRestoredSession
+                        && !appModel.requiresLegalAcceptance
+                        && pushManager.shouldOfferSystemSettings
+                },
+                set: { if !$0 { pushManager.dismissSystemSettingsOffer() } }
+            )
+        ) {
+            Button(L10n.string("取消"), role: .cancel) {
+                pushManager.dismissSystemSettingsOffer()
+            }
+            Button(L10n.string("设置")) {
+                pushManager.dismissSystemSettingsOffer()
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    openURL(url)
+                }
+            }
         }
     }
 

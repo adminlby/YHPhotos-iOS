@@ -483,15 +483,20 @@ private struct NotificationPreferencesView: View {
         catch { errorMessage = error.localizedDescription }
     }
     @MainActor private func requestPushAuthorizationIfNeeded() async {
-        guard pushManager.authorizationStatus == .notDetermined,
-              preferences?.contains(where: { $0.key.hasPrefix("push_") && $0.value }) == true else { return }
-        _ = await pushManager.requestAuthorizationAndRegister()
+        guard let preferences else { return }
+        await pushManager.synchronizeAuthorization(for: preferences)
     }
     @MainActor private func save(_ updates: [String: Bool]) async {
         struct Body: Encodable, Sendable { let prefs: [String: Bool] }
         isSaving = true; defer { isSaving = false }
         do {
-            self.preferences = try await APIClient.shared.send("api/me/notification-preferences", method: "PUT", body: Body(prefs: updates))
+            let updated: [String: Bool] = try await APIClient.shared.send(
+                "api/me/notification-preferences",
+                method: "PUT",
+                body: Body(prefs: updates)
+            )
+            self.preferences = updated
+            await pushManager.synchronizeAuthorization(for: updated)
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
     }

@@ -5,8 +5,10 @@ import UserNotifications
 @MainActor
 final class PushNotificationManager: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
     static let shared = PushNotificationManager()
+    private static let preferenceCacheKey = "YHPhotosPushPreferencesEnabled"
 
     @Published private(set) var authorizationStatus: UNAuthorizationStatus = .notDetermined
+    @Published private(set) var shouldOfferSystemSettings = false
     private(set) var deviceToken: String?
 
     private override init() {
@@ -38,6 +40,54 @@ final class PushNotificationManager: NSObject, ObservableObject, UNUserNotificat
 
     func refreshAuthorizationStatus() async {
         authorizationStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+    }
+
+    /// Keeps the system permission in sync with App push switches stored by the website.
+    /// iOS only shows the authorization sheet while the state is `notDetermined`;
+    /// a previously denied permission can only be changed by the user in Settings.
+    func synchronizeAuthorization(for preferences: [String: Bool]) async {
+        let pushEnabled = preferences.contains { key, value in
+            key.hasPrefix("push_") && value
+        }
+        UserDefaults.standard.set(pushEnabled, forKey: Self.preferenceCacheKey)
+        guard pushEnabled else {
+            shouldOfferSystemSettings = false
+            return
+        }
+
+        await refreshAuthorizationStatus()
+        switch authorizationStatus {
+        case .notDetermined:
+            shouldOfferSystemSettings = false
+            _ = await requestAuthorizationAndRegister()
+        case .authorized, .provisional, .ephemeral:
+            shouldOfferSystemSettings = false
+            UIApplication.shared.registerForRemoteNotifications()
+            await registerCurrentDevice()
+        case .denied:
+            shouldOfferSystemSettings = true
+        @unknown default:
+            shouldOfferSystemSettings = false
+            break
+        }
+    }
+
+    func dismissSystemSettingsOffer() {
+        shouldOfferSystemSettings = false
+    }
+
+    /// Called after session restoration/login so website changes take effect on
+    /// the next App launch even when the notification settings screen is never opened.
+    func synchronizeAuthorizationWithServerPreferences(using api: APIClient = .shared) async {
+        do {
+            let preferences: [String: Bool] = try await api.get("api/me/notification-preferences")
+            await synchronizeAuthorization(for: preferences)
+        } catch {
+            // A last known enabled App preference still warrants presenting the
+            // one-time system prompt when the preference endpoint is temporarily unavailable.
+            guard UserDefaults.standard.bool(forKey: Self.preferenceCacheKey) else { return }
+            await synchronizeAuthorization(for: ["push_cached": true])
+        }
     }
 
     func didRegister(deviceToken data: Data) {

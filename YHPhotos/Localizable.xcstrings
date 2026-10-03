@@ -7276,6 +7276,17 @@
         }
       }
     },
+    "查看原文" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Original Article"
+          }
+        }
+      }
+    },
     "查看私有图片凭证" : {
 
     },
@@ -10359,7 +10370,26 @@
 
     },
     "资讯" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "News"
+          }
+        }
+      }
+    },
+    "资讯详情" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "News Details"
+          }
+        }
+      }
     },
     "资讯内容" : {
 

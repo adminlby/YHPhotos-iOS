@@ -6,6 +6,7 @@ private enum ToolDestination: Hashable {
     case missions
     case bounties
     case scene
+    case news
     case wiki
     case map
     case ranking
@@ -28,6 +29,7 @@ struct ToolsHomeView: View {
                         link(.scene, title: L10n.string("历史场景"), subtitle: L10n.string("按机场和日期重建场景与多机位照片"), icon: "calendar")
                     }
                     toolSection(L10n.string("资料工具"), icon: "books.vertical.fill") {
+                        link(.news, title: L10n.string("资讯"), subtitle: L10n.string("社区动态与行业消息"), icon: "newspaper.fill")
                         link(.wiki, title: L10n.string("百科"), subtitle: L10n.string("航司、机场、机型与注册号资料库"), icon: "book.fill")
                         link(.map, title: L10n.string("地图"), subtitle: L10n.string("按机场地理位置浏览作品"), icon: "map.fill")
                     }
@@ -46,6 +48,7 @@ struct ToolsHomeView: View {
                 case .missions: MissionsView()
                 case .bounties: BountiesView()
                 case .scene: SceneView()
+                case .news: NewsListView()
                 case .wiki: WikiHomeView()
                 case .map: MapBrowserView()
                 case .ranking: RankingHomeView()

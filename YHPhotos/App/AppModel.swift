@@ -93,7 +93,7 @@ final class AppModel: ObservableObject {
             let envelope: SessionEnvelope = try await api.get("api/auth/me")
             setSession(envelope.user)
             await refreshAdminAccess()
-            await PushNotificationManager.shared.registerCurrentDevice()
+            await PushNotificationManager.shared.synchronizeAuthorizationWithServerPreferences(using: api)
             await refreshUnreadCount()
         } catch let error as APIClientError {
             if case let .server(_, _, status) = error, status == 401 {
@@ -142,7 +142,7 @@ final class AppModel: ObservableObject {
         SessionCredentialStore.save(response.sessionToken)
         setSession(response.user)
         await refreshAdminAccess()
-        await PushNotificationManager.shared.registerCurrentDevice()
+        await PushNotificationManager.shared.synchronizeAuthorizationWithServerPreferences(using: api)
         await refreshUnreadCount()
     }
 
