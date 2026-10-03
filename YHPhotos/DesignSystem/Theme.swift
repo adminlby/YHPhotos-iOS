@@ -5,6 +5,9 @@ enum AppTheme {
     static let elevated = Color(uiColor: .secondarySystemBackground)
     static let accent = Color("AccentColor")
     static let divider = Color(uiColor: .separator)
+    static let primaryText = Color(uiColor: .label)
+    static let secondaryText = Color(uiColor: .secondaryLabel)
+    static let tertiaryText = Color(uiColor: .tertiaryLabel)
 }
 
 extension View {
@@ -14,7 +17,8 @@ extension View {
             glassEffect(interactive ? .regular.interactive() : .regular, in: shape)
         } else {
             // Clip fills/gradients to the rounded shape, then apply material.
-            clipShape(shape)
+            appAdaptiveForeground()
+                .clipShape(shape)
                 .background(.ultraThinMaterial, in: shape)
                 .overlay(shape.stroke(Color.primary.opacity(0.1), lineWidth: 0.75))
                 .shadow(color: .black.opacity(0.12), radius: 18, y: 8)
@@ -22,7 +26,14 @@ extension View {
     }
 
     func appScreenBackground() -> some View {
-        background(AppTheme.canvas.ignoresSafeArea())
+        appAdaptiveForeground()
+            .background(AppTheme.canvas.ignoresSafeArea())
+    }
+
+    /// Pins the three hierarchical foreground levels to adaptive system label
+    /// colors instead of inheriting a container's foreground style.
+    func appAdaptiveForeground() -> some View {
+        foregroundStyle(AppTheme.primaryText, AppTheme.secondaryText, AppTheme.tertiaryText)
     }
 }
 
