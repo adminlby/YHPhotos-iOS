@@ -341,21 +341,22 @@ struct UploadView: View {
                 spacing: 10
             ) {
                 ForEach(Array(assets.enumerated()), id: \.element.id) { index, asset in
-                    ZStack(alignment: .topTrailing) {
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(AppTheme.elevated)
-                        if let image = UIImage(data: asset.data) {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .clipped()
+                    GeometryReader { proxy in
+                        ZStack(alignment: .topTrailing) {
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(AppTheme.elevated)
+                            if let image = UIImage(data: asset.data) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: proxy.size.width, height: proxy.size.height)
+                                    .clipped()
+                            }
+                            Text("\(index + 1)").font(.caption2.bold()).foregroundStyle(.white)
+                                .padding(6).background(.black.opacity(0.65), in: Circle()).padding(6)
                         }
-                        Text("\(index + 1)").font(.caption2.bold()).foregroundStyle(.white)
-                            .padding(6).background(.black.opacity(0.65), in: Circle()).padding(6)
                     }
                     .aspectRatio(1, contentMode: .fit)
-                    .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 }
             }

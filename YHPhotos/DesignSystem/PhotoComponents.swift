@@ -5,14 +5,13 @@ struct PhotoGridCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Color.clear
-                .aspectRatio(4 / 3, contentMode: .fit)
-                .overlay {
-                    RemoteImage(url: photo.thumbnailURL)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .clipped()
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            GeometryReader { proxy in
+                RemoteImage(url: photo.thumbnailURL)
+                    .frame(width: proxy.size.width, height: proxy.size.height)
+                    .clipped()
+            }
+            .aspectRatio(4 / 3, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
             if !photo.primaryMetadata.isEmpty {
                 Text(photo.primaryMetadata)
