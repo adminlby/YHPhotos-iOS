@@ -385,7 +385,7 @@ struct Conversation: Codable, Identifiable, Sendable {
     let lastMessage: String?
     let lastMessageMine: Bool
     let lastMessageAt: String?
-    let unread: Int
+    var unread: Int
 }
 
 struct SiteNotification: Codable, Identifiable, Sendable {

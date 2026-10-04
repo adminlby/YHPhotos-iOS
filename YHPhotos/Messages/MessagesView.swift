@@ -63,7 +63,9 @@ struct MessagesView: View {
     private var content: some View {
         VStack(spacing: 0) {
             Picker(L10n.string("消息类型"), selection: $section) {
-                ForEach(InboxSection.allCases) { Text($0.title).tag($0) }
+                ForEach(InboxSection.allCases) { item in
+                    Text(sectionTitle(item)).tag(item)
+                }
             }
             .pickerStyle(.segmented)
             .padding(.horizontal, 16).padding(.vertical, 10)
@@ -83,7 +85,11 @@ struct MessagesView: View {
             EmptyStateView(L10n.string("还没有私信"), systemImage: "text.bubble", description: L10n.string("从摄影师主页或右上角发起对话。"))
         } else {
             List(conversations) { conversation in
-                NavigationLink { ConversationView(conversation: conversation) } label: {
+                NavigationLink {
+                    ConversationView(conversation: conversation) {
+                        markConversationRead(conversation.id)
+                    }
+                } label: {
                     HStack(spacing: 12) {
                         AvatarView(urlString: conversation.other.avatar, name: conversation.other.displayName, size: 52)
                         VStack(alignment: .leading, spacing: 5) {
@@ -118,8 +124,10 @@ struct MessagesView: View {
         } else {
             List(notifications) { item in
                 if let destination = destination(for: item.link) {
-                    NavigationLink { destinationView(destination) } label: { notificationRow(item) }
-                        .simultaneousGesture(TapGesture().onEnded { Task { await markRead(item) } })
+                    NavigationLink {
+                        destinationView(destination)
+                            .task { await markRead(item) }
+                    } label: { notificationRow(item) }
                 } else {
                     Button {
                         Task { await markRead(item) }
@@ -174,6 +182,19 @@ struct MessagesView: View {
     }
 
     private func shortDate(_ value: String?) -> String { value?.prefix(16).replacingOccurrences(of: "T", with: " ") ?? "" }
+    private func sectionTitle(_ item: InboxSection) -> String {
+        let count = item == .direct ? appModel.unreadDirectMessages : appModel.unreadSiteNotifications
+        guard count > 0 else { return item.title }
+        return "\(item.title) \(count > 99 ? "99+" : "\(count)")"
+    }
+
+    @MainActor private func markConversationRead(_ id: Int) {
+        if let index = conversations.firstIndex(where: { $0.id == id }) {
+            conversations[index].unread = 0
+            appModel.setUnreadDirectMessages(conversations.reduce(0) { $0 + $1.unread })
+        }
+    }
+
     private func notificationType(_ type: String) -> String {
         ["review_result": "审核结果", "comment": "评论", "system": "系统", "follow": "关注", "like": "点赞", "message": "私信", "badge": "徽章"][type].map(L10n.string) ?? type
     }
@@ -191,7 +212,7 @@ struct MessagesView: View {
     @MainActor private func loadConversations() async {
         do {
             conversations = try await APIClient.shared.get("api/conversations")
-            await appModel.refreshUnreadCount()
+            appModel.setUnreadDirectMessages(conversations.reduce(0) { $0 + $1.unread })
             errorMessage = nil
         } catch { errorMessage = error.localizedDescription }
     }
@@ -200,21 +221,32 @@ struct MessagesView: View {
         do {
             let response: SiteNotificationResponse = try await APIClient.shared.get("api/me/notifications", query: [URLQueryItem(name: "limit", value: "100")])
             notifications = response.items
+            appModel.setUnreadSiteNotifications(response.unread)
         } catch { errorMessage = error.localizedDescription }
     }
 
     @MainActor private func markRead(_ item: SiteNotification) async {
+        struct Response: Decodable, Sendable { let unread: Int }
         guard !item.isRead else { return }
-        if let _: APIClient.EmptyResponse = try? await APIClient.shared.send("api/me/notifications/\(item.id)/read", method: "POST") {
+        do {
+            let response: Response = try await APIClient.shared.send("api/me/notifications/\(item.id)/read", method: "POST")
             if let index = notifications.firstIndex(where: { $0.id == item.id }) { notifications[index].isRead = true }
-            await appModel.refreshUnreadCount()
+            appModel.setUnreadSiteNotifications(response.unread)
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 
     @MainActor private func markAllRead() async {
-        if let _: APIClient.EmptyResponse = try? await APIClient.shared.send("api/me/notifications/read-all", method: "POST") {
+        struct Response: Decodable, Sendable { let unread: Int }
+        do {
+            let response: Response = try await APIClient.shared.send("api/me/notifications/read-all", method: "POST")
             for index in notifications.indices { notifications[index].isRead = true }
-            await appModel.refreshUnreadCount()
+            appModel.setUnreadSiteNotifications(response.unread)
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 }
@@ -235,6 +267,7 @@ private struct ConversationThread: Decodable, Sendable {
 struct ConversationView: View {
     @EnvironmentObject private var appModel: AppModel
     let conversation: Conversation
+    let onRead: @MainActor () -> Void
     @State private var thread: ConversationThread?
     @State private var draft = ""
     @State private var isSending = false
@@ -372,8 +405,9 @@ struct ConversationView: View {
             async let threadRequest: ConversationThread = APIClient.shared.get("api/conversations/\(conversation.id)/messages")
             async let profileRequest: PublicProfile = APIClient.shared.get("api/users/\(conversation.other.id)")
             thread = try await threadRequest
-            if let profile = try? await profileRequest { isBlocked = profile.isBlocked }
+            onRead()
             await appModel.refreshUnreadCount()
+            if let profile = try? await profileRequest { isBlocked = profile.isBlocked }
         } catch { errorMessage = error.localizedDescription }
     }
 

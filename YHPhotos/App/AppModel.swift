@@ -36,12 +36,15 @@ final class AppModel: ObservableObject {
     @Published private(set) var adminIdentity: AdminIdentity?
     @Published var showingUpload = false
     @Published var showingLogin = false
-    @Published var unreadMessages = 0
+    @Published private(set) var unreadDirectMessages = 0
+    @Published private(set) var unreadSiteNotifications = 0
+    @Published private(set) var unreadMessages = 0
     @Published private(set) var hasRestoredSession = false
     @Published private(set) var sessionRestoreError: String?
 
     private let api: APIClient
     private let ssoWebAuthentication = SSOWebAuthentication()
+    private var unreadMutationGeneration = 0
 
     init(api: APIClient = .shared) {
         self.api = api
@@ -66,7 +69,18 @@ final class AppModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] note in
-            Task { @MainActor in self?.openPushNotification(category: note.userInfo?["category"] as? String) }
+            Task { @MainActor in
+                guard let self else { return }
+                self.openPushNotification(category: note.userInfo?["category"] as? String)
+                await self.refreshUnreadCount()
+            }
+        }
+        NotificationCenter.default.addObserver(
+            forName: .yhUnreadCountsShouldRefresh,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in await self?.refreshUnreadCount() }
         }
     }
 
@@ -85,7 +99,8 @@ final class AppModel: ObservableObject {
 #if DEBUG
         if AppStoreDemo.isEnabled {
             sessionUser = AppStoreDemo.sessionUser
-            unreadMessages = 2
+            unreadMutationGeneration &+= 1
+            applyUnreadCounts(direct: 1, site: 1)
             return
         }
 #endif
@@ -172,10 +187,34 @@ final class AppModel: ObservableObject {
 
     func refreshUnreadCount() async {
         struct Unread: Decodable, Sendable { let unread: Int }
-        guard sessionUser != nil else { unreadMessages = 0; return }
-        let direct: Unread? = try? await api.get("api/messages/unread-count")
-        let site: Unread? = try? await api.get("api/me/notifications/unread-count")
-        unreadMessages = (direct?.unread ?? 0) + (site?.unread ?? 0)
+        guard sessionUser != nil else {
+            unreadMutationGeneration &+= 1
+            applyUnreadCounts(direct: 0, site: 0)
+            return
+        }
+        let generation = unreadMutationGeneration
+        async let directRequest: Unread? = try? await api.get("api/messages/unread-count")
+        async let siteRequest: Unread? = try? await api.get("api/me/notifications/unread-count")
+        let (direct, site) = await (directRequest, siteRequest)
+        guard generation == unreadMutationGeneration else { return }
+        applyUnreadCounts(direct: direct?.unread, site: site?.unread)
+    }
+
+    func setUnreadDirectMessages(_ count: Int) {
+        unreadMutationGeneration &+= 1
+        applyUnreadCounts(direct: count)
+    }
+
+    func setUnreadSiteNotifications(_ count: Int) {
+        unreadMutationGeneration &+= 1
+        applyUnreadCounts(site: count)
+    }
+
+    private func applyUnreadCounts(direct: Int? = nil, site: Int? = nil) {
+        if let direct { unreadDirectMessages = max(0, direct) }
+        if let site { unreadSiteNotifications = max(0, site) }
+        unreadMessages = unreadDirectMessages + unreadSiteNotifications
+        PushNotificationManager.shared.updateApplicationBadge(unreadMessages)
     }
 
     /// Checks the real RBAC entry point instead of inferring access from a role
@@ -209,7 +248,8 @@ final class AppModel: ObservableObject {
     private func clearSession() {
         sessionUser = nil
         adminIdentity = nil
-        unreadMessages = 0
+        unreadMutationGeneration &+= 1
+        applyUnreadCounts(direct: 0, site: 0)
         UserDefaults.standard.removeObject(forKey: "sessionUser")
         SessionCredentialStore.clear()
     }

@@ -5,6 +5,7 @@ struct RootView: View {
     @EnvironmentObject private var appModel: AppModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var pushManager = PushNotificationManager.shared
 
     var body: some View {
@@ -61,6 +62,10 @@ struct RootView: View {
                     openURL(url)
                 }
             }
+        }
+        .onChange(of: scenePhase) { phase in
+            guard phase == .active, appModel.hasRestoredSession, appModel.sessionUser != nil else { return }
+            Task { await appModel.refreshUnreadCount() }
         }
     }
 
@@ -122,6 +127,7 @@ struct RootView: View {
         content()
             .tag(section)
             .tabItem { Label(section.title, systemImage: section.icon) }
+            .badge(section == .messages ? appModel.unreadMessages : 0)
     }
 
     private var tabletRoot: some View {
@@ -130,7 +136,20 @@ struct RootView: View {
                 get: { appModel.selectedSection },
                 set: { appModel.selectedSection = $0 ?? .discover }
             )) { section in
-                Label(section.title, systemImage: section.icon).tag(section)
+                HStack {
+                    Label(section.title, systemImage: section.icon)
+                    Spacer()
+                    if section == .messages, appModel.unreadMessages > 0 {
+                        Text(formattedUnreadCount(appModel.unreadMessages))
+                            .font(.caption2.bold())
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(.red, in: Capsule())
+                            .accessibilityValue(Text("\(appModel.unreadMessages)"))
+                    }
+                }
+                .tag(section)
             }
             .navigationTitle("YHPhotos")
             .toolbar {
@@ -154,6 +173,10 @@ struct RootView: View {
         case .messages: MessagesView()
         case .profile: UserCenterView()
         }
+    }
+
+    private func formattedUnreadCount(_ count: Int) -> String {
+        count > 99 ? "99+" : "\(count)"
     }
 }
 

@@ -78,7 +78,7 @@ struct PublicProfileView: View {
             get: { startedConversation != nil },
             set: { if !$0 { startedConversation = nil } }
         )) {
-            if let startedConversation { ConversationView(conversation: startedConversation) }
+            if let startedConversation { ConversationView(conversation: startedConversation, onRead: {}) }
         }
         .appScreenBackground()
     }

@@ -76,6 +76,12 @@ final class PushNotificationManager: NSObject, ObservableObject, UNUserNotificat
         shouldOfferSystemSettings = false
     }
 
+    func updateApplicationBadge(_ count: Int) {
+        Task {
+            try? await UNUserNotificationCenter.current().setBadgeCount(max(0, count))
+        }
+    }
+
     /// Called after session restoration/login so website changes take effect on
     /// the next App launch even when the notification settings screen is never opened.
     func synchronizeAuthorizationWithServerPreferences(using api: APIClient = .shared) async {
@@ -113,7 +119,10 @@ final class PushNotificationManager: NSObject, ObservableObject, UNUserNotificat
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound, .badge]
+        await MainActor.run {
+            NotificationCenter.default.post(name: .yhUnreadCountsShouldRefresh, object: nil)
+        }
+        return [.banner, .list, .sound]
     }
 
     nonisolated func userNotificationCenter(
@@ -151,4 +160,5 @@ final class YHPhotosAppDelegate: NSObject, UIApplicationDelegate {
 
 extension Notification.Name {
     static let yhPushNotificationOpened = Notification.Name("YHPhotosPushNotificationOpened")
+    static let yhUnreadCountsShouldRefresh = Notification.Name("YHPhotosUnreadCountsShouldRefresh")
 }
