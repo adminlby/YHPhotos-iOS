@@ -143,7 +143,7 @@ struct AdminFeedbackView: View {
     var body: some View {
         List {
             Section { Picker("状态", selection: $status) { Text("全部").tag("all"); Text("新反馈").tag("new"); Text("已读").tag("read"); Text("已回复").tag("replied"); Text("已关闭").tag("closed") }; Picker("类型", selection: $type) { Text("全部类型").tag("all"); Text("问题").tag("bug"); Text("建议").tag("suggestion"); Text("投诉").tag("complaint"); Text("其他").tag("other") } }
-            if let response { Section("共 \(response.total) 条") { ForEach(response.items) { item in Button { selected = item } label: { VStack(alignment: .leading, spacing: 5) { HStack { Text(item.subject).font(.subheadline.weight(.semibold)); Spacer(); FeedbackStatusBadge(status: item.status) }; Text("\(feedbackType(item.type)) · \(item.user?.displayName ?? "匿名")").font(.caption).foregroundStyle(.secondary); Text(item.content).font(.caption).foregroundStyle(.secondary).lineLimit(2) }.padding(.vertical, 4).contentShape(Rectangle()) }.buttonStyle(.plain) } } }
+            if let response { Section("共 \(response.total) 条") { ForEach(response.items) { item in Button { selected = item } label: { VStack(alignment: .leading, spacing: 5) { HStack { Text(item.displaySubject).font(.subheadline.weight(.semibold)); Spacer(); FeedbackStatusBadge(status: item.status) }; Text("\(feedbackType(item.type)) · \(item.user?.displayName ?? "匿名")").font(.caption).foregroundStyle(.secondary); Text(item.content).font(.caption).foregroundStyle(.secondary).lineLimit(2) }.padding(.vertical, 4).contentShape(Rectangle()) }.buttonStyle(.plain) } } }
             SupportLoading(isLoading: isLoading, errorMessage: errorMessage, empty: response?.items.isEmpty == true, title: "没有匹配的反馈") { await load() }
         }
         .navigationTitle("反馈")
@@ -161,7 +161,7 @@ struct AdminFeedbackView: View {
 
 private struct AdminFeedbackDetail: View {
     @Environment(\.dismiss) private var dismiss; let item: AdminFeedbackItem; @State private var reply = ""; @State private var busy = false; @State private var errorMessage: String?
-    var body: some View { Form { Section("反馈") { LabeledContent("类型", value: feedbackType(item.type)); LabeledContent("状态", value: adminSystemLabel(item.status)); LabeledContent("提交人", value: item.user?.displayName ?? "匿名"); if let contact = item.contact { LabeledContent("联系方式", value: contact) }; Text(item.content) }; Section("回复") { TextEditor(text: $reply).frame(minHeight: 100); Button("发送回复", systemImage: "paperplane.fill") { Task { await sendReply() } }.disabled(reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty); Button("标记已读") { Task { await noBody("read") } }; Button("关闭反馈", role: .destructive) { Task { await noBody("close") } } }; if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } } }.navigationTitle(item.subject).navigationBarTitleDisplayMode(.inline).toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { dismiss() } } }.disabled(busy).task { if item.status == "new" { await noBody("read", dismissAfter: false) } } }
+    var body: some View { Form { Section("反馈") { LabeledContent("类型", value: feedbackType(item.type)); LabeledContent("状态", value: adminSystemLabel(item.status)); LabeledContent("提交人", value: item.user?.displayName ?? "匿名"); if let contact = item.contact { LabeledContent("联系方式", value: contact) }; Text(item.content) }; Section("回复") { TextEditor(text: $reply).frame(minHeight: 100); Button("发送回复", systemImage: "paperplane.fill") { Task { await sendReply() } }.disabled(reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty); Button("标记已读") { Task { await noBody("read") } }; Button("关闭反馈", role: .destructive) { Task { await noBody("close") } } }; if let errorMessage { Section { Text(errorMessage).foregroundStyle(.red) } } }.navigationTitle(item.displaySubject).navigationBarTitleDisplayMode(.inline).toolbar { ToolbarItem(placement: .cancellationAction) { Button("关闭") { dismiss() } } }.disabled(busy).task { if item.status == "new" { await noBody("read", dismissAfter: false) } } }
     @MainActor private func sendReply() async { busy = true; defer { busy = false }; do { let _: AdminActionResponse = try await APIClient.shared.send("api/admin/feedback/\(item.id)/reply", body: FeedbackReplyBody(reply: reply)); dismiss() } catch { errorMessage = error.localizedDescription } }
     @MainActor private func noBody(_ path: String, dismissAfter: Bool = true) async { busy = true; defer { busy = false }; do { let _: AdminActionResponse = try await APIClient.shared.send("api/admin/feedback/\(item.id)/\(path)", method: "POST"); if dismissAfter { dismiss() } } catch { errorMessage = error.localizedDescription } }
 }
@@ -241,7 +241,24 @@ private struct TicketAssignBody: Encodable, Sendable { let assignee_id: Int? }
 private struct TicketTakeoverBody: Encodable, Sendable { let decision: String }
 private struct TicketReplyBody: Encodable, Sendable { let message: String; let is_internal: Bool }
 private struct TicketStatusBody: Encodable, Sendable { let status: String }
-private struct AdminFeedbackItem: Codable, Identifiable, Sendable { struct User: Codable, Sendable { let id: Int; let displayName: String }; let id: Int; let type: String; let subject: String; let content: String; let contact: String?; let status: String; let createdAt: String?; let user: User? }
+private struct AdminFeedbackItem: Codable, Identifiable, Sendable {
+    struct User: Codable, Sendable { let id: Int; let displayName: String }
+    let id: Int
+    let type: String
+    let subject: String?
+    let content: String
+    let contact: String?
+    let status: String
+    let createdAt: String?
+    let user: User?
+
+    var displaySubject: String {
+        guard let subject = subject?.trimmingCharacters(in: .whitespacesAndNewlines), !subject.isEmpty else {
+            return "（无标题）"
+        }
+        return subject
+    }
+}
 private struct AdminFeedbackResponse: Codable, Sendable { let items: [AdminFeedbackItem]; let total: Int }
 private struct FeedbackReplyBody: Encodable, Sendable { let reply: String }
 private struct AdminCorrection: Codable, Identifiable, Sendable { struct Photo: Codable, Sendable { let id: Int; let title: String?; let thumb: String?; let href: String? }; let id: Int; let fieldName: String; let currentValue: String?; let suggestedValue: String?; let reason: String?; let status: String; let createdAt: String?; let submitter: String?; let applicable: Bool; let photo: Photo }

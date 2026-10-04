@@ -172,7 +172,8 @@ struct NewsListView: View {
         do {
             let response: NewsResponse = try await APIClient.shared.get(
                 "api/news",
-                query: [URLQueryItem(name: "limit", value: "50")]
+                // The public news endpoint accepts at most 20 items.
+                query: [URLQueryItem(name: "limit", value: "20")]
             )
             items = response.items
         } catch {

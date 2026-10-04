@@ -78,7 +78,6 @@ struct ImageInspectorView: View {
     @State private var loupeVisible = false
     @State private var loupeImage: UIImage?
     @State private var loupeOrigin: CGPoint = .zero
-    @State private var contentSize: CGSize = .zero
 
     private enum ManualGuide: String, CaseIterable, Hashable { case horizontal, vertical }
 
@@ -287,49 +286,23 @@ struct ImageInspectorView: View {
                 .padding(.vertical, 40)
                 .background(Color.red.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
             } else {
-                ScrollView([.horizontal, .vertical], showsIndicators: true) {
-                    ZStack(alignment: .topLeading) {
-                        Color(red: 0.008, green: 0.024, blue: 0.090)
-                        if let shown = shownImage {
-                            Image(uiImage: shown)
-                                .resizable()
-                                .interpolation(.high)
-                                .frame(
-                                    width: stageWidth,
-                                    height: stageHeight
-                                )
-                        } else {
-                            ProgressView()
-                                .frame(width: stageWidth, height: max(stageHeight, 180))
-                        }
-
-                        if mode == .centering || mode == .horizon {
-                            guideOverlay
-                                .frame(width: stageWidth, height: stageHeight)
-                                .allowsHitTesting(true)
-                        }
-
-                        if mode == .horizon, loupeVisible, let loupeImage {
-                            Image(uiImage: loupeImage)
-                                .resizable()
-                                .frame(width: Self.lensSize, height: Self.lensSize)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Self.guideColor, lineWidth: 2))
-                                .shadow(radius: 12)
-                                .position(loupeOrigin)
-                                .allowsHitTesting(false)
-                        }
+                if fullSize {
+                    ScrollView([.horizontal, .vertical], showsIndicators: true) {
+                        stageContent(size: fullSizeStageSize)
                     }
-                    .frame(width: stageWidth, height: stageHeight)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .background(
-                        GeometryReader { proxy in
-                            Color.clear.preference(key: ContentSizeKey.self, value: proxy.size)
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: 620)
+                } else {
+                    Color(red: 0.008, green: 0.024, blue: 0.090)
+                        .aspectRatio(stageAspectRatio, contentMode: .fit)
+                        .frame(maxWidth: .infinity, maxHeight: 420)
+                        .overlay {
+                            GeometryReader { proxy in
+                                stageContent(size: proxy.size)
+                            }
                         }
-                    )
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
-                .frame(maxHeight: fullSize ? 620 : 420)
-                .onPreferenceChange(ContentSizeKey.self) { contentSize = $0 }
             }
         }
     }
@@ -338,20 +311,49 @@ struct ImageInspectorView: View {
         mode == .equalize ? (equalizedImage ?? displayImage) : displayImage
     }
 
-    private var stageWidth: CGFloat {
-        guard renderSize.width > 0 else { return 1 }
-        if fullSize { return CGFloat(renderSize.width) }
-        let maxW = max(contentSize.width, UIScreen.main.bounds.width - 32)
-        let scale = min(1, maxW / CGFloat(renderSize.width))
-        return CGFloat(renderSize.width) * scale
+    private var stageAspectRatio: CGFloat {
+        CGFloat(max(renderSize.width, 1)) / CGFloat(max(renderSize.height, 1))
     }
 
-    private var stageHeight: CGFloat {
-        guard renderSize.width > 0, renderSize.height > 0 else { return 1 }
-        return stageWidth * CGFloat(renderSize.height) / CGFloat(renderSize.width)
+    private var fullSizeStageSize: CGSize {
+        CGSize(width: CGFloat(max(renderSize.width, 1)), height: CGFloat(max(renderSize.height, 1)))
     }
 
-    private var guideOverlay: some View {
+    private func stageContent(size: CGSize) -> some View {
+        ZStack(alignment: .topLeading) {
+            Color(red: 0.008, green: 0.024, blue: 0.090)
+            if let shown = shownImage {
+                Image(uiImage: shown)
+                    .resizable()
+                    .interpolation(.high)
+                    .frame(width: size.width, height: size.height)
+            } else {
+                ProgressView()
+                    .frame(width: size.width, height: max(size.height, 180))
+            }
+
+            if mode == .centering || mode == .horizon {
+                guideOverlay(displaySize: size)
+                    .frame(width: size.width, height: size.height)
+                    .allowsHitTesting(true)
+            }
+
+            if mode == .horizon, loupeVisible, let loupeImage {
+                Image(uiImage: loupeImage)
+                    .resizable()
+                    .frame(width: Self.lensSize, height: Self.lensSize)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(Self.guideColor, lineWidth: 2))
+                    .shadow(radius: 12)
+                    .position(loupeOrigin)
+                    .allowsHitTesting(false)
+            }
+        }
+        .frame(width: size.width, height: size.height)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func guideOverlay(displaySize: CGSize) -> some View {
         Canvas { context, size in
             if mode == .centering {
                 drawCenteringGuides(context: &context, size: size)
@@ -360,17 +362,17 @@ struct ImageInspectorView: View {
             }
         }
         .contentShape(Rectangle())
-        .gesture(centeringAndHorizonGesture)
+        .gesture(centeringAndHorizonGesture(displaySize: displaySize))
     }
 
-    private var centeringAndHorizonGesture: some Gesture {
+    private func centeringAndHorizonGesture(displaySize: CGSize) -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
-                let point = imagePoint(from: value.location)
+                let point = imagePoint(from: value.location, displaySize: displaySize)
                 if mode == .centering {
                     updateManualGuide(point, guide: guideKind)
                 } else if mode == .horizon {
-                    updateLoupe(at: value.location, imagePoint: point)
+                    updateLoupe(at: value.location, imagePoint: point, displaySize: displaySize)
                 }
             }
             .onEnded { _ in
@@ -485,9 +487,9 @@ struct ImageInspectorView: View {
 
     // MARK: - Interaction
 
-    private func imagePoint(from viewPoint: CGPoint) -> CGPoint {
-        let scaleX = CGFloat(renderSize.width) / max(stageWidth, 1)
-        let scaleY = CGFloat(renderSize.height) / max(stageHeight, 1)
+    private func imagePoint(from viewPoint: CGPoint, displaySize: CGSize) -> CGPoint {
+        let scaleX = CGFloat(renderSize.width) / max(displaySize.width, 1)
+        let scaleY = CGFloat(renderSize.height) / max(displaySize.height, 1)
         return CGPoint(
             x: min(max(viewPoint.x * scaleX, 0), CGFloat(renderSize.width)),
             y: min(max(viewPoint.y * scaleY, 0), CGFloat(renderSize.height))
@@ -501,7 +503,7 @@ struct ImageInspectorView: View {
         }
     }
 
-    private func updateLoupe(at viewPoint: CGPoint, imagePoint: CGPoint) {
+    private func updateLoupe(at viewPoint: CGPoint, imagePoint: CGPoint, displaySize: CGSize) {
         guard let clean = cleanPixels else { return }
         let sample = Self.lensSize / Self.lensZoom
         let srcX = imagePoint.x - sample / 2
@@ -510,11 +512,11 @@ struct ImageInspectorView: View {
 
         var left = viewPoint.x + 18
         var top = viewPoint.y + 18
-        if left + Self.lensSize > stageWidth { left = viewPoint.x - Self.lensSize - 18 }
-        if top + Self.lensSize > stageHeight { top = viewPoint.y - Self.lensSize - 18 }
+        if left + Self.lensSize > displaySize.width { left = viewPoint.x - Self.lensSize - 18 }
+        if top + Self.lensSize > displaySize.height { top = viewPoint.y - Self.lensSize - 18 }
         loupeOrigin = CGPoint(
-            x: max(Self.lensSize / 2 + 2, min(left + Self.lensSize / 2, stageWidth - Self.lensSize / 2 - 2)),
-            y: max(Self.lensSize / 2 + 2, min(top + Self.lensSize / 2, stageHeight - Self.lensSize / 2 - 2))
+            x: max(Self.lensSize / 2 + 2, min(left + Self.lensSize / 2, displaySize.width - Self.lensSize / 2 - 2)),
+            y: max(Self.lensSize / 2 + 2, min(top + Self.lensSize / 2, displaySize.height - Self.lensSize / 2 - 2))
         )
         loupeVisible = true
     }
@@ -659,11 +661,6 @@ struct ImageInspectorView: View {
         ), let cgImage = context.makeImage() else { return nil }
         return UIImage(cgImage: cgImage)
     }
-}
-
-private struct ContentSizeKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
 }
 
 // MARK: - Histogram panel (website HistogramPanel)

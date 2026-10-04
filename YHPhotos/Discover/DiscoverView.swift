@@ -91,7 +91,10 @@ struct DiscoverView: View {
             }
             .navigationDestination(isPresented: $showingSearch) { SearchView() }
             .fullScreenCover(isPresented: $showingAdmin, onDismiss: {
-                Task { await appModel.restoreSession() }
+                // Closing the console must not put the whole app back into its
+                // launch/restoration state. Only revalidate the admin entry in
+                // case the current account's permissions changed.
+                Task { await appModel.refreshAdminAccess() }
             }) {
                 if let admin = appModel.adminIdentity {
                     AdminConsoleView(identity: admin)
